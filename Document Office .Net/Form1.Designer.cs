@@ -73,7 +73,7 @@
             // 
             // step2
             // 
-            this.step2.BackColor = System.Drawing.Color.Transparent;
+            this.step2.BackColor = System.Drawing.Color.Gainsboro;
             this.step2.Location = new System.Drawing.Point(0, -2);
             this.step2.Name = "step2";
             this.step2.Size = new System.Drawing.Size(971, 549);
