@@ -17,9 +17,26 @@ namespace Document_Office.Net
             InitializeComponent();
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void buttonStart_Click(object sender, EventArgs e)
         {
             step2.Visible = true;
+        }
+
+        private void buttonCancel_Click(object sender, EventArgs e)
+        {
+            step2.Visible = false;
+        }
+
+        private void buttonNext_Click(object sender, EventArgs e)
+        {
+            step2.Visible = false;
+            MainPanel.Visible = false;
+            this.WindowState = FormWindowState.Maximized;
+        }
+
+        private void buttonCloseProgram_Click(object sender, EventArgs e)
+        {
+            this.Close();
         }
     }
 }
