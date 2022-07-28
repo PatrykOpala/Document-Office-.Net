@@ -8,7 +8,25 @@ namespace Document_Office.Net
     public partial class StartWindow : Form
     {
         string filePath = "";
+        ushort countFile = 0;
 
+        private void changeCounter(ushort count, string upDown)
+        {
+            if(upDown == "up")
+            {
+                countFile += count;
+                countFilesLabel.Text = countFile.ToString();
+            }
+
+            if(upDown == "down")
+            {
+                if (countFile == 0) return;
+
+                countFile -= count;
+                countFilesLabel.Text = countFile.ToString();
+            }
+            
+        }
         public StartWindow()
         {
             InitializeComponent();
@@ -50,6 +68,26 @@ namespace Document_Office.Net
                 labelFileName.Text = fileDialog.FileName;
             }
             
+        }
+
+        private void plusTen_Click(object sender, EventArgs e)
+        {
+            changeCounter(10, "up");
+        }
+
+        private void plusOne_Click(object sender, EventArgs e)
+        {
+            changeCounter(1, "up");
+        }
+
+        private void minusOne_Click(object sender, EventArgs e)
+        {
+            changeCounter(1, "down");
+        }
+
+        private void minusTen_Click(object sender, EventArgs e)
+        {
+            changeCounter(10, "down");
         }
     }
 }

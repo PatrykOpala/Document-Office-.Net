@@ -29,22 +29,21 @@
         private void InitializeComponent()
         {
             this.panel1 = new System.Windows.Forms.Panel();
-            this.panelButtonChange = new System.Windows.Forms.Panel();
-            this.buttonChange = new System.Windows.Forms.Button();
             this.panelGenerate = new System.Windows.Forms.Panel();
             this.panelGenerateButton = new System.Windows.Forms.Button();
+            this.panelButtonChange = new System.Windows.Forms.Panel();
+            this.buttonChange = new System.Windows.Forms.Button();
             this.panelEdytor = new System.Windows.Forms.Panel();
             this.panelNewspaper = new System.Windows.Forms.Panel();
             this.panel1.SuspendLayout();
-            this.panelButtonChange.SuspendLayout();
             this.panelGenerate.SuspendLayout();
+            this.panelButtonChange.SuspendLayout();
             this.panelEdytor.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.Color.Transparent;
-            this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel1.Controls.Add(this.panelGenerate);
             this.panel1.Controls.Add(this.panelButtonChange);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
@@ -52,28 +51,6 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(1054, 112);
             this.panel1.TabIndex = 0;
-            // 
-            // panelButtonChange
-            // 
-            this.panelButtonChange.Controls.Add(this.buttonChange);
-            this.panelButtonChange.Location = new System.Drawing.Point(22, 12);
-            this.panelButtonChange.Name = "panelButtonChange";
-            this.panelButtonChange.Size = new System.Drawing.Size(59, 85);
-            this.panelButtonChange.TabIndex = 0;
-            // 
-            // buttonChange
-            // 
-            this.buttonChange.BackColor = System.Drawing.Color.Transparent;
-            this.buttonChange.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.buttonChange.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.buttonChange.Image = global::Document_Office.Net.Properties.Resources.close1;
-            this.buttonChange.Location = new System.Drawing.Point(0, 0);
-            this.buttonChange.Name = "buttonChange";
-            this.buttonChange.Size = new System.Drawing.Size(59, 85);
-            this.buttonChange.TabIndex = 0;
-            this.buttonChange.Text = "Zmień";
-            this.buttonChange.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
-            this.buttonChange.UseVisualStyleBackColor = false;
             // 
             // panelGenerate
             // 
@@ -97,6 +74,28 @@
             this.panelGenerateButton.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             this.panelGenerateButton.UseVisualStyleBackColor = false;
             // 
+            // panelButtonChange
+            // 
+            this.panelButtonChange.Controls.Add(this.buttonChange);
+            this.panelButtonChange.Location = new System.Drawing.Point(22, 12);
+            this.panelButtonChange.Name = "panelButtonChange";
+            this.panelButtonChange.Size = new System.Drawing.Size(59, 85);
+            this.panelButtonChange.TabIndex = 0;
+            // 
+            // buttonChange
+            // 
+            this.buttonChange.BackColor = System.Drawing.Color.Transparent;
+            this.buttonChange.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.buttonChange.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.buttonChange.Image = global::Document_Office.Net.Properties.Resources.close1;
+            this.buttonChange.Location = new System.Drawing.Point(0, 0);
+            this.buttonChange.Name = "buttonChange";
+            this.buttonChange.Size = new System.Drawing.Size(59, 85);
+            this.buttonChange.TabIndex = 0;
+            this.buttonChange.Text = "Zmień";
+            this.buttonChange.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
+            this.buttonChange.UseVisualStyleBackColor = false;
+            // 
             // panelEdytor
             // 
             this.panelEdytor.AutoScroll = true;
@@ -114,7 +113,7 @@
             this.panelNewspaper.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.panelNewspaper.BackColor = System.Drawing.Color.White;
             this.panelNewspaper.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panelNewspaper.Location = new System.Drawing.Point(138, 18);
+            this.panelNewspaper.Location = new System.Drawing.Point(129, 18);
             this.panelNewspaper.Name = "panelNewspaper";
             this.panelNewspaper.Size = new System.Drawing.Size(793, 1122);
             this.panelNewspaper.TabIndex = 0;
@@ -130,8 +129,8 @@
             this.Text = "Document Office.Edytor";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.panel1.ResumeLayout(false);
-            this.panelButtonChange.ResumeLayout(false);
             this.panelGenerate.ResumeLayout(false);
+            this.panelButtonChange.ResumeLayout(false);
             this.panelEdytor.ResumeLayout(false);
             this.ResumeLayout(false);
 
