@@ -43,7 +43,8 @@ namespace Document_Office.Net
         private void LocationButton_Click(object sender, EventArgs e)
         {
             OpenFileDialog fileDialog = new OpenFileDialog();
-            if(fileDialog.ShowDialog() == DialogResult.OK)
+            fileDialog.Filter = "Pliki docx (*.docx)|*.docx";
+            if (fileDialog.ShowDialog() == DialogResult.OK)
             {
                 filePath = fileDialog.FileName;
                 labelFileName.Text = fileDialog.FileName;
