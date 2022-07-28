@@ -33,9 +33,11 @@
             this.buttonCloseProgram = new System.Windows.Forms.Button();
             this.buttonStart = new System.Windows.Forms.Button();
             this.step2 = new System.Windows.Forms.Panel();
+            this.LocationButton = new System.Windows.Forms.Button();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.labelFileName = new System.Windows.Forms.Label();
             this.buttonNext = new System.Windows.Forms.Button();
             this.buttonCancel = new System.Windows.Forms.Button();
-            this.maskedTextBox1 = new System.Windows.Forms.MaskedTextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
             this.label1 = new System.Windows.Forms.Label();
@@ -43,6 +45,7 @@
             this.MainPanel = new System.Windows.Forms.Panel();
             this.panel1.SuspendLayout();
             this.step2.SuspendLayout();
+            this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.MainPanel.SuspendLayout();
@@ -90,9 +93,10 @@
             // step2
             // 
             this.step2.BackColor = System.Drawing.Color.Gainsboro;
+            this.step2.Controls.Add(this.LocationButton);
+            this.step2.Controls.Add(this.panel2);
             this.step2.Controls.Add(this.buttonNext);
             this.step2.Controls.Add(this.buttonCancel);
-            this.step2.Controls.Add(this.maskedTextBox1);
             this.step2.Controls.Add(this.label2);
             this.step2.Controls.Add(this.numericUpDown1);
             this.step2.Controls.Add(this.label1);
@@ -101,6 +105,37 @@
             this.step2.Size = new System.Drawing.Size(971, 549);
             this.step2.TabIndex = 3;
             this.step2.Visible = false;
+            // 
+            // LocationButton
+            // 
+            this.LocationButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.LocationButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.LocationButton.Location = new System.Drawing.Point(507, 257);
+            this.LocationButton.Name = "LocationButton";
+            this.LocationButton.Size = new System.Drawing.Size(46, 40);
+            this.LocationButton.TabIndex = 8;
+            this.LocationButton.Text = "...";
+            this.LocationButton.UseVisualStyleBackColor = true;
+            this.LocationButton.Click += new System.EventHandler(this.LocationButton_Click);
+            // 
+            // panel2
+            // 
+            this.panel2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel2.Controls.Add(this.labelFileName);
+            this.panel2.Location = new System.Drawing.Point(69, 257);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(428, 40);
+            this.panel2.TabIndex = 7;
+            // 
+            // labelFileName
+            // 
+            this.labelFileName.AutoSize = true;
+            this.labelFileName.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.labelFileName.Location = new System.Drawing.Point(3, 8);
+            this.labelFileName.Name = "labelFileName";
+            this.labelFileName.Size = new System.Drawing.Size(112, 24);
+            this.labelFileName.TabIndex = 0;
+            this.labelFileName.Text = "Wybierz Plik";
             // 
             // buttonNext
             // 
@@ -129,19 +164,11 @@
             this.buttonCancel.UseVisualStyleBackColor = true;
             this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
             // 
-            // maskedTextBox1
-            // 
-            this.maskedTextBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.maskedTextBox1.Location = new System.Drawing.Point(65, 192);
-            this.maskedTextBox1.Name = "maskedTextBox1";
-            this.maskedTextBox1.Size = new System.Drawing.Size(428, 38);
-            this.maskedTextBox1.TabIndex = 3;
-            // 
             // label2
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.label2.Location = new System.Drawing.Point(61, 155);
+            this.label2.Location = new System.Drawing.Point(65, 220);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(146, 24);
             this.label2.TabIndex = 2;
@@ -150,7 +177,7 @@
             // numericUpDown1
             // 
             this.numericUpDown1.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.numericUpDown1.Location = new System.Drawing.Point(65, 88);
+            this.numericUpDown1.Location = new System.Drawing.Point(69, 153);
             this.numericUpDown1.Name = "numericUpDown1";
             this.numericUpDown1.Size = new System.Drawing.Size(128, 31);
             this.numericUpDown1.TabIndex = 1;
@@ -160,7 +187,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.label1.Location = new System.Drawing.Point(61, 49);
+            this.label1.Location = new System.Drawing.Point(65, 114);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(92, 24);
             this.label1.TabIndex = 0;
@@ -199,10 +226,13 @@
             this.Controls.Add(this.MainPanel);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "StartWindow";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Document Office";
             this.panel1.ResumeLayout(false);
             this.step2.ResumeLayout(false);
             this.step2.PerformLayout();
+            this.panel2.ResumeLayout(false);
+            this.panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.MainPanel.ResumeLayout(false);
@@ -216,7 +246,6 @@
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Button buttonStart;
         private System.Windows.Forms.Panel step2;
-        private System.Windows.Forms.MaskedTextBox maskedTextBox1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.NumericUpDown numericUpDown1;
         private System.Windows.Forms.Label label1;
@@ -224,6 +253,9 @@
         private System.Windows.Forms.Button buttonCancel;
         private System.Windows.Forms.Button buttonCloseProgram;
         private System.Windows.Forms.Panel MainPanel;
+        private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.Label labelFileName;
+        private System.Windows.Forms.Button LocationButton;
     }
 }
 
