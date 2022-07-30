@@ -30,6 +30,7 @@ namespace Document_Office.Net
         public StartWindow()
         {
             InitializeComponent();
+            buttonNext.Enabled = false;
         }
 
         private void buttonStart_Click(object sender, EventArgs e)
@@ -66,6 +67,7 @@ namespace Document_Office.Net
             {
                 filePath = fileDialog.FileName;
                 labelFileName.Text = fileDialog.FileName;
+                buttonNext.Enabled = true;
             }
             
         }
