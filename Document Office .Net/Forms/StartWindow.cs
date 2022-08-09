@@ -47,7 +47,7 @@ namespace Document_Office.Net
         {
             Thread edytorThread = new Thread(() =>
             {
-                Application.Run(new EdytorWindow());
+                Application.Run(new EdytorWindow(filePath));
             });
             edytorThread.SetApartmentState(ApartmentState.STA);
             edytorThread.Start();
