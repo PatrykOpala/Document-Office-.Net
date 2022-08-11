@@ -17,11 +17,28 @@ namespace Document_Office.Net.Forms
         public EdytorWindow(string file)
         {
             InitializeComponent();
-            openDocx(file);
+            createParagraph();
+            //openDocx(file);
         }
 
         // DocumentFormat.OpenXml.Wordprocessing.Paragraph
         // DocumentFormat.OpenXml.Wordprocessing.Table
+
+        private void createParagraph()
+        {
+            var p1 = new CustomUserControls.ParagraphButton();
+            var p2 = new CustomUserControls.ParagraphButton();
+            p2.Location = new System.Drawing.Point(300, 0);
+            var p3 = new CustomUserControls.ParagraphButton();
+            p3.Location = new System.Drawing.Point(600, 0);
+            var p4 = new CustomUserControls.ParagraphButton();
+            p4.Location = new System.Drawing.Point(900, 0);
+
+            paragraphContainer1.Controls.Add(p1);
+            paragraphContainer1.Controls.Add(p2);
+            paragraphContainer1.Controls.Add(p3);
+            paragraphContainer1.Controls.Add(p4);
+        }
 
         private void openDocx(string f)
         {
