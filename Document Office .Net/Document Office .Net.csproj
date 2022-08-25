@@ -75,6 +75,7 @@
     <Compile Include="Forms\EdytorWindow.Designer.cs">
       <DependentUpon>EdytorWindow.cs</DependentUpon>
     </Compile>
+    <Compile Include="PhItem.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="CustomUserControls\ParagraphButton.resx">

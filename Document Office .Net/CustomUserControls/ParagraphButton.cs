@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using DocumentFormat.OpenXml.Office2010.Excel;
 using System.Windows.Forms;
 
 namespace Document_Office.Net.CustomUserControls
@@ -15,6 +8,27 @@ namespace Document_Office.Net.CustomUserControls
         public ParagraphButton()
         {
             InitializeComponent();
+        }
+
+        public ParagraphButton(int x, int y)
+        {
+            InitializeComponent();
+            Location = new System.Drawing.Point(x, y);
+        }
+
+        public void SetHeader(string h)
+        {
+            labelContent.Text = h;
+        }
+
+        public void SetHeaderColor(System.Drawing.Color headerColor)
+        {
+            labelContent.ForeColor = headerColor;
+        }
+
+        public void SetBody(string b)
+        {
+            labelParagraph.Text = b;
         }
     }
 }
