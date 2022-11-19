@@ -1,0 +1,103 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Windows.Forms;
+using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Wordprocessing;
+using Color = DocumentFormat.OpenXml.Wordprocessing.Color;
+
+namespace Document_Office.Net.Forms
+{
+    public partial class EdytorWindow : Form
+    {
+        protected List<PhItem> ButtonElements = new List<PhItem>();
+        private int x = 0;
+
+        //OpenXmlCompositeElement
+        public EdytorWindow(string file)
+        {
+            InitializeComponent();
+            openDocx(file);
+        }
+
+        // DocumentFormat.OpenXml.Wordprocessing.Paragraph
+        // DocumentFormat.OpenXml.Wordprocessing.Table
+
+        private void openDocx(string f)
+        {
+            using (WordprocessingDocument word = WordprocessingDocument.Open(f, true))
+            {
+                int w = 0;
+                //var reg = new Regex(@"^[\s\p{L}\d\•\-\►]");
+
+                // body.Descendants<Paragraph>().Where<Paragraph>(somethingElse =>
+                //reg.IsMatch(somethingElse.InnerText)
+
+                var b = word.MainDocumentPart.Document.Body;
+
+                foreach (Paragraph by in word.MainDocumentPart.Document.Body.Elements<Paragraph>())
+                {
+                    var parag = new PhItem();
+                    parag.SetBody($"{w}");
+                    foreach (Run v in by.Elements<Run>())
+                    {
+                        
+                        foreach (RunProperties rP in v.Elements<RunProperties>())
+                        {
+                            if (rP.Color is Color)
+                            {
+                                parag._Color = ColorTranslator.FromHtml("#" + rP.Color.Val.Value);
+                            }
+                        }
+
+                        foreach(Text t in v.Elements<Text>())
+                        {
+                            if (t.Text is string)
+                            {
+                                parag._Header.Add(t?.Text);
+                            }
+                            
+                        }
+                    }
+
+                    // 244; 140
+                    ButtonElements.Add(parag);
+                    w++;
+                }
+
+                foreach (PhItem p in ButtonElements)
+                {
+                    var phButtton = new Button();
+                    phButtton.Location = new Point(x, 0);
+                    phButtton.Text = $"{p._Body}";
+                    phButtton.Size = new Size(244, 140);
+                    phButtton.Click += new EventHandler(PhButtonClick);
+
+                    panel1.Controls.Add(phButtton);
+                    x += 250;
+                }
+            }
+        }
+
+        private void PhButtonClick(object sender, EventArgs e)
+        {
+            richTextBox1.Text = "";
+            Button ClickedButton = (Button) sender;
+            
+            var Text = ClickedButton.Text.ToString();
+            foreach (var c in ButtonElements)
+            {
+                if(c._Body == Text)
+                {
+                    foreach(string d in c._Header)
+                    {
+                        //richTextBox1.AppendText(d);
+                        richTextBox1.SelectedText = d;
+                    }
+                    richTextBox1.SelectionColor = System.Drawing.Color.FromArgb(27, 80, 255);
+                }
+            }
+        }
+    }
+}

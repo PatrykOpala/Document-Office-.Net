@@ -1,0 +1,451 @@
+﻿DORunProp{
+
+	/*
+	public Border Border { get; set; }
+	public Caps Caps { get; set; }
+	public CharacterScale CharakterScale { get; set; }
+	public ComplexScript ComplexScript { get; set; }
+	public Highlight Highlight { get; set; }
+	public NumberSpacing NumberSpacing { get; set; }
+	public Outline Outline { get; set; }
+	public FontSize FontSize { get; set; }
+	public SmallCaps SmallCaps { get; set; }
+	public Spacing Spacing { get; set; }
+	public Color _Color { get; set; }
+	public System.Drawing.Color Color { get; set; }
+	*/
+
+}
+
+EdytorWindow{
+
+	methods:[
+		
+		[/*private void openDocx(string f)
+        {
+            using (WordprocessingDocument word = WordprocessingDocument.Open(f, true))
+            {
+                int w = 0;
+                //var reg = new Regex(@"^[\s\p{L}\d\•\-\►]");
+
+                // body.Descendants<Paragraph>().Where<Paragraph>(somethingElse =>
+                //reg.IsMatch(somethingElse.InnerText)
+
+                var b = word.MainDocumentPart.Document.Body;
+
+                foreach (Paragraph by in word.MainDocumentPart.Document.Body.Elements<Paragraph>())
+                {
+                    var parag = new PhItem();
+                    parag.SetBody($"{w}");
+                    foreach (Run v in by.Elements<Run>())
+                    {
+                        
+                        foreach (RunProperties rP in v.Elements<RunProperties>())
+                        {
+                            if (rP.Color is Color)
+                            {
+                                parag._Color = ColorTranslator.FromHtml("#" + rP.Color.Val.Value);
+                            }
+                        }
+
+                        foreach(Text t in v.Elements<Text>())
+                        {
+                            if (t.Text is string)
+                            {
+                                parag._Header.Add(t?.Text);
+                            }
+                            
+                        }
+                    }
+
+                    // 244; 140
+                    ButtonElements.Add(parag);
+                    w++;
+                }
+
+                foreach (PhItem p in ButtonElements)
+                {
+                    var phButtton = new Button();
+                    phButtton.Location = new Point(x, 0);
+                    phButtton.Text = $"{p._Body}";
+                    phButtton.Size = new Size(244, 140);
+                    phButtton.Click += new EventHandler(PhButtonClick);
+
+                    panel1.Controls.Add(phButtton);
+                    x += 250;
+                }
+            }
+        }*/]
+        
+        [
+            /*public DOParagraph ReturnParagraph(DocumentFormat.OpenXml.Wordprocessing.Paragraph b)
+            {
+                DOParagraph paragraph = new DOParagraph();
+                List<DORun> rune = new List<DORun>();
+                foreach (DocumentFormat.OpenXml.Wordprocessing.Run r in b.Elements<DocumentFormat.OpenXml.Wordprocessing.Run>())
+                {
+                    DORun run = new DORun();
+                    List<string> list1 = new List<string>();
+                    List<DORunProp> props = new List<DORunProp>();
+                    foreach (DocumentFormat.OpenXml.Wordprocessing.RunProperties rProp in r.Elements<DocumentFormat.OpenXml.Wordprocessing.RunProperties>())
+                    {
+                        props.Add(CreateRunPropFromRunProperties(rProp));
+                    }
+                    run.Properties = props.ToArray();
+
+                    foreach (DocumentFormat.OpenXml.Wordprocessing.Text rText in r.Elements<DocumentFormat.OpenXml.Wordprocessing.Text>())
+                    {
+                        list1.Add(rText.Text);
+                    }
+                    run.Text = list1.ToArray();
+                    rune.Add(run);
+                }
+                paragraph.Arrayruns = rune.ToArray();
+                return paragraph;
+            }*/
+        ]
+
+            [
+        
+                /*public DOTable ReturnTable(DocumentFormat.OpenXml.Wordprocessing.Table table)
+                {
+                    DOTable T = new DOTable();
+
+                    foreach (DocumentFormat.OpenXml.Wordprocessing.TableProperties tablePro in table.Elements<DocumentFormat.OpenXml.Wordprocessing.TableProperties>())
+                    {
+                        DOTableProp TProp = new DOTableProp();
+                        if (tablePro.BiDiVisual != null)
+                        {
+                            TProp.BiDiVisual = tablePro.BiDiVisual;
+                        }
+
+                        if (tablePro.Shading != null)
+                        {
+                            TProp.Shading = tablePro.Shading;
+                        }
+
+                        if (tablePro.TableBorders != null)
+                        {
+                            TProp.TableBorders = tablePro.TableBorders;
+                        }
+
+                        if (tablePro.TableCaption != null)
+                        {
+                            TProp.TableCaption = tablePro.TableCaption;
+                        }
+
+                        if (tablePro.TableCellMarginDefault != null)
+                        {
+                            DOTableCellMarginDefault tableCellMarginDefault = new DOTableCellMarginDefault();
+                            if (tablePro.TableCellMarginDefault.BottomMargin != null)
+                            {
+                                DOBottomMargin bottomMargin = new DOBottomMargin();
+                                bottomMargin.Type = tablePro.TableCellMarginDefault.BottomMargin.Type.InnerText;
+                                bottomMargin.Width = tablePro.TableCellMarginDefault.BottomMargin.Width.Value;
+                                tableCellMarginDefault.BottomMargin = bottomMargin;
+
+                            }
+
+                            if (tablePro.TableCellMarginDefault.EndMargin != null)
+                            {
+                                DOEndMargin endMargin = new DOEndMargin();
+                                endMargin.Type = tablePro.TableCellMarginDefault.BottomMargin.Type;
+                                endMargin.Width = tablePro.TableCellMarginDefault.BottomMargin.Width;
+                                tableCellMarginDefault.EndMargin = endMargin;
+
+                            }
+
+                            if (tablePro.TableCellMarginDefault.StartMargin != null)
+                            {
+                                DOStartMargin startMargin = new DOStartMargin();
+                                startMargin.Type = tablePro.TableCellMarginDefault.BottomMargin.Type;
+                                startMargin.Width = tablePro.TableCellMarginDefault.BottomMargin.Width;
+                                tableCellMarginDefault.StartMargin = startMargin;
+
+                            }
+
+                            if (tablePro.TableCellMarginDefault.TableCellLeftMargin != null)
+                            {
+                                DOTableCellLeftMargin tableCellLeftMargin = new DOTableCellLeftMargin();
+                                tableCellLeftMargin.Type = tablePro.TableCellMarginDefault.BottomMargin.Type;
+                                tableCellLeftMargin.Width = tablePro.TableCellMarginDefault.BottomMargin.Width;
+                                tableCellMarginDefault.TableCellLeftMargin = tableCellLeftMargin;
+
+                            }
+
+                            if (tablePro.TableCellMarginDefault.TableCellRightMargin != null)
+                            {
+                                DOTableCellRightMargin tableCellRightMargin = new DOTableCellRightMargin();
+                                tableCellRightMargin.Type = tablePro.TableCellMarginDefault.BottomMargin.Type;
+                                tableCellRightMargin.Width = tablePro.TableCellMarginDefault.BottomMargin.Width;
+                                tableCellMarginDefault.TableCellRightMargin = tableCellRightMargin;
+
+                            }
+
+                            if (tablePro.TableCellMarginDefault.TopMargin != null)
+                            {
+                                DOTopMargin topMargin = new DOTopMargin();
+                                topMargin.Type = tablePro.TableCellMarginDefault.BottomMargin.Type;
+                                topMargin.Width = tablePro.TableCellMarginDefault.BottomMargin.Width;
+                                tableCellMarginDefault.TopMargin = topMargin;
+
+                            }
+                            TProp.TableCellMarginDefault = tableCellMarginDefault;
+                        }
+
+                        if (tablePro.TableCellSpacing != null)
+                        {
+                            TProp.TableCellSpacing = tablePro.TableCellSpacing;
+                        }
+
+                        if (tablePro.TableDescription != null)
+                        {
+                            TProp.TableDescription = tablePro.TableDescription;
+                        }
+
+                        if (tablePro.TableIndentation != null)
+                        {
+                            DOTableIndentation tableIndentation = new DOTableIndentation();
+                            tableIndentation.Type = tablePro.TableIndentation.Type;
+                            tableIndentation.Width = tablePro.TableIndentation.Width;
+                            TProp.TableIndentation = tableIndentation;
+                        }
+
+                        if (tablePro.TableJustification != null)
+                        {
+                            DOTableJustification tableJustification = new DOTableJustification();
+                            tableJustification.Val = tablePro.TableJustification.Val.Value.ToString();
+                            TProp.TableJustification = tableJustification;
+                        }
+
+                        if (tablePro.TableLayout != null)
+                        {
+                            DOTableLayout tableLayout = new DOTableLayout();
+                            tableLayout.Type = tablePro.TableLayout.Type;
+                            TProp.TableLayout = tableLayout;
+                        }
+
+                        if (tablePro.TableLook != null)
+                        {
+                            TProp.TableLook = tablePro.TableLook;
+                        }
+
+                        if (tablePro.TableOverlap != null)
+                        {
+                            TProp.TableOverlap = tablePro.TableOverlap;
+                        }
+
+                        if (tablePro.TablePositionProperties != null)
+                        {
+                            TProp.TablePositionProperties = tablePro.TablePositionProperties;
+                        }
+
+                        if (tablePro.TablePropertiesChange != null)
+                        {
+                            TProp.TablePropertiesChange = tablePro.TablePropertiesChange;
+                        }
+
+                        if (tablePro.TableStyle != null)
+                        {
+                            TProp.TableStyle = tablePro.TableStyle;
+                        }
+
+                        if (tablePro.TableWidth != null)
+                        {
+                            DOTableWidth tableWidth = new DOTableWidth();
+                            tableWidth.Type = tablePro.TableWidth.Type;
+                            tableWidth.Width = tablePro.TableWidth.Width;
+                            TProp.TableWidth = tableWidth;
+                        }
+                        T.TableProperties = TProp;
+                    }
+
+                    foreach (DocumentFormat.OpenXml.Wordprocessing.TableGrid tableGrid in table.Elements<DocumentFormat.OpenXml.Wordprocessing.TableGrid>())
+                    {
+                        DOTableGrid TGrid = new DOTableGrid();
+                        List<DOGridColumn> listsGColumn = new List<DOGridColumn>();
+
+                        foreach (DocumentFormat.OpenXml.Wordprocessing.GridColumn gridColumn in tableGrid.Elements<DocumentFormat.OpenXml.Wordprocessing.GridColumn>())
+                        {
+                            DOGridColumn tGridColumn = new DOGridColumn();
+                            tGridColumn.Width = gridColumn.Width;
+                            listsGColumn.Add(tGridColumn);
+                        }
+                        TGrid.GridColumns = listsGColumn.ToArray();
+                        T.TableGrid = TGrid;
+                    }
+
+                    List<DOTableRow> tableRows = new List<DOTableRow>();
+
+                    foreach (DocumentFormat.OpenXml.Wordprocessing.TableRow tableRow in table.Elements<DocumentFormat.OpenXml.Wordprocessing.TableRow>())
+                    {
+                        DOTableRow TRow = new DOTableRow();
+
+                        foreach (DocumentFormat.OpenXml.Wordprocessing.TableRowProperties tableRowProperties in tableRow.Elements<DocumentFormat.OpenXml.Wordprocessing.TableRowProperties>())
+                        {
+                            DOTableRowProp TRowProp = new DOTableRowProp();
+                            TRow.TableRowProperties = TRowProp;
+                        }
+
+                        List<DOTableCell> tableCells = new List<DOTableCell>();
+
+                        foreach (DocumentFormat.OpenXml.Wordprocessing.TableCell tableCell in tableRow.Elements<DocumentFormat.OpenXml.Wordprocessing.TableCell>())
+                        {
+                            DOTableCell TCell = new DOTableCell();
+
+                            foreach (DocumentFormat.OpenXml.Wordprocessing.TableCellProperties tCellProp in tableCell.Elements<DocumentFormat.OpenXml.Wordprocessing.TableCellProperties>())
+                            {
+                                DOTableCellProp tCellProperties = new DOTableCellProp();
+                                tCellProperties.GridSpan = tCellProp.GridSpan;
+                                tCellProperties.HideMark = tCellProp.HideMark;
+                                tCellProperties.HorizontalMerge = tCellProp.HorizontalMerge;
+                                tCellProperties.NoWrap = tCellProp.NoWrap;
+                                tCellProperties.Shading = tCellProp.Shading;
+                                if (tCellProp.TableCellBorders != null)
+                                {
+                                    DOTableCellBorders tableCellBorders = new DOTableCellBorders();
+                                    if (tCellProp.TableCellBorders.BottomBorder != null)
+                                    {
+                                        DOBottomBorder bottomBorder = new DOBottomBorder();
+                                        bottomBorder.Color = tCellProp.TableCellBorders.BottomBorder.Color;
+                                        bottomBorder.Frame = tCellProp.TableCellBorders.BottomBorder.Frame;
+                                        bottomBorder.Shadow = tCellProp.TableCellBorders.BottomBorder.Shadow;
+                                        bottomBorder.Size = tCellProp.TableCellBorders.BottomBorder.Size;
+                                        bottomBorder.Space = tCellProp.TableCellBorders.BottomBorder.Space;
+                                        bottomBorder.ThemeColor = tCellProp.TableCellBorders.BottomBorder.ThemeColor;
+                                        bottomBorder.ThemeShade = tCellProp.TableCellBorders.BottomBorder.ThemeShade;
+                                        bottomBorder.ThemeTint = tCellProp.TableCellBorders.BottomBorder.ThemeTint;
+                                        bottomBorder.Val = tCellProp.TableCellBorders.BottomBorder.Val.InnerText;
+                                        tableCellBorders.BottomBorder = bottomBorder;
+                                    }
+                                    if (tCellProp.TableCellBorders.EndBorder != null)
+                                    {
+                                        DOEndBorder endBorder = new DOEndBorder();
+                                        endBorder.Color = tCellProp.TableCellBorders.EndBorder.Color;
+                                        endBorder.Frame = tCellProp.TableCellBorders.EndBorder.Frame;
+                                        endBorder.Shadow = tCellProp.TableCellBorders.EndBorder.Shadow;
+                                        endBorder.Size = tCellProp.TableCellBorders.EndBorder.Size;
+                                        endBorder.Space = tCellProp.TableCellBorders.EndBorder.Space;
+                                        endBorder.ThemeColor = tCellProp.TableCellBorders.EndBorder.ThemeColor;
+                                        endBorder.ThemeShade = tCellProp.TableCellBorders.EndBorder.ThemeShade;
+                                        endBorder.ThemeTint = tCellProp.TableCellBorders.EndBorder.ThemeTint;
+                                        endBorder.Val = tCellProp.TableCellBorders.EndBorder.Val.InnerText;
+                                        tableCellBorders.EndBorder = endBorder;
+                                    }
+                                    if (tCellProp.TableCellBorders.LeftBorder != null)
+                                    {
+                                        DOLeftBorder leftBorder = new DOLeftBorder();
+                                        leftBorder.Color = tCellProp.TableCellBorders.LeftBorder.Color;
+                                        leftBorder.Frame = tCellProp.TableCellBorders.LeftBorder.Frame;
+                                        leftBorder.Shadow = tCellProp.TableCellBorders.LeftBorder.Shadow;
+                                        leftBorder.Size = tCellProp.TableCellBorders.LeftBorder.Size;
+                                        leftBorder.Space = tCellProp.TableCellBorders.LeftBorder.Space;
+                                        leftBorder.ThemeColor = tCellProp.TableCellBorders.LeftBorder.ThemeColor;
+                                        leftBorder.ThemeShade = tCellProp.TableCellBorders.LeftBorder.ThemeShade;
+                                        leftBorder.ThemeTint = tCellProp.TableCellBorders.LeftBorder.ThemeTint;
+                                        leftBorder.Val = tCellProp.TableCellBorders.LeftBorder.Val.InnerText;
+                                        tableCellBorders.LeftBorder = leftBorder;
+                                    }
+                                    if (tCellProp.TableCellBorders.RightBorder != null)
+                                    {
+                                        DORightBorder rightBorder = new DORightBorder();
+                                        rightBorder.Color = tCellProp.TableCellBorders.RightBorder.Color;
+                                        rightBorder.Frame = tCellProp.TableCellBorders.RightBorder.Frame;
+                                        rightBorder.Shadow = tCellProp.TableCellBorders.RightBorder.Shadow;
+                                        rightBorder.Size = tCellProp.TableCellBorders.RightBorder.Size;
+                                        rightBorder.Space = tCellProp.TableCellBorders.RightBorder.Space;
+                                        rightBorder.ThemeColor = tCellProp.TableCellBorders.RightBorder.ThemeColor;
+                                        rightBorder.ThemeShade = tCellProp.TableCellBorders.RightBorder.ThemeShade;
+                                        rightBorder.ThemeTint = tCellProp.TableCellBorders.RightBorder.ThemeTint;
+                                        rightBorder.Val = tCellProp.TableCellBorders.RightBorder.Val.InnerText;
+                                        tableCellBorders.RightBorder = rightBorder;
+                                    }
+                                    if (tCellProp.TableCellBorders.StartBorder != null)
+                                    {
+                                        DOStartBorder startBorder = new DOStartBorder();
+                                        startBorder.Color = tCellProp.TableCellBorders.StartBorder.Color;
+                                        startBorder.Frame = tCellProp.TableCellBorders.StartBorder.Frame;
+                                        startBorder.Shadow = tCellProp.TableCellBorders.StartBorder.Shadow;
+                                        startBorder.Size = tCellProp.TableCellBorders.StartBorder.Size;
+                                        startBorder.Space = tCellProp.TableCellBorders.StartBorder.Space;
+                                        startBorder.ThemeColor = tCellProp.TableCellBorders.StartBorder.ThemeColor;
+                                        startBorder.ThemeShade = tCellProp.TableCellBorders.StartBorder.ThemeShade;
+                                        startBorder.ThemeTint = tCellProp.TableCellBorders.StartBorder.ThemeTint;
+                                        startBorder.Val = tCellProp.TableCellBorders.StartBorder.Val.InnerText;
+                                        tableCellBorders.StartBorder = startBorder;
+                                    }
+                                    if (tCellProp.TableCellBorders.TopBorder != null)
+                                    {
+                                        DOTopBorder topBorder = new DOTopBorder();
+                                        topBorder.Color = tCellProp.TableCellBorders.TopBorder.Color;
+                                        topBorder.Frame = tCellProp.TableCellBorders.TopBorder.Frame;
+                                        topBorder.Shadow = tCellProp.TableCellBorders.TopBorder.Shadow;
+                                        topBorder.Size = tCellProp.TableCellBorders.TopBorder.Size;
+                                        topBorder.Space = tCellProp.TableCellBorders.TopBorder.Space;
+                                        topBorder.ThemeColor = tCellProp.TableCellBorders.TopBorder.ThemeColor;
+                                        topBorder.ThemeShade = tCellProp.TableCellBorders.TopBorder.ThemeShade;
+                                        topBorder.ThemeTint = tCellProp.TableCellBorders.TopBorder.ThemeTint;
+                                        topBorder.Val = tCellProp.TableCellBorders.TopBorder.Val.InnerText;
+                                        tableCellBorders.TopBorder = topBorder;
+                                    }
+                                    tCellProperties.TableCellBorders = tableCellBorders;
+                                }
+                                tCellProperties.TableCellFitText = tCellProp.TableCellFitText;
+                                tCellProperties.TableCellMargin = tCellProp.TableCellMargin;
+                                tCellProperties.TableCellVerticalAlignment = tCellProp.TableCellVerticalAlignment;
+                                if (tCellProp.TableCellWidth != null)
+                                {
+                                    DOTableCellWidth tableCellWidth = new DOTableCellWidth();
+                                    tableCellWidth.Type = tCellProp.TableCellWidth.Type;
+                                    tableCellWidth.Width = tCellProp.TableCellWidth.Width;
+                                    tCellProperties.TableCellWidth = tableCellWidth;
+
+                                }
+                                tCellProperties.TextDirection = tCellProp.TextDirection;
+                                tCellProperties.VerticalMerge = tCellProp.VerticalMerge;
+                                TCell.TableCellProperties = tCellProperties;
+                            }
+                            List<DOParagraph> TableParagraph = new List<DOParagraph>();
+
+                            foreach (DocumentFormat.OpenXml.Wordprocessing.Paragraph TCellParagraph in tableCell.Elements<DocumentFormat.OpenXml.Wordprocessing.Paragraph>())
+                            {
+                                TableParagraph.Add(ReturnParagraph(TCellParagraph));
+                            }
+                            TCell.TableParagraphs = TableParagraph.ToArray();
+                            tableCells.Add(TCell);
+                        }
+                        TRow.TableCells = tableCells.ToArray();
+                        tableRows.Add(TRow);
+                    }
+
+                    T.TableRowArray = tableRows.ToArray();
+                    return T;
+
+                }*/
+            ]
+
+            [
+                /*private void PhButtonClick(object sender, EventArgs e)
+                {
+                    richTextBox1.Text = "";
+                    Button ClickedButton = (Button) sender;
+            
+                    var Text = ClickedButton.Text.ToString();
+                    foreach (var c in ButtonElements)
+                    {
+                        if(c._Body == Text)
+                        {
+                            foreach(string d in c._Header)
+                            {
+                                //richTextBox1.AppendText(d);
+                                richTextBox1.SelectedText = d;
+                            }
+                            richTextBox1.SelectionColor = System.Drawing.Color.FromArgb(27, 80, 255);
+                        }
+                    }
+                }*/
+            ]
+        
+        ]
+
+}

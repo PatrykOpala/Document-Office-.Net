@@ -5,6 +5,8 @@ VisualStudioVersion = 17.2.32616.157
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Document Office .Net", "Document Office .Net\Document Office .Net.csproj", "{E0EB030A-0D0E-4960-A391-3B65E1EAE6BF}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WriteDocxObjectToJSON", "..\WriteDocxObjectToJSON\WriteDocxObjectToJSON\WriteDocxObjectToJSON.csproj", "{AB787366-8D1D-482D-8836-89C7FEB1868F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{E0EB030A-0D0E-4960-A391-3B65E1EAE6BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E0EB030A-0D0E-4960-A391-3B65E1EAE6BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E0EB030A-0D0E-4960-A391-3B65E1EAE6BF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AB787366-8D1D-482D-8836-89C7FEB1868F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AB787366-8D1D-482D-8836-89C7FEB1868F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AB787366-8D1D-482D-8836-89C7FEB1868F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AB787366-8D1D-482D-8836-89C7FEB1868F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
