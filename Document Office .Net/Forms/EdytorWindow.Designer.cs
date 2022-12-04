@@ -94,6 +94,7 @@
             this.button1.TabIndex = 0;
             this.button1.Text = "Dalej";
             this.button1.UseVisualStyleBackColor = false;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // EdytorWindow
             // 
@@ -119,7 +120,5 @@
         private System.Windows.Forms.RichTextBox richTextBox1;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.ComboBox comboBox1;
-        private System.Windows.Forms.Label winY;
-        private System.Windows.Forms.Label winX;
     }
 }

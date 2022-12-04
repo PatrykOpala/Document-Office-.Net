@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Windows.Forms;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
@@ -11,13 +12,20 @@ namespace Document_Office.Net.Forms
     {
 		// ./WriteDocxObjectToJSON -f='C:\Users\patry\Desktop\test.docx'
         private List<DOElement> ButtonElements = new List<DOElement>();
-        private List<DOElement> NewDocsElements = new List<DOElement>();
+        private List<DOElement> ButtonElementsCopy = new List<DOElement>();
         private static float FONT_SIZE = 20.0F;
         private ushort NeededCountFile = 0;
+        private int ParagraphID = 0;
         private int x = 60;
         private int rID = 0;
-        private string OldValue = "";
         private int RunID = 0;
+        private int StepIndex = 0;
+        private int PathIndex = 0;
+        private List<DODocumentTemplate> temp = new List<DODocumentTemplate>();
+        private List<string> OldValue = new List<string>();
+        /*private List<string> NewValues = new List<string>();*/
+
+        private DOParagraph docParag = new DOParagraph();
 
         public EdytorWindow(string file, ushort countFile)
         {
@@ -25,11 +33,29 @@ namespace Document_Office.Net.Forms
             InitializeValues();
             NeededCountFile = countFile;
             OpenDocx(file);
+            InitializeDocumentTemplate(file);
+        }
+
+        private void InitializeDocumentTemplate(string FileName)
+        {
+            int t = 0;
+            string DocumentTmpName = Path.GetFileNameWithoutExtension(FileName);
+            while(t <= NeededCountFile)
+            {
+                DODocumentTemplate dODocumentTemplate = new DODocumentTemplate();
+                string DocTmpName = $"{DocumentTmpName} {t + 1}";
+                DocTmpName += Path.GetExtension(FileName);
+                dODocumentTemplate.NameDocument = DocTmpName;
+                dODocumentTemplate.FullPathWithFileName = Path.GetDirectoryName(FileName);
+                temp.Add(dODocumentTemplate);
+                OldValue.Add(DocTmpName);
+                t++;
+            }
         }
 
         private void InitializeValues()
         {
-            panelNewspaper.Location = new System.Drawing.Point((int)(panelEdytor.Size.Width / 4), (int)(panelEdytor.Size.Height / 7));
+            panelNewspaper.Location = new System.Drawing.Point((panelEdytor.Size.Width / 4), (panelEdytor.Size.Height / 7));
             comboBox1.Items.Add("Wybierz linie");
             comboBox1.Text = "Wybierz Linie";
         }
@@ -65,9 +91,9 @@ namespace Document_Office.Net.Forms
                         /**/
                         foreach (DORun run in parag.Arrayruns)
                         {
-                            foreach (string str in run.Text)
+                            foreach (DOText str in run.Text)
                             {
-                                 label += str;
+                                 label += str.Value;
                             }
                         }
                         comboBox1.Items.Add(new DOItem(p.DOID, label, label));
@@ -91,40 +117,62 @@ namespace Document_Office.Net.Forms
             }
         }
 
-        private void ParseOldObjectReturnedNewObject(string id, string text)
+        private void ParseOldObjectCreatedNewObject()
         {
-
+            ButtonElementsCopy = ButtonElements;
+            DOParagraph FindParagraph = (DOParagraph)ButtonElementsCopy.Find(el => el.DOID == ParagraphID);
+            int Index = ButtonElementsCopy.FindIndex(ee => ee.DOID == ParagraphID);
+            for(int inter = 0; inter < FindParagraph.Arrayruns.Rank; inter++)
+            {
+                if (FindParagraph.Arrayruns[inter].DORunID == RunID)
+                {
+                    DORun oRun = FindParagraph.Arrayruns[inter];
+                    foreach(DOText oldVal in oRun.Text)
+                    {
+                        //oldVal.SetNewValue(OldValue, text);
+                    }
+                    FindParagraph.Arrayruns[inter] = oRun;
+                }
+            }
+            ButtonElementsCopy[Index] = FindParagraph;
+            var nu = ButtonElementsCopy;
         }
 
-        private DOParagraph ReturnParagraph(DocumentFormat.OpenXml.Wordprocessing.Paragraph b, int doID)
+        private DOParagraph ReturnParagraph(Paragraph b, int doID)
         {
             DOParagraph paragraph = new DOParagraph(doID);
             List<DORun> rune = new List<DORun>();
             foreach (DocumentFormat.OpenXml.Wordprocessing.Run r in b.Elements<DocumentFormat.OpenXml.Wordprocessing.Run>())
             {
                 DORun run = new DORun();
-                List<string> list1 = new List<string>();
+                List<DOText> list1 = new List<DOText>();
                 List<DORunProp> props = new List<DORunProp>();
-                foreach (DocumentFormat.OpenXml.Wordprocessing.RunProperties rProp in r.Elements<DocumentFormat.OpenXml.Wordprocessing.RunProperties>())
+                foreach (RunProperties rProp in r.Elements<DocumentFormat.OpenXml.Wordprocessing.RunProperties>())
                 {
                     props.Add(CreateRunPropFromRunProperties(rProp));
                 }
                 run.Properties = props.ToArray();
 
-                foreach (DocumentFormat.OpenXml.Wordprocessing.Text rText in r.Elements<DocumentFormat.OpenXml.Wordprocessing.Text>())
+                foreach (Text rText in r.Elements<DocumentFormat.OpenXml.Wordprocessing.Text>())
                 {
-                    list1.Add(rText.Text);
+                    DOText DOtext = new DOText()
+                    {
+                        Value = rText.Text
+                    };
+                    run.ListText.Add(DOtext);
+                    list1.Add(DOtext);
                 }
                 run.Text = list1.ToArray();
                 rID += doID + 1;
                 run.DORunID = rID;
+                paragraph.ListRuns.Add(run);
                 rune.Add(run);
             }
             paragraph.Arrayruns = rune.ToArray();
             return paragraph;
         }
 
-        private DOTable ReturnTable(DocumentFormat.OpenXml.Wordprocessing.Table table, int doID)
+        private DOTable ReturnTable(Table table, int doID)
         {
             DOTable T = new DOTable(doID);
             foreach (DocumentFormat.OpenXml.Wordprocessing.TableProperties tablePro in table.Elements<DocumentFormat.OpenXml.Wordprocessing.TableProperties>())
@@ -503,36 +551,80 @@ namespace Document_Office.Net.Forms
         {
             Label label = (Label)sender;
 
-            OldValue = label.Text;
+            //OldValue.Add(label.Text);
             RunID = int.Parse(label.Tag.ToString());
-
-            string NewValue = "";
+            string oldV = label.Text;
+            StepIndex = 0;
 
             int pNewsWidth = (int)(panelNewspaper.Size.Width / 1.2) + 10;
             int pNewsHeight = (int)(panelNewspaper.Size.Height / 1.5);
-
             TextBox textBox = new TextBox()
             {
                 Size = new Size(pNewsWidth, 70),
                 Location = new Point(59, pNewsHeight),
                 Text = "PlaceHolder",
-                Font = new System.Drawing.Font("Microsoft Sans Serif", FONT_SIZE, FontStyle.Regular,
-                        GraphicsUnit.Point, ((byte)(238))),
+                Font = new System.Drawing.Font("Microsoft Sans Serif", FONT_SIZE, FontStyle.Regular, GraphicsUnit.Point, ((byte)(238)))
             };
 
             textBox.KeyDown += new KeyEventHandler((object keySender, KeyEventArgs keyArgs) =>
             {
                 var enter = keyArgs;
                 TextBox Box1 = (TextBox)keySender;
-
                 if(keyArgs.KeyValue == 13)
                 {
                     keyArgs.SuppressKeyPress = true;
-                    NewValue = Box1.Text;
-                    Box1.Text = "";
+                    
+                    DORun FindedRun = new DORun();
+                    int runIdx = 0;
+                    if(docParag != null)
+                    {
+                        //MessageBox.Show(docParag.DOID.ToString());
+                        /*foreach (DORun dORun in docParag.Arrayruns)
+                        {
+                            if (dORun.DORunID == RunID)
+                            {
+                                FindedRun = dORun;
+                                runIdx++;
+                            }
+                        }
+                        if (FindedRun != null)
+                        {
+                            int indx = 0;
+                            foreach (DOText text in FindedRun.Text)
+                            {
+                                DOText newT = new DOText();
+                                newT.Value = Box1.Text;
+                                FindedRun.Text[indx] = newT;
+                                indx++;
+                            }
+                        }*/
+
+                        FindedRun = docParag.ListRuns.Find(runn => runn.DORunID == RunID);
+                        int docParagIdx = docParag.ListRuns.FindIndex(rI => rI.DORunID == RunID);
+                        DOText dText = FindedRun.ListText.Find(tekst => tekst.Value == oldV);
+                        int dTextIdx = FindedRun.ListText.FindIndex(i => i.Value == oldV);
+
+                        if(dText != null)
+                        {
+                            dText.Value = Box1.Text;
+                            FindedRun.ListText[dTextIdx] = dText;
+                            docParag.ListRuns[docParagIdx] = FindedRun;
+
+                            Box1.Text = "";
+                            temp[StepIndex].NewDocsElements.Add(docParag);
+                            StepIndex++;
+                        }
+
+                        //docParag.Arrayruns[runIdx] = FindedRun;
+                        var b = temp;
+                        //MessageBox.Show(temp.Count.ToString());
+                    }
+                    else
+                    {
+                        MessageBox.Show("Nieznaleziono elementu");
+                    }
                 }
-            }
-            );
+            });
 
             panelNewspaper.Controls.Add(textBox);
         }
@@ -547,24 +639,17 @@ namespace Document_Office.Net.Forms
                 AutoSize = true,
                 Tag = FindedRun.DORunID,
             };
-        
-            /*LabelRun.Location = new Point(x, 141);
-            LabelRun.BorderStyle = BorderStyle.FixedSingle;
-            LabelRun.Cursor = Cursors.Hand;
-            LabelRun.AutoSize = true;
-            LabelRun.Tag = FindedRun.DORunID;*/
-            LabelRun.Click += new System.EventHandler(this.LabelRun_Event_Click);
+            LabelRun.Click += new EventHandler(this.LabelRun_Event_Click);
             foreach (DORunProp p in FindedRun.Properties)
             {
                 if (p.FontSize != null)
                 {
-                    LabelRun.Font = new System.Drawing.Font("Microsoft Sans Serif", float.Parse(p.FontSize), System.Drawing.FontStyle.Regular,
-                        System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+                    LabelRun.Font = new System.Drawing.Font("Microsoft Sans Serif", float.Parse(p.FontSize), FontStyle.Regular, GraphicsUnit.Point, 238);
                 }
             }
-            foreach (string FindedStr in FindedRun.Text)
+            foreach (DOText FindedStr in FindedRun.Text)
             {
-                LabelRun.Text = FindedStr;
+                LabelRun.Text = FindedStr.Value;
                 if (LabelRun.Text == " ")
                 {
                     LabelRun.Text = "[spacja]";
@@ -588,11 +673,18 @@ namespace Document_Office.Net.Forms
             {
                 DOItem selectItem = (DOItem)combo.SelectedItem;
                 DOParagraph element = (DOParagraph)ButtonElements.Find(el => el.DOID == selectItem.itemID);
-                foreach(DORun FindedRun in element.Arrayruns)
+                ParagraphID = element.DOID;
+                docParag = element;
+                foreach (DORun FindedRun in element.Arrayruns)
                 {
                    x = CreateLabel(FindedRun, x);
                 }
             }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            ParseOldObjectCreatedNewObject();
         }
     }
 }

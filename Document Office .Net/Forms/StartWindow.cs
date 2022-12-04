@@ -61,15 +61,21 @@ namespace Document_Office.Net
 
         private void LocationButton_Click(object sender, EventArgs e)
         {
-            OpenFileDialog fileDialog = new OpenFileDialog();
-            fileDialog.Filter = "Pliki docx (*.docx)|*.docx";
-            if (fileDialog.ShowDialog() == DialogResult.OK)
+            if(countFile > 0)
             {
-                filePath = fileDialog.FileName;
-                labelFileName.Text = fileDialog.FileName;
-                buttonNext.Enabled = true;
+                OpenFileDialog fileDialog = new OpenFileDialog();
+                fileDialog.Filter = "Pliki docx (*.docx)|*.docx";
+                if (fileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    filePath = fileDialog.FileName;
+                    labelFileName.Text = fileDialog.FileName;
+                    buttonNext.Enabled = true;
+                }
             }
-            
+            else
+            {
+                MessageBox.Show("Wybierz ile chcesz zrobić kopii.", "Podaj liczbę", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+            }
         }
 
         private void plusTen_Click(object sender, EventArgs e)

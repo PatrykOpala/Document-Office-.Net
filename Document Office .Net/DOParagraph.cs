@@ -1,9 +1,18 @@
-﻿namespace Document_Office.Net
+﻿using Microsoft.SqlServer.Server;
+using System.Collections.Generic;
+
+namespace Document_Office.Net
 {
     public class DOParagraph : DOElement
     {
         public string Name { get; set; } = "Paragraph";
+        public List<DORun> ListRuns = new List<DORun>();
         public DORun[] Arrayruns { get; set; }
+
+        public DOParagraph()
+        {
+            
+        }
 
         public DOParagraph(int id)
         {
@@ -14,8 +23,32 @@
     public class DORun
     {
         public int DORunID = 0;
-        public string[] Text { get; set; }
+        public List<DOText> ListText = new List<DOText>();
+        public DOText[] Text { get; set; }
         public DORunProp[] Properties { get; set; }
+
+        public override string ToString()
+        {
+            string tr = "";
+            foreach(DOText dOText in Text)
+            {
+                tr += dOText.Value;
+            }
+            return tr;
+        }
+    }
+
+    public class DOText
+    {
+        public string Value { get; set; }
+
+        public void SetNewValue(string OldValue, string NewValue)
+        {
+            if(OldValue == Value)
+            {
+                Value = NewValue;
+            }
+        }
     }
 
     public class DORunProp
