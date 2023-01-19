@@ -33,6 +33,7 @@
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.button1 = new System.Windows.Forms.Button();
+            this.duplicateLabel = new System.Windows.Forms.Label();
             this.panelEdytor.SuspendLayout();
             this.panelNewspaper.SuspendLayout();
             this.SuspendLayout();
@@ -53,6 +54,7 @@
             // 
             this.panelNewspaper.BackColor = System.Drawing.Color.White;
             this.panelNewspaper.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelNewspaper.Controls.Add(this.duplicateLabel);
             this.panelNewspaper.Controls.Add(this.comboBox1);
             this.panelNewspaper.Controls.Add(this.richTextBox1);
             this.panelNewspaper.Controls.Add(this.button1);
@@ -96,6 +98,15 @@
             this.button1.UseVisualStyleBackColor = false;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
+            // duplicateLabel
+            // 
+            this.duplicateLabel.AutoSize = true;
+            this.duplicateLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.duplicateLabel.Location = new System.Drawing.Point(57, 17);
+            this.duplicateLabel.Name = "duplicateLabel";
+            this.duplicateLabel.Size = new System.Drawing.Size(0, 25);
+            this.duplicateLabel.TabIndex = 4;
+            // 
             // EdytorWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -110,6 +121,7 @@
             this.Text = "Document Office.Edytor";
             this.panelEdytor.ResumeLayout(false);
             this.panelNewspaper.ResumeLayout(false);
+            this.panelNewspaper.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -120,5 +132,6 @@
         private System.Windows.Forms.RichTextBox richTextBox1;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.Label duplicateLabel;
     }
 }

@@ -16,9 +16,9 @@ namespace Document_Office.Net.Forms
         private List<DOElement> ButtonElements = new List<DOElement>();
         private List<DOElement> ButtonElementsCopy = new List<DOElement>();
         private List<DODocumentTemplate> temp = new List<DODocumentTemplate>();
-        private List<string> OldValue = new List<string>();
         private static float FONT_SIZE = 20.0F;
         private ushort NeededCountFile = 0;
+        private ushort DuplicateCount = 0;
         private int ParagraphID = 0;
         private int x = 60;
         private int rID = 0;
@@ -31,8 +31,9 @@ namespace Document_Office.Net.Forms
         public EdytorWindow(string file, ushort countFile)
         {
             InitializeComponent();
-            InitializeValues();
             NeededCountFile = countFile;
+            DuplicateCount = countFile;
+            InitializeValues();
             OpenDocx(file);
             InitializeDocumentTemplate(file);
         }
@@ -56,6 +57,7 @@ namespace Document_Office.Net.Forms
 
         private void InitializeValues()
         {
+            duplicateLabel.Text = $"Liczba kopii możliwych do zrobienia: {DuplicateCount}";
             panelNewspaper.Location = new System.Drawing.Point((panelEdytor.Size.Width / 4), (panelEdytor.Size.Height / 7));
             comboBox1.Items.Add("Wybierz linie");
             comboBox1.Text = "Wybierz Linie";
@@ -530,7 +532,11 @@ namespace Document_Office.Net.Forms
         private void LabelRun_Event_Click(object sender, EventArgs e)
         {
             Label label = (Label)sender;
-
+            if(DuplicateCount == 0)
+            {
+                DuplicateCount = NeededCountFile;
+                duplicateLabel.Text = $"Liczba kopii możliwych do zrobienia: {DuplicateCount}";
+            }
             RunID = int.Parse(label.Tag.ToString());
             string oldV = label.Text;
 
@@ -543,7 +549,7 @@ namespace Document_Office.Net.Forms
                 Text = "PlaceHolder",
                 Font = new System.Drawing.Font("Microsoft Sans Serif", FONT_SIZE, FontStyle.Regular, GraphicsUnit.Point, ((byte)(238)))
             };
-
+            
             int t = 0;
 
             textBox.KeyDown += new KeyEventHandler((object keySender, KeyEventArgs keyArgs) =>
@@ -555,12 +561,14 @@ namespace Document_Office.Net.Forms
 
                     if (docParag != null)
                     {
-                        if (t <= NeededCountFile)
+                        if (DuplicateCount > 0)
                         {
                             t++;
+                            DuplicateCount = DuplicateCount -= 1;
+                            duplicateLabel.Text = $"Liczba kopii możliwych do zrobienia: {DuplicateCount}";
 
                             MapDODocumentObject(docParag, t, oldV, Box1.Text);
-
+                            
                             Box1.Text = "";
 
                             var b = temp;
@@ -650,13 +658,12 @@ namespace Document_Office.Net.Forms
                 Tag = FindedRun.DORunID,
             };
             LabelRun.Click += new EventHandler(this.LabelRun_Event_Click);
-            foreach (DORunProp p in FindedRun.Properties)
+            
+            if (FindedRun.Properties.FontSize != null)
             {
-                if (p.FontSize != null)
-                {
-                    LabelRun.Font = new System.Drawing.Font("Microsoft Sans Serif", float.Parse(p.FontSize), FontStyle.Regular, GraphicsUnit.Point, 238);
-                }
+                LabelRun.Font = new System.Drawing.Font("Microsoft Sans Serif", float.Parse(FindedRun.Properties.FontSize), FontStyle.Regular, GraphicsUnit.Point, 238);
             }
+            
             foreach (DOText FindedStr in FindedRun.Text)
             {
                 LabelRun.Text = FindedStr.Value;
