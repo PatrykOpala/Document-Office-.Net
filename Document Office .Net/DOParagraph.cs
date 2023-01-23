@@ -1,5 +1,5 @@
-﻿using DocumentFormat.OpenXml.Office2013.Excel;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Drawing;
 
 namespace Document_Office.Net
 {
@@ -8,16 +8,18 @@ namespace Document_Office.Net
         public string Name { get; set; } = "Paragraph";
         public List<DORun> ListRuns = new List<DORun>();
         public DOParagProp paragraphProperties { get; set; } 
-        public DORun[] Arrayruns { get; set; }
+        //public DORun[] Arrayruns { get; set; }
 
-        public DOParagraph()
-        {
-            
-        }
+        public DOParagraph(){}
 
-        public DOParagraph(int id)
+        public DOParagraph(DocumentFormat.OpenXml.Wordprocessing.Paragraph b, int id)
         {
             base.DOID = id;
+            foreach (DocumentFormat.OpenXml.Wordprocessing.Run r in b.Elements<DocumentFormat.OpenXml.Wordprocessing.Run>())
+            {
+                DORun run = new DORun(r, id);
+                ListRuns.Add(run);
+            }
         }
     }
 
@@ -80,30 +82,27 @@ namespace Document_Office.Net
     {
         public int DORunID = 0;
         public List<DOText> ListText = new List<DOText>();
-        public DOText[] Text { get; set; }
         public DORunProp Properties { get; set; }
-
-        public override string ToString()
+        public DORun(DocumentFormat.OpenXml.Wordprocessing.Run r, int id)
         {
-            string tr = "";
-            foreach(DOText dOText in Text)
+            DORunID = id + 1;
+            DORunProp props = new DORunProp(r.RunProperties);
+            Properties = props;
+
+            foreach (DocumentFormat.OpenXml.Wordprocessing.Text rText in r.Elements<DocumentFormat.OpenXml.Wordprocessing.Text>())
             {
-                tr += dOText.Value;
+                DOText DOtext = new DOText(rText);
+                ListText.Add(DOtext);
             }
-            return tr;
         }
     }
 
     public class DOText
     {
         public string Value { get; set; }
-
-        public void SetNewValue(string OldValue, string NewValue)
+        public DOText(DocumentFormat.OpenXml.Wordprocessing.Text rText)
         {
-            if(OldValue == Value)
-            {
-                Value = NewValue;
-            }
+            Value = rText.Text;
         }
     }
 
@@ -126,6 +125,41 @@ namespace Document_Office.Net
         public bool Spacing { get; set; } = false;
         public bool Strike { get; set; } = false;
         public string Underline { get; set; }
+
+        public DORunProp(DocumentFormat.OpenXml.Wordprocessing.RunProperties runProperties)
+        {
+            if (runProperties.Bold != null && runProperties.BoldComplexScript != null)
+            {
+                Bold = true;
+                BoldComplexScript = true;
+            }
+
+            if (runProperties.FontSize != null)
+            {
+                FontSize = runProperties.FontSize.Val.Value;
+            }
+
+            if (runProperties.Color != null)
+            {
+                _Color = ColorTranslator.FromHtml("#" + runProperties.Color.Val);
+            }
+
+            if (runProperties.Italic != null && runProperties.ItalicComplexScript != null)
+            {
+                Italic = true;
+                ItalicComplexScript = true;
+            }
+
+            if (runProperties.Strike != null)
+            {
+                Strike = true;
+            }
+
+            if (runProperties.Underline != null)
+            {
+                Underline = runProperties.Underline.Val;
+            }
+        }
     }
 
     public class DOShading
