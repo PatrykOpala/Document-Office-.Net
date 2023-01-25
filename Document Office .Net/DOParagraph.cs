@@ -3,23 +3,30 @@ using System.Drawing;
 
 namespace Document_Office.Net
 {
-    public class DOParagraph : DOElement
+    public class DOParagraph : IDOElement
     {
         public string Name { get; set; } = "Paragraph";
         public List<DORun> ListRuns = new List<DORun>();
-        public DOParagProp paragraphProperties { get; set; } 
+        public DOParagProp paragraphProperties { get; set; }
+        int IDOElement.DOID { get; set; } = 0;
+
         //public DORun[] Arrayruns { get; set; }
 
         public DOParagraph(){}
 
         public DOParagraph(DocumentFormat.OpenXml.Wordprocessing.Paragraph b, int id)
         {
-            base.DOID = id;
+            ((IDOElement)this).DOID = id;
             foreach (DocumentFormat.OpenXml.Wordprocessing.Run r in b.Elements<DocumentFormat.OpenXml.Wordprocessing.Run>())
             {
                 DORun run = new DORun(r, id);
                 ListRuns.Add(run);
             }
+        }
+
+        public int GetDOID()
+        {
+            return ((IDOElement)this).DOID;
         }
     }
 
@@ -83,6 +90,11 @@ namespace Document_Office.Net
         public int DORunID = 0;
         public List<DOText> ListText = new List<DOText>();
         public DORunProp Properties { get; set; }
+
+        public DORun()
+        {
+
+        }
         public DORun(DocumentFormat.OpenXml.Wordprocessing.Run r, int id)
         {
             DORunID = id + 1;
@@ -100,6 +112,10 @@ namespace Document_Office.Net
     public class DOText
     {
         public string Value { get; set; }
+        public DOText()
+        {
+
+        }
         public DOText(DocumentFormat.OpenXml.Wordprocessing.Text rText)
         {
             Value = rText.Text;
@@ -126,6 +142,27 @@ namespace Document_Office.Net
         public bool Strike { get; set; } = false;
         public string Underline { get; set; }
 
+        public DORunProp() { }
+        public DORunProp(DORunProp dORunProp)
+        {
+            Bold = dORunProp.Bold;
+            BoldComplexScript = dORunProp.BoldComplexScript;
+            Border = dORunProp.Border;
+            Caps = dORunProp.Caps;
+            _Color = dORunProp._Color;
+            CharakterScale = dORunProp.CharakterScale;
+            ComplexScript = dORunProp.ComplexScript;
+            Highlight = dORunProp.Highlight;
+            Italic = dORunProp.Italic;
+            ItalicComplexScript = dORunProp.ItalicComplexScript;
+            NumberSpacing = dORunProp.NumberSpacing;
+            Outline = dORunProp.Outline;
+            FontSize = dORunProp.FontSize;
+            SmallCaps = dORunProp.SmallCaps;
+            Spacing = dORunProp.Spacing;
+            Strike = dORunProp.Strike;
+            Underline = dORunProp.Underline;
+        }
         public DORunProp(DocumentFormat.OpenXml.Wordprocessing.RunProperties runProperties)
         {
             if (runProperties.Bold != null && runProperties.BoldComplexScript != null)

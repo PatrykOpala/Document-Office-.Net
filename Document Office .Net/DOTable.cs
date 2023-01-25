@@ -2,16 +2,18 @@
 
 namespace Document_Office.Net
 {
-    public class DOTable : DOElement
+    public class DOTable : IDOElement
     {
         public string Name { get; set; } = "Table";
         public DOTableProp TableProperties { get; set; }
         public DOTableGrid TableGrid { get; set; }
+        int IDOElement.DOID { get; set; } = 0;
+
         public List<DOTableRow> TableRowList = new List<DOTableRow>();
 
         public DOTable(DocumentFormat.OpenXml.Wordprocessing.Table table, int id)
         {
-            base.DOID = id;
+            ((IDOElement)this).DOID = id;
             foreach (DocumentFormat.OpenXml.Wordprocessing.TableProperties tablePro in table.Elements<DocumentFormat.OpenXml.Wordprocessing.TableProperties>())
             {
                 DOTableProp TProp = new DOTableProp(tablePro);
@@ -193,13 +195,16 @@ namespace Document_Office.Net
 
     public class DOTableGrid
     {
-        public List<DOGridColumn> GridColumns { get; set; }
+        public List<DOGridColumn> GridColumns = new List<DOGridColumn>();
         public DOTableGrid(DocumentFormat.OpenXml.Wordprocessing.TableGrid tableGrid)
         {
             foreach (DocumentFormat.OpenXml.Wordprocessing.GridColumn gridColumn in tableGrid.Elements<DocumentFormat.OpenXml.Wordprocessing.GridColumn>())
             {
                 DOGridColumn tGridColumn = new DOGridColumn(gridColumn);
-                GridColumns.Add(tGridColumn);
+                if (tGridColumn != null)
+                {
+                    GridColumns.Add(tGridColumn);
+                }
             }
         }
     }
@@ -252,7 +257,7 @@ namespace Document_Office.Net
 
     public class DOTableRowProp 
     {
-        public DOTableRowProp(DocumentFormat.OpenXml.Wordprocessing.TableRowProperties)
+        public DOTableRowProp(DocumentFormat.OpenXml.Wordprocessing.TableRowProperties tableRowProperties)
         {
 
         }
@@ -261,8 +266,7 @@ namespace Document_Office.Net
     public class DOTableCell
     {
         public DOTableCellProp TableCellProperties { get; set; }
-        public List<DOParagraph> TableParagraphs { get; set; }
-
+        public List<DOParagraph> TableParagraphs = new List<DOParagraph>();
         public DOTableCell(DocumentFormat.OpenXml.Wordprocessing.TableCell tableCell, int d)
         {
             foreach (DocumentFormat.OpenXml.Wordprocessing.TableCellProperties tCellProp in tableCell.Elements<DocumentFormat.OpenXml.Wordprocessing.TableCellProperties>())

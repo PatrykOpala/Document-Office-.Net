@@ -6,19 +6,10 @@ using System.Threading.Tasks;
 
 namespace Document_Office.Net
 {
-    public class DOElement
+    public interface IDOElement
     {
-        public int DOID = 0;
+        int DOID { get; set; }
 
-        public DOElement()
-        {
-
-        }
-
-        public DOElement(int id)
-        {
-            DOID = id;
-        }
     }
 
     public class DOItem

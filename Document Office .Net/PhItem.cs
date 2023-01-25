@@ -17,7 +17,7 @@ namespace Document_Office.Net
             _Name = "Paragraph";
         }
 
-        public PhItem(string header, string body, string name = "Paragraph")
+        public PhItem(string header, string body, string name = "Linia: ")
         {
             _Header.Add(header);
             _Body = body;

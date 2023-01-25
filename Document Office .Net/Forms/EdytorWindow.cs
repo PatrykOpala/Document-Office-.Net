@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Windows.Forms;
-using DocumentFormat.OpenXml.Office2010.Word;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 
@@ -13,8 +11,8 @@ namespace Document_Office.Net.Forms
     public partial class EdytorWindow : Form
     {
 		// ./WriteDocxObjectToJSON -f='C:\Users\patry\Desktop\test.docx'
-        private List<DOElement> ButtonElements = new List<DOElement>();
-        private List<DOElement> ButtonElementsCopy = new List<DOElement>();
+        private List<IDOElement> ButtonElements = new List<IDOElement>();
+        private List<IDOElement> ButtonElementsCopy = new List<IDOElement>();
         private List<DODocumentTemplate> temp = new List<DODocumentTemplate>();
         private Dictionary<string, DODocumentTemplate> documentTemplateDictionary = new Dictionary<string, DODocumentTemplate>();
         private static float FONT_SIZE = 20.0F;
@@ -93,11 +91,9 @@ namespace Document_Office.Net.Forms
                         string label = "Linia: ";
 
                         DOParagraph parag = (DOParagraph)ButtonElements.Find(par => par.DOID == p.DOID);
-                        
-                        /**/
-                        foreach (DORun run in parag.Arrayruns)
+                        foreach (DORun run in parag.ListRuns)
                         {
-                            foreach (DOText str in run.Text)
+                            foreach (DOText str in run.ListText)
                             {
                                  label += str.Value;
                             }
@@ -115,7 +111,8 @@ namespace Document_Office.Net.Forms
                             {
                                 label += str;
                             }
-                        }*/
+                        }
+                        */
 
                         comboBox1.Items.Add(new DOItem(p.DOID, "Tabela", "Tabela"));
                     }
@@ -190,8 +187,6 @@ namespace Document_Office.Net.Forms
                             MapDODocumentObject(docParag, t, oldV, Box1.Text);
                             
                             Box1.Text = "";
-
-                            var b = temp;
                         }
                         else
                         {
@@ -212,14 +207,12 @@ namespace Document_Office.Net.Forms
         {
             /**/
 
-            MessageBox.Show(documentTemplateDictionary.ContainsKey(j).ToString());
-
             if (!documentTemplateDictionary.ContainsKey(j))
             {
-                DODocumentTemplate dODocumentTemplate = new DODocumentTemplate();
                 string DocTmpName = $"{DocumentTmpName} {t}";
                 DocTmpName += Path.GetExtension(FileFullName);
                 j = DocTmpName;
+                DODocumentTemplate dODocumentTemplate = new DODocumentTemplate();
                 dODocumentTemplate.NameDocument = DocTmpName;
                 dODocumentTemplate.FullPathWithFileName = Path.GetDirectoryName(FileFullName);
                 DOParagraph dOParagraph = new DOParagraph();
@@ -228,26 +221,7 @@ namespace Document_Office.Net.Forms
                 {
                     DORun oRun = new DORun();
 
-                    DORunProp newRunProp = new DORunProp()
-                    {
-                        Bold = doc.Properties.Bold,
-                        BoldComplexScript = doc.Properties.BoldComplexScript,
-                        Border = doc.Properties.Border,
-                        Caps = doc.Properties.Caps,
-                        _Color = doc.Properties._Color,
-                        CharakterScale = doc.Properties.CharakterScale,
-                        ComplexScript = doc.Properties.ComplexScript,
-                        Highlight = doc.Properties.Highlight,
-                        Italic = doc.Properties.Italic,
-                        ItalicComplexScript = doc.Properties.ItalicComplexScript,
-                        NumberSpacing = doc.Properties.NumberSpacing,
-                        Outline = doc.Properties.Outline,
-                        FontSize = doc.Properties.FontSize,
-                        SmallCaps = doc.Properties.SmallCaps,
-                        Spacing = doc.Properties.Spacing,
-                        Strike = doc.Properties.Strike,
-                        Underline = doc.Properties.Underline
-                    };
+                    DORunProp newRunProp = new DORunProp(doc.Properties);
 
                     oRun.Properties = newRunProp;
 
@@ -274,37 +248,20 @@ namespace Document_Office.Net.Forms
             }
             else
             {
-                string DocTmpName2 = $"{DocumentTmpName} {t}";
-                DocTmpName2 += Path.GetExtension(FileFullName);
-                var documentTemplate = documentTemplateDictionary[j];
+                //string DocTmpName2 = $"{DocumentTmpName} {t}";
+                //DocTmpName2 += Path.GetExtension(FileFullName);
+                DODocumentTemplate documentTemplate2 = documentTemplateDictionary[j];
+                DODocumentTemplate dODocumentTemplate3 = new DODocumentTemplate();
+                dODocumentTemplate3.NameDocument = j;
 
-                foreach (DOParagraph dOParagraph1 in documentTemplate.NewDocsElements)
+                foreach (DOParagraph dOParagraph1 in documentTemplate2.NewDocsElements)
                 {
                     DOParagraph dOParagraph2 = new DOParagraph();
 
                     foreach (DORun dORun in dOParagraph1.ListRuns)
                     {
                         DORun dO = new DORun();
-                        DORunProp newRunProp2 = new DORunProp()
-                        {
-                            Bold = dORun.Properties.Bold,
-                            BoldComplexScript = dORun.Properties.BoldComplexScript,
-                            Border = dORun.Properties.Border,
-                            Caps = dORun.Properties.Caps,
-                            _Color = dORun.Properties._Color,
-                            CharakterScale = dORun.Properties.CharakterScale,
-                            ComplexScript = dORun.Properties.ComplexScript,
-                            Highlight = dORun.Properties.Highlight,
-                            Italic = dORun.Properties.Italic,
-                            ItalicComplexScript = dORun.Properties.ItalicComplexScript,
-                            NumberSpacing = dORun.Properties.NumberSpacing,
-                            Outline = dORun.Properties.Outline,
-                            FontSize = dORun.Properties.FontSize,
-                            SmallCaps = dORun.Properties.SmallCaps,
-                            Spacing = dORun.Properties.Spacing,
-                            Strike = dORun.Properties.Strike,
-                            Underline = dORun.Properties.Underline
-                        };
+                        DORunProp newRunProp2 = new DORunProp(dORun.Properties);
                         dO.Properties = newRunProp2;
 
                         foreach (DOText dOText2 in dORun.ListText)
@@ -325,12 +282,11 @@ namespace Document_Office.Net.Forms
                         }
                         dOParagraph2.ListRuns.Add(dO);
                     }
-                    documentTemplate.NewDocsElements.Clear();
-                    documentTemplate.NewDocsElements.Add(dOParagraph2);
+                    dODocumentTemplate3.NewDocsElements.Add(dOParagraph2);
                 }
-                documentTemplateDictionary[DocTmpName2] = documentTemplate;
+                documentTemplateDictionary[j] = dODocumentTemplate3;
+                var kkkkkkkk = documentTemplateDictionary;
             }
-            var wkfhwbfhwbfhwfeb = documentTemplateDictionary;
         }
 
         private int CreateLabel(DORun FindedRun, int x)
@@ -376,7 +332,7 @@ namespace Document_Office.Net.Forms
             {
                 DOItem selectItem = (DOItem)combo.SelectedItem;
                 DOParagraph element = (DOParagraph)ButtonElements.Find(el => el.DOID == selectItem.itemID);
-                ParagraphID = element.DOID;
+                ParagraphID = element.GetDOID();
                 docParag = element;
                 foreach (DORun FindedRun in element.ListRuns)
                 {

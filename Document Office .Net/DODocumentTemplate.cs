@@ -2,10 +2,10 @@
 
 namespace Document_Office.Net
 {
-    internal class DODocumentTemplate
+    public class DODocumentTemplate
     {
         public string FullPathWithFileName = "";
         public string NameDocument = "";
-        public List<DOElement> NewDocsElements = new List<DOElement>();
+        public List<IDOElement> NewDocsElements = new List<IDOElement>();
     }
 }
