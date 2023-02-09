@@ -8,7 +8,7 @@ namespace Document_Office.Net
         public string Name { get; set; } = "Paragraph";
         public List<DORun> ListRuns = new List<DORun>();
         public DOParagProp paragraphProperties { get; set; }
-        int IDOElement.DOID { get; set; } = 0;
+        int IDOElement.DOID { get; set; }
 
         //public DORun[] Arrayruns { get; set; }
 
@@ -87,14 +87,10 @@ namespace Document_Office.Net
 
     public class DORun
     {
-        public int DORunID = 0;
-        public List<DOText> ListText = new List<DOText>();
+        public int DORunID;
+        public List<string> ListText = new List<string>();
         public DORunProp Properties { get; set; }
-
-        public DORun()
-        {
-
-        }
+        public DORun() { }
         public DORun(DocumentFormat.OpenXml.Wordprocessing.Run r, int id)
         {
             DORunID = id + 1;
@@ -103,98 +99,84 @@ namespace Document_Office.Net
 
             foreach (DocumentFormat.OpenXml.Wordprocessing.Text rText in r.Elements<DocumentFormat.OpenXml.Wordprocessing.Text>())
             {
-                DOText DOtext = new DOText(rText);
-                ListText.Add(DOtext);
+                ListText.Add(rText.Text);
             }
         }
     }
-
-    public class DOText
+    public class DORunProp
     {
-        public string Value { get; set; }
-        public DOText()
-        {
-
-        }
-        public DOText(DocumentFormat.OpenXml.Wordprocessing.Text rText)
-        {
-            Value = rText.Text;
-        }
-    }
-
-    public class DORunProp : ExtendsDORunProp
-    {
-        public bool Bold { get; set; } = false;
+        public bool Bold { get; set; }
         public DOBorder Border { get; set; }
-        public bool BoldComplexScript { get; set; } = false;
-        public bool Caps { get; set; } = false;
-        public System.Drawing.Color? _Color { get; set; }
-        public bool CharakterScale { get; set; } = false;
-        public bool ComplexScript { get; set; } = false;
-        public bool Highlight { get; set; } = false;
-        public bool Italic { get; set; } = false;
-        public bool ItalicComplexScript { get; set; } = false;
-        public bool NumberSpacing { get; set; } = false;
-        public bool Outline { get; set; } = false;
-        public string FontSize { get; set; }
-        public bool SmallCaps { get; set; } = false;
-        public bool Spacing { get; set; } = false;
-        public bool Strike { get; set; } = false;
+        public bool BoldComplexScript { get; set; }
+        public bool Caps { get; set; }
+        public Color? _Color { get; set; }
+        public bool CharakterScale { get; set; }
+        public bool ComplexScript { get; set; }
+        public bool Highlight { get; set; }
+        public bool Italic { get; set; }
+        public bool ItalicComplexScript { get; set; }
+        public bool NumberSpacing { get; set; }
+        public bool Outline { get; set; }
+        public System.Drawing.Font FontSize { get; set; }
+        public bool SmallCaps { get; set; }
+        public bool Spacing { get; set; }
+        public bool Strike { get; set; }
         public string Underline { get; set; }
-
-        public DORunProp() { }
-        public DORunProp(DORunProp dORunProp)
-        {
-            Bold = dORunProp.Bold;
-            BoldComplexScript = dORunProp.BoldComplexScript;
-            Border = dORunProp.Border;
-            Caps = dORunProp.Caps;
-            _Color = dORunProp._Color;
-            CharakterScale = dORunProp.CharakterScale;
-            ComplexScript = dORunProp.ComplexScript;
-            Highlight = dORunProp.Highlight;
-            Italic = dORunProp.Italic;
-            ItalicComplexScript = dORunProp.ItalicComplexScript;
-            NumberSpacing = dORunProp.NumberSpacing;
-            Outline = dORunProp.Outline;
-            FontSize = dORunProp.FontSize;
-            SmallCaps = dORunProp.SmallCaps;
-            Spacing = dORunProp.Spacing;
-            Strike = dORunProp.Strike;
-            Underline = dORunProp.Underline;
-        }
         public DORunProp(DocumentFormat.OpenXml.Wordprocessing.RunProperties runProperties)
         {
-            if (runProperties.Bold != null && runProperties.BoldComplexScript != null)
+            if(runProperties != null)
             {
-                Bold = true;
-                BoldComplexScript = true;
-            }
+                if (runProperties.Bold != null && runProperties.BoldComplexScript != null)
+                {
+                    Bold = true;
+                    BoldComplexScript = true;
+                }
 
-            if (runProperties.FontSize != null)
-            {
-                FontSize = runProperties.FontSize.Val.Value;
-            }
+                if (runProperties.FontSize != null)
+                {
+                    FontSize = new System.Drawing.Font("Microsoft Sans Serif", float.Parse(runProperties.FontSize.Val.Value), FontStyle.Regular, GraphicsUnit.Point, 238);
+                }
 
-            if (runProperties.Color != null)
-            {
-                _Color = ColorTranslator.FromHtml("#" + runProperties.Color.Val);
-            }
+                if (runProperties.Color != null)
+                {
+                    _Color = ColorTranslator.FromHtml("#" + runProperties.Color.Val);
+                }
 
-            if (runProperties.Italic != null && runProperties.ItalicComplexScript != null)
-            {
-                Italic = true;
-                ItalicComplexScript = true;
-            }
+                if (runProperties.Italic != null && runProperties.ItalicComplexScript != null)
+                {
+                    Italic = true;
+                    ItalicComplexScript = true;
+                }
 
-            if (runProperties.Strike != null)
-            {
-                Strike = true;
-            }
+                if (runProperties.Strike != null)
+                {
+                    Strike = true;
+                }
 
-            if (runProperties.Underline != null)
+                if (runProperties.Underline != null)
+                {
+                    Underline = runProperties.Underline.Val;
+                }
+            }
+            else
             {
-                Underline = runProperties.Underline.Val;
+                Bold = false;
+                Border = null;
+                BoldComplexScript = false;
+                Caps = false;
+                _Color = null;
+                CharakterScale = false;
+                ComplexScript = false;
+                Highlight = false;
+                Italic = false;
+                ItalicComplexScript = false;
+                NumberSpacing = false;
+                Outline = false;
+                FontSize = new System.Drawing.Font("Microsoft Sans Serif", 30, FontStyle.Regular, GraphicsUnit.Point, 238); ;
+                SmallCaps = false;
+                Spacing = false;
+                Strike = false;
+                Underline = "";
             }
         }
     }

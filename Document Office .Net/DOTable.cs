@@ -219,7 +219,7 @@ namespace Document_Office.Net
         }
     }
 
-    public class DORsid
+    public struct DORsid
     {
         //DocumentFormat.OpenXml.HexBinaryValue
         public object ParagraphId { get; set; }

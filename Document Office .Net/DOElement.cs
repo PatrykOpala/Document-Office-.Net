@@ -1,15 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Document_Office.Net
+﻿namespace Document_Office.Net
 {
     public interface IDOElement
     {
         int DOID { get; set; }
-
     }
 
     public class DOItem

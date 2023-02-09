@@ -93,9 +93,9 @@ namespace Document_Office.Net.Forms
                         DOParagraph parag = (DOParagraph)ButtonElements.Find(par => par.DOID == p.DOID);
                         foreach (DORun run in parag.ListRuns)
                         {
-                            foreach (DOText str in run.ListText)
+                            foreach (string str in run.ListText)
                             {
-                                 label += str.Value;
+                                 label += str;
                             }
                         }
                         comboBox1.Items.Add(new DOItem(p.DOID, label, label));
@@ -155,6 +155,7 @@ namespace Document_Office.Net.Forms
                 duplicateLabel.Text = $"Liczba kopii możliwych do zrobienia: {DuplicateCount}";
             }
             RunID = int.Parse(label.Tag.ToString());
+            MessageBox.Show(RunID.ToString());
             string oldV = label.Text;
 
             int pNewsWidth = (int)(panelNewspaper.Size.Width / 1.2) + 10;
@@ -163,7 +164,6 @@ namespace Document_Office.Net.Forms
             {
                 Size = new Size(pNewsWidth, 70),
                 Location = new Point(59, pNewsHeight),
-                Text = "PlaceHolder",
                 Font = new System.Drawing.Font("Microsoft Sans Serif", FONT_SIZE, FontStyle.Regular, GraphicsUnit.Point, ((byte)(238)))
             };
             
@@ -184,7 +184,7 @@ namespace Document_Office.Net.Forms
                             DuplicateCount = DuplicateCount -= 1;
                             duplicateLabel.Text = $"Liczba kopii możliwych do zrobienia: {DuplicateCount}";
 
-                            MapDODocumentObject(docParag, t, oldV, Box1.Text);
+                            MapDODocumentObject(docParag, ref t, ref oldV, Box1.Text);
                             
                             Box1.Text = "";
                         }
@@ -203,15 +203,22 @@ namespace Document_Office.Net.Forms
             panelNewspaper.Controls.Add(textBox);
         }
 
-        private void MapDODocumentObject(DOParagraph docParag, int t, string oldV, string newValue)
+        private void MapDODocumentObject(DOParagraph docParag, ref int t, ref string oldV, string newValue)
         {
             /**/
+            //MessageBox.Show($"{t}");
+
+            if(t > NeededCountFile)
+            {
+                t = 1;
+            }
+
+            string DocTmpName = $"{DocumentTmpName} {t}";
+            DocTmpName += Path.GetExtension(FileFullName);
+            j = DocTmpName;
 
             if (!documentTemplateDictionary.ContainsKey(j))
             {
-                string DocTmpName = $"{DocumentTmpName} {t}";
-                DocTmpName += Path.GetExtension(FileFullName);
-                j = DocTmpName;
                 DODocumentTemplate dODocumentTemplate = new DODocumentTemplate();
                 dODocumentTemplate.NameDocument = DocTmpName;
                 dODocumentTemplate.FullPathWithFileName = Path.GetDirectoryName(FileFullName);
@@ -221,24 +228,23 @@ namespace Document_Office.Net.Forms
                 {
                     DORun oRun = new DORun();
 
-                    DORunProp newRunProp = new DORunProp(doc.Properties);
+                    DORunProp newRunProp = doc.Properties;
 
                     oRun.Properties = newRunProp;
 
-                    foreach (DOText oText in doc.ListText)
+                    foreach (string oText in doc.ListText)
                     {
-                        if (oText.Value != oldV)
+                        if(oText != null)
                         {
-                            DOText oText1 = new DOText();
-                            oText1.Value = oText.Value;
-                            oRun.ListText.Add(oText1);
-                        }
+                            if (oText != oldV)
+                            {
+                                oRun.ListText.Add(oText);
+                            }
 
-                        if (oText.Value == oldV)
-                        {
-                            DOText oText1 = new DOText();
-                            oText1.Value = newValue;
-                            oRun.ListText.Add(oText1);
+                            if (oText == oldV)
+                            {
+                                oRun.ListText.Add(newValue);
+                            }
                         }
                     }
                     dOParagraph.ListRuns.Add(oRun);
@@ -248,8 +254,6 @@ namespace Document_Office.Net.Forms
             }
             else
             {
-                //string DocTmpName2 = $"{DocumentTmpName} {t}";
-                //DocTmpName2 += Path.GetExtension(FileFullName);
                 DODocumentTemplate documentTemplate2 = documentTemplateDictionary[j];
                 DODocumentTemplate dODocumentTemplate3 = new DODocumentTemplate();
                 dODocumentTemplate3.NameDocument = j;
@@ -261,23 +265,21 @@ namespace Document_Office.Net.Forms
                     foreach (DORun dORun in dOParagraph1.ListRuns)
                     {
                         DORun dO = new DORun();
-                        DORunProp newRunProp2 = new DORunProp(dORun.Properties);
+                        DORunProp newRunProp2 = dORun.Properties;
                         dO.Properties = newRunProp2;
 
-                        foreach (DOText dOText2 in dORun.ListText)
+                        foreach (string dOText2 in dORun.ListText)
                         {
-                            if (dOText2.Value != oldV)
+                            //MessageBox.Show(oldV);
+
+                            if (dOText2 != oldV)
                             {
-                                DOText oText1 = new DOText();
-                                oText1.Value = dOText2.Value;
-                                dO.ListText.Add(oText1);
+                                dO.ListText.Add(dOText2);
                             }
 
-                            if (dOText2.Value == oldV)
+                            if (dOText2 == oldV)
                             {
-                                DOText oText1 = new DOText();
-                                oText1.Value = newValue;
-                                dO.ListText.Add(oText1);
+                                dO.ListText.Add(newValue);
                             }
                         }
                         dOParagraph2.ListRuns.Add(dO);
@@ -285,11 +287,12 @@ namespace Document_Office.Net.Forms
                     dODocumentTemplate3.NewDocsElements.Add(dOParagraph2);
                 }
                 documentTemplateDictionary[j] = dODocumentTemplate3;
-                var kkkkkkkk = documentTemplateDictionary;
             }
+
+            //var kkkkkkkk2 = documentTemplateDictionary;
         }
 
-        private int CreateLabel(DORun FindedRun, int x)
+        private void CreateLabel(DORun FindedRun, ref int x)
         {
             Label LabelRun = new Label()
             {
@@ -298,30 +301,27 @@ namespace Document_Office.Net.Forms
                 Cursor = Cursors.Hand,
                 AutoSize = true,
                 Tag = FindedRun.DORunID,
+                Font = FindedRun.Properties.FontSize
             };
-            LabelRun.Click += new EventHandler(this.LabelRun_Event_Click);
+            LabelRun.Click += new EventHandler(LabelRun_Event_Click);
             
-            if (FindedRun.Properties.FontSize != null)
+            foreach (string FindedStr in FindedRun.ListText)
             {
-                LabelRun.Font = new System.Drawing.Font("Microsoft Sans Serif", float.Parse(FindedRun.Properties.FontSize), FontStyle.Regular, GraphicsUnit.Point, 238);
-            }
-            
-            foreach (DOText FindedStr in FindedRun.ListText)
-            {
-                LabelRun.Text = FindedStr.Value;
+                LabelRun.Text = FindedStr;
+                
                 if (LabelRun.Text == " ")
                 {
-                    LabelRun.Text = "[spacja]";
+                    x += 17;
                 }
             }
             panelNewspaper.Controls.Add(LabelRun);
             if (LabelRun.Size.Width <= 20)
             {
-                return x += LabelRun.Size.Width - 13;
+                x += LabelRun.Size.Width - 13;
             }
             else
             {
-                return x += LabelRun.Size.Width + 4;
+                x += LabelRun.Size.Width + 4;
             }
         }
 
@@ -336,7 +336,7 @@ namespace Document_Office.Net.Forms
                 docParag = element;
                 foreach (DORun FindedRun in element.ListRuns)
                 {
-                   x = CreateLabel(FindedRun, x);
+                   CreateLabel(FindedRun, ref x);
                 }
             }
         }
