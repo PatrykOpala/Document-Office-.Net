@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 
 namespace Document_Office.Net
@@ -17,9 +18,11 @@ namespace Document_Office.Net
         public DOParagraph(DocumentFormat.OpenXml.Wordprocessing.Paragraph b, int id)
         {
             ((IDOElement)this).DOID = id;
+            Random randomNumber = new Random();
             foreach (DocumentFormat.OpenXml.Wordprocessing.Run r in b.Elements<DocumentFormat.OpenXml.Wordprocessing.Run>())
             {
-                DORun run = new DORun(r, id);
+                int Number = randomNumber.Next(110);
+                DORun run = new DORun(r, Number);
                 ListRuns.Add(run);
             }
         }
@@ -93,7 +96,7 @@ namespace Document_Office.Net
         public DORun() { }
         public DORun(DocumentFormat.OpenXml.Wordprocessing.Run r, int id)
         {
-            DORunID = id + 1;
+            DORunID = id;
             DORunProp props = new DORunProp(r.RunProperties);
             Properties = props;
 

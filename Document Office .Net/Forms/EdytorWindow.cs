@@ -5,6 +5,7 @@ using System.IO;
 using System.Windows.Forms;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
+using Label = System.Windows.Forms.Label;
 
 namespace Document_Office.Net.Forms
 {
@@ -12,8 +13,6 @@ namespace Document_Office.Net.Forms
     {
 		// ./WriteDocxObjectToJSON -f='C:\Users\patry\Desktop\test.docx'
         private List<IDOElement> ButtonElements = new List<IDOElement>();
-        private List<IDOElement> ButtonElementsCopy = new List<IDOElement>();
-        private List<DODocumentTemplate> temp = new List<DODocumentTemplate>();
         private Dictionary<string, DODocumentTemplate> documentTemplateDictionary = new Dictionary<string, DODocumentTemplate>();
         private static float FONT_SIZE = 20.0F;
         private ushort NeededCountFile = 0;
@@ -24,6 +23,7 @@ namespace Document_Office.Net.Forms
         private string FileFullName = "";
         private string DocumentTmpName = "";
         private string j = "";
+        private string oldV = "";
 
         private DOParagraph docParag = new DOParagraph();
 
@@ -141,11 +141,6 @@ namespace Document_Office.Net.Forms
             var nu = ButtonElementsCopy;*/
         }
 
-        private void ReturnParagraphProperties(ParagraphProperties paragraphProperties, DOParagraph dOParagraph)
-        {
-
-        }
-
         private void LabelRun_Event_Click(object sender, EventArgs e)
         {
             Label label = (Label)sender;
@@ -154,16 +149,13 @@ namespace Document_Office.Net.Forms
                 DuplicateCount = NeededCountFile;
                 duplicateLabel.Text = $"Liczba kopii możliwych do zrobienia: {DuplicateCount}";
             }
-            RunID = int.Parse(label.Tag.ToString());
-            MessageBox.Show(RunID.ToString());
-            string oldV = label.Text;
+            RunID = (int)label.Tag;
 
-            int pNewsWidth = (int)(panelNewspaper.Size.Width / 1.2) + 10;
-            int pNewsHeight = (int)(panelNewspaper.Size.Height / 1.5);
+            oldV = label.Text;
             TextBox textBox = new TextBox()
             {
-                Size = new Size(pNewsWidth, 70),
-                Location = new Point(59, pNewsHeight),
+                Size = new Size((int)((panelNewspaper.Size.Width / 1.2) + 10), 70),
+                Location = new Point(59, (int)(panelNewspaper.Size.Height / 1.5)),
                 Font = new System.Drawing.Font("Microsoft Sans Serif", FONT_SIZE, FontStyle.Regular, GraphicsUnit.Point, ((byte)(238)))
             };
             
@@ -207,8 +199,9 @@ namespace Document_Office.Net.Forms
         {
             /**/
             //MessageBox.Show($"{t}");
+            //MessageBox.Show(oldV);
 
-            if(t > NeededCountFile)
+            if (t > NeededCountFile)
             {
                 t = 1;
             }
@@ -257,7 +250,7 @@ namespace Document_Office.Net.Forms
                 DODocumentTemplate documentTemplate2 = documentTemplateDictionary[j];
                 DODocumentTemplate dODocumentTemplate3 = new DODocumentTemplate();
                 dODocumentTemplate3.NameDocument = j;
-
+                
                 foreach (DOParagraph dOParagraph1 in documentTemplate2.NewDocsElements)
                 {
                     DOParagraph dOParagraph2 = new DOParagraph();
@@ -270,8 +263,6 @@ namespace Document_Office.Net.Forms
 
                         foreach (string dOText2 in dORun.ListText)
                         {
-                            //MessageBox.Show(oldV);
-
                             if (dOText2 != oldV)
                             {
                                 dO.ListText.Add(dOText2);
@@ -289,7 +280,7 @@ namespace Document_Office.Net.Forms
                 documentTemplateDictionary[j] = dODocumentTemplate3;
             }
 
-            //var kkkkkkkk2 = documentTemplateDictionary;
+            var kkkkkkkk2 = documentTemplateDictionary;
         }
 
         private void CreateLabel(DORun FindedRun, ref int x)
