@@ -449,3 +449,55 @@ EdytorWindow{
         ]
 
 }
+
+
+
+
+
+
+
+
+if (p.GetType().ToString() != "Document_Office.Net.DOTable")
+                    {
+                        //string label = "Wiersz: ";
+
+                        //IDOElement parag = (IDOElement)ButtonElements.Find(par => par.DOID == p.DOID);
+                        //MessageBox.Show(parag.GetType());
+                        //Console.WriteLine(parag.GetType());
+                        //MessageBox.Show(parag.GetIsEmpty().ToString());
+                        /*
+                        if (parag.GetIsEmpty())
+                        {
+                            label += "[Pusty]";
+                            comboBox1.Items.Add(new DOItem(p.DOID, label, label));
+                        }
+                        else
+                        {
+                            foreach (DORun run in parag.ListRuns)
+                            {
+                                foreach (string str in run.ListText)
+                                {
+                                    label += str;
+                                }
+                            }
+                            comboBox1.Items.Add(new DOItem(p.DOID, label, label));
+                        }
+                        */
+                    }
+                    else
+                    {
+                        DOTable tabl = (DOTable)ButtonElements.Find(par => par.DOID == p.DOID);
+
+                        /*
+                        foreach (DORun run in parag.Arrayruns)
+                        {
+                            foreach (string str in run.Text)
+                            {
+                                label += str;
+                            }
+                        }
+                        */
+                        
+
+                        //comboBox1.Items.Add(new DOItem(p.DOID, "Tabela", "Tabela"));
+                    }

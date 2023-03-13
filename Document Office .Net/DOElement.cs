@@ -3,6 +3,10 @@
     public interface IDOElement
     {
         int DOID { get; set; }
+        string Type { get; set; }
+
+        int GetDOID();
+        string GetType();
     }
 
     public class DOItem

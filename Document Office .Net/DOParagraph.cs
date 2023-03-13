@@ -1,17 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Windows.Forms;
 
 namespace Document_Office.Net
 {
     public class DOParagraph : IDOElement
     {
         public string Name { get; set; } = "Paragraph";
+        string IDOElement.Type { get; set; } = "Paragraph";
         public List<DORun> ListRuns = new List<DORun>();
         public DOParagProp paragraphProperties { get; set; }
-        int IDOElement.DOID { get; set; }
 
-        //public DORun[] Arrayruns { get; set; }
+        private bool IsEmpty { get; set; }
+
+        int IDOElement.DOID { get; set; }
 
         public DOParagraph(){}
 
@@ -22,15 +25,17 @@ namespace Document_Office.Net
             foreach (DocumentFormat.OpenXml.Wordprocessing.Run r in b.Elements<DocumentFormat.OpenXml.Wordprocessing.Run>())
             {
                 int Number = randomNumber.Next(110);
+                this.IsEmpty = String.IsNullOrEmpty(r.InnerText);
                 DORun run = new DORun(r, Number);
                 ListRuns.Add(run);
             }
         }
 
-        public int GetDOID()
-        {
-            return ((IDOElement)this).DOID;
-        }
+        public int GetDOID() => ((IDOElement)this).DOID;
+
+        string IDOElement.GetType() => ((IDOElement)this).Type;
+
+        public bool GetIsEmpty() => this.IsEmpty;
     }
 
     public class DOParagProp

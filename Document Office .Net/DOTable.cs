@@ -5,6 +5,7 @@ namespace Document_Office.Net
     public class DOTable : IDOElement
     {
         public string Name { get; set; } = "Table";
+        string IDOElement.Type { get; set; } = "Table";
         public DOTableProp TableProperties { get; set; }
         public DOTableGrid TableGrid { get; set; }
         int IDOElement.DOID { get; set; } = 0;
@@ -32,6 +33,10 @@ namespace Document_Office.Net
                 TableRowList.Add(TRow);
             }
         }
+
+        public int GetDOID() => ((IDOElement)this).DOID;
+
+        string IDOElement.GetType() => ((IDOElement)this).Type;
     }
 
     public class DOTableProp

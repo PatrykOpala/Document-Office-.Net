@@ -15,6 +15,7 @@ namespace Document_Office.Net.Forms
         private List<IDOElement> ButtonElements = new List<IDOElement>();
         private Dictionary<string, DODocumentTemplate> documentTemplateDictionary = new Dictionary<string, DODocumentTemplate>();
         private static float FONT_SIZE = 20.0F;
+        private static string INITIALIZE_COMBOBOX_VALUE = "Wybierz Wiersz";
         private ushort NeededCountFile = 0;
         private ushort DuplicateCount = 0;
         private int ParagraphID = 0;
@@ -58,8 +59,8 @@ namespace Document_Office.Net.Forms
         {
             duplicateLabel.Text = $"Liczba kopii możliwych do zrobienia: {DuplicateCount}";
             panelNewspaper.Location = new System.Drawing.Point((panelEdytor.Size.Width / 4), (panelEdytor.Size.Height / 7));
-            comboBox1.Items.Add("Wybierz linie");
-            comboBox1.Text = "Wybierz Linie";
+            comboBox1.Items.Add(INITIALIZE_COMBOBOX_VALUE);
+            comboBox1.Text = INITIALIZE_COMBOBOX_VALUE;
         }
 
         private void OpenDocx(string f)
@@ -84,39 +85,39 @@ namespace Document_Office.Net.Forms
                     }
                 }
 
+
                 foreach (var p in ButtonElements)
                 {
-                    if(p.GetType().ToString() != "Document_Office.Net.DOTable")
+                    Console.WriteLine(p.GetType());
+                    if(p.GetType() == "Paragraph")
                     {
-                        string label = "Linia: ";
-
-                        DOParagraph parag = (DOParagraph)ButtonElements.Find(par => par.DOID == p.DOID);
-                        foreach (DORun run in parag.ListRuns)
+                        string label = "Wiersz: ";
+                        DOParagraph parag = (DOParagraph)ButtonElements.Find(par => par.DOID == p.GetDOID());
+                        if (parag.GetIsEmpty())
                         {
-                            foreach (string str in run.ListText)
-                            {
-                                 label += str;
-                            }
+                            label += "[Pusty]";
+                            comboBox1.Items.Add(new DOItem(p.DOID, label, label));
                         }
-                        comboBox1.Items.Add(new DOItem(p.DOID, label, label));
+                        else
+                        {
+                            foreach (DORun run in parag.ListRuns)
+                            {
+                                foreach (string str in run.ListText)
+                                {
+                                    label += str;
+                                }
+                            }
+                            comboBox1.Items.Add(new DOItem(p.DOID, label, label));
+                        }
                     }
                     else
                     {
-                        DOTable tabl = (DOTable)ButtonElements.Find(par => par.DOID == p.DOID);
-
-                        /*
-                        foreach (DORun run in parag.Arrayruns)
-                        {
-                            foreach (string str in run.Text)
-                            {
-                                label += str;
-                            }
-                        }
-                        */
-
-                        comboBox1.Items.Add(new DOItem(p.DOID, "Tabela", "Tabela"));
+                        string label = "Tabela: ";
+                        DOTable tabl = (DOTable)ButtonElements.Find(par => par.DOID == p.GetDOID());
+                        comboBox1.Items.Add(new DOItem(p.DOID, label, label));
                     }
                 }
+
             }
         }
 
@@ -319,16 +320,20 @@ namespace Document_Office.Net.Forms
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             ComboBox combo = (ComboBox)sender;
-            if (combo.SelectedItem.ToString() != "Wybierz linie")
+            if (combo.SelectedItem.ToString() != INITIALIZE_COMBOBOX_VALUE)
             {
                 DOItem selectItem = (DOItem)combo.SelectedItem;
-                DOParagraph element = (DOParagraph)ButtonElements.Find(el => el.DOID == selectItem.itemID);
-                ParagraphID = element.GetDOID();
+                IDOElement element = (IDOElement)ButtonElements.Find(el => el.DOID == selectItem.itemID);
+
+                MessageBox.Show(element.GetType());
+
+                /*ParagraphID = element.GetDOID();
                 docParag = element;
                 foreach (DORun FindedRun in element.ListRuns)
                 {
                    CreateLabel(FindedRun, ref x);
                 }
+                */
             }
         }
 
