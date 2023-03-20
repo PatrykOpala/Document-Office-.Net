@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Windows.Forms;
 
 namespace Document_Office.Net
 {
     public class DOParagraph : IDOElement
     {
-        public string Name { get; set; } = "Paragraph";
         string IDOElement.Type { get; set; } = "Paragraph";
         public List<DORun> ListRuns = new List<DORun>();
         public DOParagProp paragraphProperties { get; set; }

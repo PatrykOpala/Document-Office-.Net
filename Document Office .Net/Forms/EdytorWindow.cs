@@ -58,7 +58,8 @@ namespace Document_Office.Net.Forms
         private void InitializeValues()
         {
             duplicateLabel.Text = $"Liczba kopii możliwych do zrobienia: {DuplicateCount}";
-            panelNewspaper.Location = new System.Drawing.Point((panelEdytor.Size.Width / 4), (panelEdytor.Size.Height / 7));
+            panelNewspaper.Location = new System.Drawing.Point((panelEdytor.Size.Width / 4), 
+                (panelEdytor.Size.Height / 7));
             comboBox1.Items.Add(INITIALIZE_COMBOBOX_VALUE);
             comboBox1.Text = INITIALIZE_COMBOBOX_VALUE;
         }
@@ -88,7 +89,6 @@ namespace Document_Office.Net.Forms
 
                 foreach (var p in ButtonElements)
                 {
-                    Console.WriteLine(p.GetType());
                     if(p.GetType() == "Paragraph")
                     {
                         string label = "Wiersz: ";
@@ -151,24 +151,21 @@ namespace Document_Office.Net.Forms
                 duplicateLabel.Text = $"Liczba kopii możliwych do zrobienia: {DuplicateCount}";
             }
             RunID = (int)label.Tag;
-
             oldV = label.Text;
             TextBox textBox = new TextBox()
             {
                 Size = new Size((int)((panelNewspaper.Size.Width / 1.2) + 10), 70),
-                Location = new Point(59, (int)(panelNewspaper.Size.Height / 1.5)),
-                Font = new System.Drawing.Font("Microsoft Sans Serif", FONT_SIZE, FontStyle.Regular, GraphicsUnit.Point, ((byte)(238)))
+                Location = new Point(59, (int)(panelNewspaper.Size.Height / 1.3)),
+                Font = new System.Drawing.Font("Microsoft Sans Serif", FONT_SIZE, 
+                FontStyle.Regular, GraphicsUnit.Point, 238)
             };
-            
             int t = 0;
-
             textBox.KeyDown += new KeyEventHandler((object keySender, KeyEventArgs keyArgs) =>
             {
                 TextBox Box1 = (TextBox)keySender;
                 if(keyArgs.KeyValue == 13)
                 {
                     keyArgs.SuppressKeyPress = true;
-
                     if (docParag != null)
                     {
                         if (DuplicateCount > 0)
@@ -176,23 +173,16 @@ namespace Document_Office.Net.Forms
                             t++;
                             DuplicateCount = DuplicateCount -= 1;
                             duplicateLabel.Text = $"Liczba kopii możliwych do zrobienia: {DuplicateCount}";
-
                             MapDODocumentObject(docParag, ref t, ref oldV, Box1.Text);
-                            
                             Box1.Text = "";
                         }
-                        else
-                        {
-                            return;
-                        }
+                        else {return;}
                     }
-                    else
-                    {
-                        MessageBox.Show("Nieznaleziono elementu");
-                    }
+                    else {MessageBox.Show("Nieznaleziono elementu");}
                 }
             });
-
+            panelNewspaper.Size = new System.Drawing.Size(793, 552);
+            button1.Location = new System.Drawing.Point(610, 474);
             panelNewspaper.Controls.Add(textBox);
         }
 
@@ -288,7 +278,9 @@ namespace Document_Office.Net.Forms
         {
             Label LabelRun = new Label()
             {
-                Location = new Point(x, 141),
+                /* y = 141 */
+                /* Location = new Point(x, 141) */
+                Location = new Point(x, 0),
                 BorderStyle = BorderStyle.FixedSingle,
                 Cursor = Cursors.Hand,
                 AutoSize = true,
@@ -296,17 +288,15 @@ namespace Document_Office.Net.Forms
                 Font = FindedRun.Properties.FontSize
             };
             LabelRun.Click += new EventHandler(LabelRun_Event_Click);
-            
             foreach (string FindedStr in FindedRun.ListText)
             {
                 LabelRun.Text = FindedStr;
-                
                 if (LabelRun.Text == " ")
                 {
                     x += 17;
                 }
             }
-            panelNewspaper.Controls.Add(LabelRun);
+            DOElementContainer.Controls.Add(LabelRun);
             if (LabelRun.Size.Width <= 20)
             {
                 x += LabelRun.Size.Width - 13;
@@ -322,18 +312,26 @@ namespace Document_Office.Net.Forms
             ComboBox combo = (ComboBox)sender;
             if (combo.SelectedItem.ToString() != INITIALIZE_COMBOBOX_VALUE)
             {
-                DOItem selectItem = (DOItem)combo.SelectedItem;
-                IDOElement element = (IDOElement)ButtonElements.Find(el => el.DOID == selectItem.itemID);
-
-                MessageBox.Show(element.GetType());
-
-                /*ParagraphID = element.GetDOID();
-                docParag = element;
-                foreach (DORun FindedRun in element.ListRuns)
+                if (combo.SelectedItem.ToString().StartsWith("Wiersz"))
                 {
-                   CreateLabel(FindedRun, ref x);
+                    if (combo.SelectedItem.ToString().Contains("[Pusty]"))
+                    {
+                        return;
+                    }
+
+                    DOElementContainer.Controls.Clear();
+                    DOItem selectItem = (DOItem)combo.SelectedItem;
+                    IDOElement element = ButtonElements.Find(el => el.DOID == selectItem.itemID);
+                    DOParagraph paragraph = (DOParagraph)element;
+
+
+                    ParagraphID = paragraph.GetDOID();
+                    docParag = paragraph;
+                    foreach (DORun FindedRun in paragraph.ListRuns)
+                    {
+                        CreateLabel(FindedRun, ref x);
+                    }
                 }
-                */
             }
         }
 

@@ -30,10 +30,10 @@
         {
             this.panelEdytor = new System.Windows.Forms.Panel();
             this.panelNewspaper = new System.Windows.Forms.Panel();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
-            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
-            this.button1 = new System.Windows.Forms.Button();
             this.duplicateLabel = new System.Windows.Forms.Label();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.button1 = new System.Windows.Forms.Button();
+            this.DOElementContainer = new System.Windows.Forms.Panel();
             this.panelEdytor.SuspendLayout();
             this.panelNewspaper.SuspendLayout();
             this.SuspendLayout();
@@ -54,15 +54,24 @@
             // 
             this.panelNewspaper.BackColor = System.Drawing.Color.White;
             this.panelNewspaper.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelNewspaper.Controls.Add(this.DOElementContainer);
             this.panelNewspaper.Controls.Add(this.duplicateLabel);
             this.panelNewspaper.Controls.Add(this.comboBox1);
-            this.panelNewspaper.Controls.Add(this.richTextBox1);
             this.panelNewspaper.Controls.Add(this.button1);
             this.panelNewspaper.ForeColor = System.Drawing.SystemColors.MenuHighlight;
-            this.panelNewspaper.Location = new System.Drawing.Point(35, 275);
+            this.panelNewspaper.Location = new System.Drawing.Point(42, 143);
             this.panelNewspaper.Name = "panelNewspaper";
             this.panelNewspaper.Size = new System.Drawing.Size(793, 522);
             this.panelNewspaper.TabIndex = 0;
+            // 
+            // duplicateLabel
+            // 
+            this.duplicateLabel.AutoSize = true;
+            this.duplicateLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.duplicateLabel.Location = new System.Drawing.Point(57, 17);
+            this.duplicateLabel.Name = "duplicateLabel";
+            this.duplicateLabel.Size = new System.Drawing.Size(0, 25);
+            this.duplicateLabel.TabIndex = 4;
             // 
             // comboBox1
             // 
@@ -74,16 +83,6 @@
             this.comboBox1.Size = new System.Drawing.Size(156, 26);
             this.comboBox1.TabIndex = 3;
             this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
-            // 
-            // richTextBox1
-            // 
-            this.richTextBox1.Cursor = System.Windows.Forms.Cursors.IBeam;
-            this.richTextBox1.Location = new System.Drawing.Point(60, 141);
-            this.richTextBox1.Name = "richTextBox1";
-            this.richTextBox1.Size = new System.Drawing.Size(659, 255);
-            this.richTextBox1.TabIndex = 2;
-            this.richTextBox1.Text = "";
-            this.richTextBox1.Visible = false;
             // 
             // button1
             // 
@@ -98,14 +97,12 @@
             this.button1.UseVisualStyleBackColor = false;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
-            // duplicateLabel
+            // DOElementContainer
             // 
-            this.duplicateLabel.AutoSize = true;
-            this.duplicateLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.duplicateLabel.Location = new System.Drawing.Point(57, 17);
-            this.duplicateLabel.Name = "duplicateLabel";
-            this.duplicateLabel.Size = new System.Drawing.Size(0, 25);
-            this.duplicateLabel.TabIndex = 4;
+            this.DOElementContainer.Location = new System.Drawing.Point(42, 143);
+            this.DOElementContainer.Name = "DOElementContainer";
+            this.DOElementContainer.Size = new System.Drawing.Size(659, 255);
+            this.DOElementContainer.TabIndex = 5;
             // 
             // EdytorWindow
             // 
@@ -129,9 +126,9 @@
         #endregion
         private System.Windows.Forms.Panel panelEdytor;
         private System.Windows.Forms.Panel panelNewspaper;
-        private System.Windows.Forms.RichTextBox richTextBox1;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.ComboBox comboBox1;
         private System.Windows.Forms.Label duplicateLabel;
+        private System.Windows.Forms.Panel DOElementContainer;
     }
 }
