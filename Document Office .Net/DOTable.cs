@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace Document_Office.Net
 {
@@ -449,6 +450,19 @@ namespace Document_Office.Net
         {
             Type = tableWidth.Type;
             Width = tableWidth.Width;
+        }
+
+        public int getCalculateWidth(int elementWidth)
+        {
+            if(Type == "pct")
+            {
+                ushort percentage = (ushort)(ushort.Parse(Width) / 100);
+                if(percentage == 50)
+                {
+                    return elementWidth / 2;
+                }
+            }
+            return 0;
         }
     }
 }

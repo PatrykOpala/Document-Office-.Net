@@ -307,6 +307,36 @@ namespace Document_Office.Net.Forms
             }
         }
 
+        private void CreateTable(DOTable table)
+        {
+            Console.WriteLine("TableGridCount: " + table.TableGrid.GridColumns.Count);
+            Console.WriteLine("TableRowListCount: " + table.TableRowList.Count);
+            Console.WriteLine("TableCellsCount: " + table.TableRowList[0].TableCells.Count);
+            int index = 0;
+            int x = 4;
+            int y = 0;
+            int width = 100;
+            int height = 40;
+            foreach (var tableX in table.TableGrid.GridColumns)
+            {
+                Panel panel = new Panel();
+                panel.Location = new Point(x, y);
+                panel.Size = new Size(width, height);
+                panel.BorderStyle = BorderStyle.FixedSingle;
+                foreach (var tableY in table.TableRowList)
+                {
+                    /*Label label = new Label();
+                    label.Location = new Point(x, y);
+                    label.Text = tableY.TableCells[index]
+                    tableY.TableCells.Count*/
+                    //y++;
+                }
+                DOElementContainer.Controls.Add(panel);
+                x+= 100;
+                index++;
+            }
+        }
+
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             ComboBox combo = (ComboBox)sender;
@@ -323,14 +353,23 @@ namespace Document_Office.Net.Forms
                     DOItem selectItem = (DOItem)combo.SelectedItem;
                     IDOElement element = ButtonElements.Find(el => el.DOID == selectItem.itemID);
                     DOParagraph paragraph = (DOParagraph)element;
-
-
                     ParagraphID = paragraph.GetDOID();
                     docParag = paragraph;
                     foreach (DORun FindedRun in paragraph.ListRuns)
                     {
                         CreateLabel(FindedRun, ref x);
                     }
+                }
+                if (combo.SelectedItem.ToString().StartsWith("Tabela"))
+                {
+                    DOItem selectItem = (DOItem)combo.SelectedItem;
+                    IDOElement tableElement = ButtonElements.Find(el => el.DOID == selectItem.itemID);
+                    DOTable table = (DOTable)tableElement;
+
+                    int tableWidth = table.TableProperties.TableWidth.getCalculateWidth(DOElementContainer.Size.Width);
+                    Console.WriteLine(tableWidth);
+
+                    CreateTable(table);
                 }
             }
         }

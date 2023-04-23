@@ -30,10 +30,10 @@
         {
             this.panelEdytor = new System.Windows.Forms.Panel();
             this.panelNewspaper = new System.Windows.Forms.Panel();
+            this.DOElementContainer = new System.Windows.Forms.Panel();
             this.duplicateLabel = new System.Windows.Forms.Label();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.button1 = new System.Windows.Forms.Button();
-            this.DOElementContainer = new System.Windows.Forms.Panel();
             this.panelEdytor.SuspendLayout();
             this.panelNewspaper.SuspendLayout();
             this.SuspendLayout();
@@ -63,6 +63,13 @@
             this.panelNewspaper.Name = "panelNewspaper";
             this.panelNewspaper.Size = new System.Drawing.Size(793, 522);
             this.panelNewspaper.TabIndex = 0;
+            // 
+            // DOElementContainer
+            // 
+            this.DOElementContainer.Location = new System.Drawing.Point(42, 143);
+            this.DOElementContainer.Name = "DOElementContainer";
+            this.DOElementContainer.Size = new System.Drawing.Size(659, 255);
+            this.DOElementContainer.TabIndex = 5;
             // 
             // duplicateLabel
             // 
@@ -96,13 +103,6 @@
             this.button1.Text = "Dalej";
             this.button1.UseVisualStyleBackColor = false;
             this.button1.Click += new System.EventHandler(this.button1_Click);
-            // 
-            // DOElementContainer
-            // 
-            this.DOElementContainer.Location = new System.Drawing.Point(42, 143);
-            this.DOElementContainer.Name = "DOElementContainer";
-            this.DOElementContainer.Size = new System.Drawing.Size(659, 255);
-            this.DOElementContainer.TabIndex = 5;
             // 
             // EdytorWindow
             // 
