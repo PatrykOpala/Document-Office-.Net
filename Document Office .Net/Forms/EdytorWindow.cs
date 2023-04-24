@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Reflection.Emit;
 using System.Windows.Forms;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
@@ -69,55 +70,40 @@ namespace Document_Office.Net.Forms
             using (WordprocessingDocument word = WordprocessingDocument.Open(f, true))
             {
                 int w = 0;
-
+                int o = 0;
                 foreach (var bd in word.MainDocumentPart.Document.Body.ChildElements)
                 {
                     if (bd.LocalName == "p")
                     {
                         DOParagraph paragrapgh = new DOParagraph((Paragraph)bd,w);
+                        if(paragrapgh.GetIsEmpty())
+                        {
+                            comboBox1.Items.Add(new DOItem(paragrapgh.GetDOID(), "Wiersz: [Pusty]", "Wiersz: [Pusty]"));
+                        }
+                        else
+                        {
+                            string m = "Wiersz: ";
+                            foreach (DORun run in paragrapgh.ListRuns)
+                            {
+                                foreach (string str in run.ListText)
+                                {
+                                    m += str;
+                                }
+                            }
+                            comboBox1.Items.Add(new DOItem(paragrapgh.GetDOID(), m, m));
+                        }
                         ButtonElements.Add(paragrapgh);
                         w++;
                     }
                     if (bd.LocalName == "tbl")
                     {
+                        o++;
                         DOTable table = new DOTable((Table)bd, w);
+                        comboBox1.Items.Add(new DOItem(table.GetDOID(), $"Tabela: {o}", $"Tabela: {o}"));
                         ButtonElements.Add(table);
                         w++;
                     }
                 }
-
-
-                foreach (var p in ButtonElements)
-                {
-                    if(p.GetType() == "Paragraph")
-                    {
-                        string label = "Wiersz: ";
-                        DOParagraph parag = (DOParagraph)ButtonElements.Find(par => par.DOID == p.GetDOID());
-                        if (parag.GetIsEmpty())
-                        {
-                            label += "[Pusty]";
-                            comboBox1.Items.Add(new DOItem(p.DOID, label, label));
-                        }
-                        else
-                        {
-                            foreach (DORun run in parag.ListRuns)
-                            {
-                                foreach (string str in run.ListText)
-                                {
-                                    label += str;
-                                }
-                            }
-                            comboBox1.Items.Add(new DOItem(p.DOID, label, label));
-                        }
-                    }
-                    else
-                    {
-                        string label = "Tabela: ";
-                        DOTable tabl = (DOTable)ButtonElements.Find(par => par.DOID == p.GetDOID());
-                        comboBox1.Items.Add(new DOItem(p.DOID, label, label));
-                    }
-                }
-
             }
         }
 
@@ -140,7 +126,7 @@ namespace Document_Office.Net.Forms
             }
             ButtonElementsCopy[Index] = FindParagraph;
             var nu = ButtonElementsCopy;*/
-        }
+         }
 
         private void LabelRun_Event_Click(object sender, EventArgs e)
         {
@@ -309,31 +295,32 @@ namespace Document_Office.Net.Forms
 
         private void CreateTable(DOTable table)
         {
-            Console.WriteLine("TableGridCount: " + table.TableGrid.GridColumns.Count);
-            Console.WriteLine("TableRowListCount: " + table.TableRowList.Count);
-            Console.WriteLine("TableCellsCount: " + table.TableRowList[0].TableCells.Count);
             int index = 0;
             int x = 4;
             int y = 0;
             int width = 100;
             int height = 40;
-            foreach (var tableX in table.TableGrid.GridColumns)
+            foreach (var tableY in table.TableRowList)
             {
-                Panel panel = new Panel();
-                panel.Location = new Point(x, y);
-                panel.Size = new Size(width, height);
-                panel.BorderStyle = BorderStyle.FixedSingle;
-                foreach (var tableY in table.TableRowList)
+                foreach (var tableX in table.TableGrid.GridColumns)
                 {
-                    /*Label label = new Label();
-                    label.Location = new Point(x, y);
-                    label.Text = tableY.TableCells[index]
-                    tableY.TableCells.Count*/
-                    //y++;
+                    Panel panel = new Panel();
+                    panel.Location = new Point(x, y);
+                    panel.Size = new Size(width, height);
+                    panel.BorderStyle = BorderStyle.FixedSingle;
+                    /*foreach (var tableY in table.TableRowList)
+                    {
+                        Label label = new Label();
+                        label.Location = new Point(x, y);
+                        label.Text = tableY.TableCells[index]
+                        tableY.TableCells.Count
+                    }*/
+                    DOElementContainer.Controls.Add(panel);
+                    x += 100;
+                    index++;
                 }
-                DOElementContainer.Controls.Add(panel);
-                x+= 100;
-                index++;
+                y+= 40;
+                x = 4;
             }
         }
 
@@ -362,13 +349,13 @@ namespace Document_Office.Net.Forms
                 }
                 if (combo.SelectedItem.ToString().StartsWith("Tabela"))
                 {
+                    DOElementContainer.AutoScroll = true;
                     DOItem selectItem = (DOItem)combo.SelectedItem;
                     IDOElement tableElement = ButtonElements.Find(el => el.DOID == selectItem.itemID);
                     DOTable table = (DOTable)tableElement;
 
-                    int tableWidth = table.TableProperties.TableWidth.getCalculateWidth(DOElementContainer.Size.Width);
-                    Console.WriteLine(tableWidth);
-
+                    //int tableWidth = table.TableProperties.TableWidth.getCalculateWidth(DOElementContainer.Size.Width);
+                    
                     CreateTable(table);
                 }
             }
