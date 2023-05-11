@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Runtime.CompilerServices;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Document_Office.Net
 {
@@ -16,22 +16,13 @@ namespace Document_Office.Net
         {
             ((IDOElement)this).DOID = id;
             foreach (DocumentFormat.OpenXml.Wordprocessing.TableProperties tablePro in table.Elements<DocumentFormat.OpenXml.Wordprocessing.TableProperties>())
-            {
-                DOTableProp TProp = new DOTableProp(tablePro);
-                TableProperties = TProp;
-            }
+                TableProperties = new DOTableProp(tablePro);
 
             foreach (DocumentFormat.OpenXml.Wordprocessing.TableGrid tableGrid in table.Elements<DocumentFormat.OpenXml.Wordprocessing.TableGrid>())
-            {
-                DOTableGrid TGrid = new DOTableGrid(tableGrid);
-                TableGrid = TGrid;
-            }
+                TableGrid = new DOTableGrid(tableGrid);
 
             foreach (DocumentFormat.OpenXml.Wordprocessing.TableRow tableRow in table.Elements<DocumentFormat.OpenXml.Wordprocessing.TableRow>())
-            {
-                DOTableRow TRow = new DOTableRow(tableRow, id);
-                TableRowList.Add(TRow);
-            }
+                TableRowList.Add(new DOTableRow(tableRow, id));
         }
 
         public int GetDOID() => ((IDOElement)this).DOID;
@@ -246,17 +237,12 @@ namespace Document_Office.Net
 
         public DOTableRow(DocumentFormat.OpenXml.Wordprocessing.TableRow tableRow, int doID)
         {
+            Random v = new Random();
             foreach (DocumentFormat.OpenXml.Wordprocessing.TableRowProperties tableRowProperties in tableRow.Elements<DocumentFormat.OpenXml.Wordprocessing.TableRowProperties>())
-            {
-                DOTableRowProp TRowProp = new DOTableRowProp(tableRowProperties);
-                TableRowProperties = TRowProp;
-            }
+                TableRowProperties = new DOTableRowProp(tableRowProperties);
 
             foreach (DocumentFormat.OpenXml.Wordprocessing.TableCell tableCell in tableRow.Elements<DocumentFormat.OpenXml.Wordprocessing.TableCell>())
-            {
-                DOTableCell TCell = new DOTableCell(tableCell, doID);
-                TableCells.Add(TCell);
-            }
+                TableCells.Add(new DOTableCell(tableCell, doID + v.Next(8)));
         }
     }
 
@@ -275,26 +261,9 @@ namespace Document_Office.Net
         public DOTableCell(DocumentFormat.OpenXml.Wordprocessing.TableCell tableCell, int d)
         {
             foreach (DocumentFormat.OpenXml.Wordprocessing.TableCellProperties tCellProp in tableCell.Elements<DocumentFormat.OpenXml.Wordprocessing.TableCellProperties>())
-            {
-                DOTableCellProp tCellProperties = new DOTableCellProp(tCellProp);
-               
-                if (tCellProp.TableCellBorders != null)
-                {
-                    DOTableCellBorders tableCellBorders = new DOTableCellBorders(tCellProp.TableCellBorders);
-                    tCellProperties.TableCellBorders = tableCellBorders;
-                }
-                if (tCellProp.TableCellWidth != null)
-                {
-                    DOTableCellWidth tableCellWidth = new DOTableCellWidth(tCellProp.TableCellWidth);
-                    tCellProperties.TableCellWidth = tableCellWidth;
-                }
-                TableCellProperties = tCellProperties;
-            }
+                TableCellProperties = new DOTableCellProp(tCellProp);
             foreach (DocumentFormat.OpenXml.Wordprocessing.Paragraph TCellParagraph in tableCell.Elements<DocumentFormat.OpenXml.Wordprocessing.Paragraph>())
-            {
-                DOParagraph paer = new DOParagraph(TCellParagraph, d);
-                TableParagraphs.Add(paer);
-            }
+                TableParagraphs.Add(new DOParagraph(TCellParagraph, d));
         }
     }
 
@@ -305,7 +274,6 @@ namespace Document_Office.Net
         public object HorizontalMerge { get; set; }
         public object NoWrap { get; set; }
         public object Shading { get; set; }
-
         public DOTableCellBorders TableCellBorders { get; set; }
         public object TableCellFitText { get; set; }
         public object TableCellMargin { get; set; }
@@ -326,6 +294,17 @@ namespace Document_Office.Net
             TableCellVerticalAlignment = tableCellProperties.TableCellVerticalAlignment;
             TextDirection = tableCellProperties.TextDirection;
             VerticalMerge = tableCellProperties.VerticalMerge;
+
+            if (tableCellProperties.TableCellBorders != null)
+            {
+                DOTableCellBorders tableCellBorders = new DOTableCellBorders(tableCellProperties.TableCellBorders);
+                TableCellBorders = tableCellBorders;
+            }
+            if (tableCellProperties.TableCellWidth != null)
+            {
+                DOTableCellWidth tableCellWidth = new DOTableCellWidth(tableCellProperties.TableCellWidth);
+                TableCellWidth = tableCellWidth;
+            }
         }
     }
 

@@ -19,13 +19,11 @@ namespace Document_Office.Net
         public DOParagraph(DocumentFormat.OpenXml.Wordprocessing.Paragraph b, int id)
         {
             ((IDOElement)this).DOID = id;
-            Random randomNumber = new Random();
+            Random x = new Random();
             foreach (DocumentFormat.OpenXml.Wordprocessing.Run r in b.Elements<DocumentFormat.OpenXml.Wordprocessing.Run>())
             {
-                int Number = randomNumber.Next(110);
-                this.IsEmpty = String.IsNullOrEmpty(r.InnerText);
-                DORun run = new DORun(r, Number);
-                ListRuns.Add(run);
+                IsEmpty = String.IsNullOrEmpty(r.InnerText);
+                ListRuns.Add(new DORun(r, x.Next(110) + id));
             }
         }
 
@@ -93,13 +91,13 @@ namespace Document_Office.Net
 
     public class DORun
     {
-        public int DORunID;
+        public int DORunID { get; set; } = 0;
         public List<string> ListText = new List<string>();
         public DORunProp Properties { get; set; }
         public DORun() { }
         public DORun(DocumentFormat.OpenXml.Wordprocessing.Run r, int id)
         {
-            DORunID = id;
+            this.DORunID = id;
             DORunProp props = new DORunProp(r.RunProperties);
             Properties = props;
 

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Reflection.Emit;
 using System.Windows.Forms;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
@@ -12,22 +11,19 @@ namespace Document_Office.Net.Forms
 {
     public partial class EdytorWindow : Form
     {
-		// ./WriteDocxObjectToJSON -f='C:\Users\patry\Desktop\test.docx'
-        private List<IDOElement> ButtonElements = new List<IDOElement>();
-        private Dictionary<string, DODocumentTemplate> documentTemplateDictionary = new Dictionary<string, DODocumentTemplate>();
-        private static float FONT_SIZE = 20.0F;
-        private static string INITIALIZE_COMBOBOX_VALUE = "Wybierz Wiersz";
-        private ushort NeededCountFile = 0;
-        private ushort DuplicateCount = 0;
-        private int ParagraphID = 0;
-        private int x = 60;
-        private int RunID = 0;
-        private string FileFullName = "";
-        private string DocumentTmpName = "";
-        private string j = "";
-        private string oldV = "";
+        // ./WriteDocxObjectToJSON -f='C:\Users\patry\Desktop\test.docx'
+        List<IDOElement> ButtonElements = new List<IDOElement>();
+        Dictionary<string, DODocumentTemplate> documentTemplateDictionary = new Dictionary<string, DODocumentTemplate>();
+        static float FONT_SIZE = 20.0F;
+        static string INITIALIZE_COMBOBOX_VALUE = "Wybierz Wiersz";
+        ushort NeededCountFile = 0;
+        ushort DuplicateCount = 0;
+        string FileFullName = "";
+        string DocumentTmpName = "";
+        string j = "";
+        string oldV = "";
 
-        private DOParagraph docParag = new DOParagraph();
+        DOParagraph docParag = new DOParagraph();
 
         public EdytorWindow(string file, ushort countFile)
         {
@@ -39,117 +35,83 @@ namespace Document_Office.Net.Forms
             InitializeDocumentTemplate(file);
         }
 
-        private void InitializeDocumentTemplate(string FileName)
+        void InitializeDocumentTemplate(string FileName)
         {
             FileFullName = FileName;
             DocumentTmpName = Path.GetFileNameWithoutExtension(FileName);
-            /*while(t <= NeededCountFile)
-            {
-                DODocumentTemplate dODocumentTemplate = new DODocumentTemplate();
-                string DocTmpName = $"{DocumentTmpName} {t + 1}";
-                DocTmpName += Path.GetExtension(FileName);
-                dODocumentTemplate.NameDocument = DocTmpName;
-                dODocumentTemplate.FullPathWithFileName = Path.GetDirectoryName(FileName);
-                temp.Add(dODocumentTemplate);
-                OldValue.Add(DocTmpName);
-            }
-            */
         }
 
-        private void InitializeValues()
+        void InitializeValues()
         {
             duplicateLabel.Text = $"Liczba kopii możliwych do zrobienia: {DuplicateCount}";
-            panelNewspaper.Location = new System.Drawing.Point((panelEdytor.Size.Width / 4), 
+            panelNewspaper.Location = new System.Drawing.Point((panelEdytor.Size.Width / 4),
                 (panelEdytor.Size.Height / 7));
             comboBox1.Items.Add(INITIALIZE_COMBOBOX_VALUE);
             comboBox1.Text = INITIALIZE_COMBOBOX_VALUE;
         }
 
-        private void OpenDocx(string f)
+        void OpenDocx(string f)
         {
             using (WordprocessingDocument word = WordprocessingDocument.Open(f, true))
             {
-                int w = 0;
                 int o = 0;
+                Random wordNum = new Random();
                 foreach (var bd in word.MainDocumentPart.Document.Body.ChildElements)
                 {
                     if (bd.LocalName == "p")
                     {
-                        DOParagraph paragrapgh = new DOParagraph((Paragraph)bd,w);
-                        if(paragrapgh.GetIsEmpty())
-                        {
+                        DOParagraph paragrapgh = new DOParagraph((Paragraph)bd, wordNum.Next(10));
+                        if (paragrapgh.GetIsEmpty())
                             comboBox1.Items.Add(new DOItem(paragrapgh.GetDOID(), "Wiersz: [Pusty]", "Wiersz: [Pusty]"));
-                        }
                         else
                         {
                             string m = "Wiersz: ";
                             foreach (DORun run in paragrapgh.ListRuns)
                             {
                                 foreach (string str in run.ListText)
-                                {
                                     m += str;
-                                }
                             }
                             comboBox1.Items.Add(new DOItem(paragrapgh.GetDOID(), m, m));
                         }
                         ButtonElements.Add(paragrapgh);
-                        w++;
                     }
                     if (bd.LocalName == "tbl")
                     {
                         o++;
-                        DOTable table = new DOTable((Table)bd, w);
+                        int c = wordNum.Next(50) * 10 + 5;
+                        if (c < 50)
+                        {
+                            c = wordNum.Next(50) * 10 + 5;
+                        }
+                        DOTable table = new DOTable((Table)bd, c);
                         comboBox1.Items.Add(new DOItem(table.GetDOID(), $"Tabela: {o}", $"Tabela: {o}"));
                         ButtonElements.Add(table);
-                        w++;
                     }
                 }
             }
         }
 
-        private void ParseOldObjectCreatedNewObject()
-        {
-            /*ButtonElementsCopy = ButtonElements;
-            DOParagraph FindParagraph = (DOParagraph)ButtonElementsCopy.Find(el => el.DOID == ParagraphID);
-            int Index = ButtonElementsCopy.FindIndex(ee => ee.DOID == ParagraphID);
-            for(int inter = 0; inter < FindParagraph.ListRuns.Rank; inter++)
-            {
-                if (FindParagraph.Arrayruns[inter].DORunID == RunID)
-                {
-                    DORun oRun = FindParagraph.Arrayruns[inter];
-                    foreach(DOText oldVal in oRun.Text)
-                    {
-                        //oldVal.SetNewValue(OldValue, text);
-                    }
-                    FindParagraph.Arrayruns[inter] = oRun;
-                }
-            }
-            ButtonElementsCopy[Index] = FindParagraph;
-            var nu = ButtonElementsCopy;*/
-         }
-
-        private void LabelRun_Event_Click(object sender, EventArgs e)
+        void LabelRun_Event_Click(object sender, EventArgs e)
         {
             Label label = (Label)sender;
-            if(DuplicateCount == 0)
+            if (DuplicateCount == 0)
             {
                 DuplicateCount = NeededCountFile;
                 duplicateLabel.Text = $"Liczba kopii możliwych do zrobienia: {DuplicateCount}";
             }
-            RunID = (int)label.Tag;
             oldV = label.Text;
             TextBox textBox = new TextBox()
             {
-                Size = new Size((int)((panelNewspaper.Size.Width / 1.2) + 10), 70),
+                Size = new System.Drawing.Size((int)((panelNewspaper.Size.Width / 1.2) + 10), 70),
                 Location = new Point(59, (int)(panelNewspaper.Size.Height / 1.3)),
-                Font = new System.Drawing.Font("Microsoft Sans Serif", FONT_SIZE, 
+                Font = new System.Drawing.Font("Microsoft Sans Serif", FONT_SIZE,
                 FontStyle.Regular, GraphicsUnit.Point, 238)
             };
             int t = 0;
             textBox.KeyDown += new KeyEventHandler((object keySender, KeyEventArgs keyArgs) =>
             {
                 TextBox Box1 = (TextBox)keySender;
-                if(keyArgs.KeyValue == 13)
+                if (keyArgs.KeyValue == 13)
                 {
                     keyArgs.SuppressKeyPress = true;
                     if (docParag != null)
@@ -162,9 +124,9 @@ namespace Document_Office.Net.Forms
                             MapDODocumentObject(docParag, ref t, ref oldV, Box1.Text);
                             Box1.Text = "";
                         }
-                        else {return;}
+                        else { return; }
                     }
-                    else {MessageBox.Show("Nieznaleziono elementu");}
+                    else { MessageBox.Show("Nieznaleziono elementu"); }
                 }
             });
             panelNewspaper.Size = new System.Drawing.Size(793, 552);
@@ -172,19 +134,12 @@ namespace Document_Office.Net.Forms
             panelNewspaper.Controls.Add(textBox);
         }
 
-        private void MapDODocumentObject(DOParagraph docParag, ref int t, ref string oldV, string newValue)
+        void MapDODocumentObject(DOParagraph docParag, ref int t, ref string oldV, string newValue)
         {
-            /**/
-            //MessageBox.Show($"{t}");
-            //MessageBox.Show(oldV);
-
             if (t > NeededCountFile)
-            {
                 t = 1;
-            }
 
-            string DocTmpName = $"{DocumentTmpName} {t}";
-            DocTmpName += Path.GetExtension(FileFullName);
+            string DocTmpName = $"{DocumentTmpName} {t}{Path.GetExtension(FileFullName)}";
             j = DocTmpName;
 
             if (!documentTemplateDictionary.ContainsKey(j))
@@ -204,17 +159,13 @@ namespace Document_Office.Net.Forms
 
                     foreach (string oText in doc.ListText)
                     {
-                        if(oText != null)
+                        if (oText != null)
                         {
                             if (oText != oldV)
-                            {
                                 oRun.ListText.Add(oText);
-                            }
 
                             if (oText == oldV)
-                            {
                                 oRun.ListText.Add(newValue);
-                            }
                         }
                     }
                     dOParagraph.ListRuns.Add(oRun);
@@ -227,7 +178,7 @@ namespace Document_Office.Net.Forms
                 DODocumentTemplate documentTemplate2 = documentTemplateDictionary[j];
                 DODocumentTemplate dODocumentTemplate3 = new DODocumentTemplate();
                 dODocumentTemplate3.NameDocument = j;
-                
+
                 foreach (DOParagraph dOParagraph1 in documentTemplate2.NewDocsElements)
                 {
                     DOParagraph dOParagraph2 = new DOParagraph();
@@ -241,14 +192,10 @@ namespace Document_Office.Net.Forms
                         foreach (string dOText2 in dORun.ListText)
                         {
                             if (dOText2 != oldV)
-                            {
                                 dO.ListText.Add(dOText2);
-                            }
 
                             if (dOText2 == oldV)
-                            {
                                 dO.ListText.Add(newValue);
-                            }
                         }
                         dOParagraph2.ListRuns.Add(dO);
                     }
@@ -256,16 +203,24 @@ namespace Document_Office.Net.Forms
                 }
                 documentTemplateDictionary[j] = dODocumentTemplate3;
             }
-
-            var kkkkkkkk2 = documentTemplateDictionary;
         }
 
-        private void CreateLabel(DORun FindedRun, ref int x)
+        void CheckIndex(ref int idx, int maxCount)
+        {
+            if (idx < maxCount)
+            {
+                idx++;
+            }
+            else
+            {
+                idx = 0;
+            }
+        }
+
+        void CreateLabel(DORun FindedRun, ref int x)
         {
             Label LabelRun = new Label()
             {
-                /* y = 141 */
-                /* Location = new Point(x, 141) */
                 Location = new Point(x, 0),
                 BorderStyle = BorderStyle.FixedSingle,
                 Cursor = Cursors.Hand,
@@ -278,92 +233,95 @@ namespace Document_Office.Net.Forms
             {
                 LabelRun.Text = FindedStr;
                 if (LabelRun.Text == " ")
-                {
                     x += 17;
-                }
             }
             DOElementContainer.Controls.Add(LabelRun);
             if (LabelRun.Size.Width <= 20)
-            {
                 x += LabelRun.Size.Width - 13;
-            }
             else
-            {
                 x += LabelRun.Size.Width + 4;
-            }
         }
-
-        private void CreateTable(DOTable table)
+        void TableClickHandler(object sender, EventArgs tableEventArgs)
         {
-            int index = 0;
+            var tableL = (Label)sender;
+            //Console.WriteLine(tableL.Tag);
+        }
+        void CreateTable(DOTable table)
+        {
+            DOElementContainer.Controls.Clear();
             int x = 4;
             int y = 0;
             int width = 100;
             int height = 40;
             foreach (var tableY in table.TableRowList)
             {
+                int index = 0;
                 foreach (var tableX in table.TableGrid.GridColumns)
                 {
                     Panel panel = new Panel();
                     panel.Location = new Point(x, y);
-                    panel.Size = new Size(width, height);
+                    panel.Size = new System.Drawing.Size(width, height);
                     panel.BorderStyle = BorderStyle.FixedSingle;
-                    /*foreach (var tableY in table.TableRowList)
+
+                    foreach (var tableParag in tableY.TableCells[index].TableParagraphs)
                     {
+                        int xParag = 0;
+                        int yParag = 0;
                         Label label = new Label();
-                        label.Location = new Point(x, y);
-                        label.Text = tableY.TableCells[index]
-                        tableY.TableCells.Count
-                    }*/
+                        label.Location = new Point(xParag + 30, yParag + 10);
+                        label.Tag = tableParag.GetDOID();
+                        foreach (var tableRun in tableParag.ListRuns)
+                        {
+                            Console.WriteLine(tableRun.DORunID);
+                            foreach (var tableText in tableRun.ListText)
+                            {
+                                label.Text = tableText;
+                            }
+                        }
+                        label.Click += new EventHandler(TableClickHandler);
+                        panel.Controls.Add(label);
+                    }
                     DOElementContainer.Controls.Add(panel);
                     x += 100;
-                    index++;
+                    CheckIndex(ref index, tableY.TableCells.Count);
                 }
-                y+= 40;
+                y += 40;
                 x = 4;
             }
         }
 
-        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             ComboBox combo = (ComboBox)sender;
             if (combo.SelectedItem.ToString() != INITIALIZE_COMBOBOX_VALUE)
             {
-                if (combo.SelectedItem.ToString().StartsWith("Wiersz"))
+                if (combo.SelectedItem.ToString().StartsWith("Wiersz") && combo.SelectedItem.ToString().Contains("[Pusty]"))
                 {
-                    if (combo.SelectedItem.ToString().Contains("[Pusty]"))
-                    {
-                        return;
-                    }
-
+                    return;
+                }
+                else if(combo.SelectedItem.ToString().StartsWith("Wiersz"))
+                {
                     DOElementContainer.Controls.Clear();
-                    DOItem selectItem = (DOItem)combo.SelectedItem;
-                    IDOElement element = ButtonElements.Find(el => el.DOID == selectItem.itemID);
-                    DOParagraph paragraph = (DOParagraph)element;
-                    ParagraphID = paragraph.GetDOID();
+                    IDOElement dOElement = ButtonElements.Find(el => el.DOID == ((DOItem)combo.SelectedItem).itemID);
+                    DOParagraph paragraph = (DOParagraph)dOElement;
                     docParag = paragraph;
+                    int x = 60;
                     foreach (DORun FindedRun in paragraph.ListRuns)
-                    {
                         CreateLabel(FindedRun, ref x);
-                    }
                 }
                 if (combo.SelectedItem.ToString().StartsWith("Tabela"))
                 {
                     DOElementContainer.AutoScroll = true;
-                    DOItem selectItem = (DOItem)combo.SelectedItem;
-                    IDOElement tableElement = ButtonElements.Find(el => el.DOID == selectItem.itemID);
-                    DOTable table = (DOTable)tableElement;
+                    IDOElement dOElementTable = ButtonElements.Find(el => el.DOID == ((DOItem)combo.SelectedItem).itemID);
+                    DOTable tableElement = (DOTable)dOElementTable;
 
                     //int tableWidth = table.TableProperties.TableWidth.getCalculateWidth(DOElementContainer.Size.Width);
-                    
-                    CreateTable(table);
+
+                    CreateTable(tableElement);
                 }
             }
         }
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-            ParseOldObjectCreatedNewObject();
-        }
+        void button1_Click(object sender, EventArgs e){}
     }
 }

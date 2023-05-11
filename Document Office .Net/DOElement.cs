@@ -4,7 +4,6 @@
     {
         int DOID { get; set; }
         string Type { get; set; }
-
         int GetDOID();
         string GetType();
     }
@@ -28,9 +27,6 @@
             itemPlaceholder = placeholder;
         }
 
-        public override string ToString()
-        {
-            return this.itemPlaceholder;
-        }
+        public override string ToString() => this.itemPlaceholder
     }
 }
