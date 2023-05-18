@@ -8,11 +8,11 @@ namespace Document_Office.Net
         string IDOElement.Type { get; set; } = "Table";
         public DOTableProp TableProperties { get; set; }
         public DOTableGrid TableGrid { get; set; }
-        int IDOElement.DOID { get; set; } = 0;
+        Guid IDOElement.DOID { get; set; }
 
         public List<DOTableRow> TableRowList = new List<DOTableRow>();
 
-        public DOTable(DocumentFormat.OpenXml.Wordprocessing.Table table, int id)
+        public DOTable(DocumentFormat.OpenXml.Wordprocessing.Table table, Guid id)
         {
             ((IDOElement)this).DOID = id;
             foreach (DocumentFormat.OpenXml.Wordprocessing.TableProperties tablePro in table.Elements<DocumentFormat.OpenXml.Wordprocessing.TableProperties>())
@@ -22,10 +22,10 @@ namespace Document_Office.Net
                 TableGrid = new DOTableGrid(tableGrid);
 
             foreach (DocumentFormat.OpenXml.Wordprocessing.TableRow tableRow in table.Elements<DocumentFormat.OpenXml.Wordprocessing.TableRow>())
-                TableRowList.Add(new DOTableRow(tableRow, id));
+                TableRowList.Add(new DOTableRow(tableRow, Guid.NewGuid()));
         }
 
-        public int GetDOID() => ((IDOElement)this).DOID;
+        public Guid GetDOID() => ((IDOElement)this).DOID;
 
         string IDOElement.GetType() => ((IDOElement)this).Type;
     }
@@ -235,14 +235,16 @@ namespace Document_Office.Net
         public List<DOTableCell> TableCells = new List<DOTableCell>();
         public DOTableRow(){}
 
-        public DOTableRow(DocumentFormat.OpenXml.Wordprocessing.TableRow tableRow, int doID)
+        public DOTableRow(DocumentFormat.OpenXml.Wordprocessing.TableRow tableRow, Guid doID)
         {
-            Random v = new Random();
             foreach (DocumentFormat.OpenXml.Wordprocessing.TableRowProperties tableRowProperties in tableRow.Elements<DocumentFormat.OpenXml.Wordprocessing.TableRowProperties>())
                 TableRowProperties = new DOTableRowProp(tableRowProperties);
 
             foreach (DocumentFormat.OpenXml.Wordprocessing.TableCell tableCell in tableRow.Elements<DocumentFormat.OpenXml.Wordprocessing.TableCell>())
-                TableCells.Add(new DOTableCell(tableCell, doID + v.Next(8)));
+            {
+                Guid TableCellGuid = Guid.NewGuid();
+                TableCells.Add(new DOTableCell(tableCell, TableCellGuid));
+            }
         }
     }
 
@@ -258,7 +260,7 @@ namespace Document_Office.Net
     {
         public DOTableCellProp TableCellProperties { get; set; }
         public List<DOParagraph> TableParagraphs = new List<DOParagraph>();
-        public DOTableCell(DocumentFormat.OpenXml.Wordprocessing.TableCell tableCell, int d)
+        public DOTableCell(DocumentFormat.OpenXml.Wordprocessing.TableCell tableCell, Guid d)
         {
             foreach (DocumentFormat.OpenXml.Wordprocessing.TableCellProperties tCellProp in tableCell.Elements<DocumentFormat.OpenXml.Wordprocessing.TableCellProperties>())
                 TableCellProperties = new DOTableCellProp(tCellProp);

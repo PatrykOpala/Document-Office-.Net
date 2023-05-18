@@ -14,6 +14,7 @@ namespace Document_Office.Net.Forms
         // ./WriteDocxObjectToJSON -f='C:\Users\patry\Desktop\test.docx'
         List<IDOElement> ButtonElements = new List<IDOElement>();
         Dictionary<string, DODocumentTemplate> documentTemplateDictionary = new Dictionary<string, DODocumentTemplate>();
+        TextBox textBox1 = null;
         static float FONT_SIZE = 20.0F;
         static string INITIALIZE_COMBOBOX_VALUE = "Wybierz Wiersz";
         ushort NeededCountFile = 0;
@@ -55,12 +56,11 @@ namespace Document_Office.Net.Forms
             using (WordprocessingDocument word = WordprocessingDocument.Open(f, true))
             {
                 int o = 0;
-                Random wordNum = new Random();
                 foreach (var bd in word.MainDocumentPart.Document.Body.ChildElements)
                 {
                     if (bd.LocalName == "p")
                     {
-                        DOParagraph paragrapgh = new DOParagraph((Paragraph)bd, wordNum.Next(10));
+                        DOParagraph paragrapgh = new DOParagraph((Paragraph)bd, Guid.NewGuid());
                         if (paragrapgh.GetIsEmpty())
                             comboBox1.Items.Add(new DOItem(paragrapgh.GetDOID(), "Wiersz: [Pusty]", "Wiersz: [Pusty]"));
                         else
@@ -78,12 +78,7 @@ namespace Document_Office.Net.Forms
                     if (bd.LocalName == "tbl")
                     {
                         o++;
-                        int c = wordNum.Next(50) * 10 + 5;
-                        if (c < 50)
-                        {
-                            c = wordNum.Next(50) * 10 + 5;
-                        }
-                        DOTable table = new DOTable((Table)bd, c);
+                        DOTable table = new DOTable((Table)bd, Guid.NewGuid());
                         comboBox1.Items.Add(new DOItem(table.GetDOID(), $"Tabela: {o}", $"Tabela: {o}"));
                         ButtonElements.Add(table);
                     }
@@ -93,6 +88,10 @@ namespace Document_Office.Net.Forms
 
         void LabelRun_Event_Click(object sender, EventArgs e)
         {
+            if (textBox1 != null)
+            {
+                panelNewspaper.Controls.Remove(textBox1);
+            }
             Label label = (Label)sender;
             if (DuplicateCount == 0)
             {
@@ -132,6 +131,7 @@ namespace Document_Office.Net.Forms
             panelNewspaper.Size = new System.Drawing.Size(793, 552);
             button1.Location = new System.Drawing.Point(610, 474);
             panelNewspaper.Controls.Add(textBox);
+            textBox1 = textBox;
         }
 
         void MapDODocumentObject(DOParagraph docParag, ref int t, ref string oldV, string newValue)

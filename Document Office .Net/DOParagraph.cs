@@ -12,22 +12,21 @@ namespace Document_Office.Net
 
         private bool IsEmpty { get; set; }
 
-        int IDOElement.DOID { get; set; }
+        Guid IDOElement.DOID { get; set; }
 
         public DOParagraph(){}
 
-        public DOParagraph(DocumentFormat.OpenXml.Wordprocessing.Paragraph b, int id)
+        public DOParagraph(DocumentFormat.OpenXml.Wordprocessing.Paragraph b, Guid id)
         {
             ((IDOElement)this).DOID = id;
-            Random x = new Random();
             foreach (DocumentFormat.OpenXml.Wordprocessing.Run r in b.Elements<DocumentFormat.OpenXml.Wordprocessing.Run>())
             {
                 IsEmpty = String.IsNullOrEmpty(r.InnerText);
-                ListRuns.Add(new DORun(r, x.Next(110) + id));
+                ListRuns.Add(new DORun(r, Guid.NewGuid()));
             }
         }
 
-        public int GetDOID() => ((IDOElement)this).DOID;
+        public Guid GetDOID() => ((IDOElement)this).DOID;
 
         string IDOElement.GetType() => ((IDOElement)this).Type;
 
@@ -91,13 +90,13 @@ namespace Document_Office.Net
 
     public class DORun
     {
-        public int DORunID { get; set; } = 0;
+        public Guid DORunID { get; set; }
         public List<string> ListText = new List<string>();
         public DORunProp Properties { get; set; }
         public DORun() { }
-        public DORun(DocumentFormat.OpenXml.Wordprocessing.Run r, int id)
+        public DORun(DocumentFormat.OpenXml.Wordprocessing.Run r, Guid id)
         {
-            this.DORunID = id;
+            DORunID = id;
             DORunProp props = new DORunProp(r.RunProperties);
             Properties = props;
 
