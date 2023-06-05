@@ -7,6 +7,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Document Office .Net", "Doc
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WriteDocxObjectToJSON", "..\WriteDocxObjectToJSON\WriteDocxObjectToJSON\WriteDocxObjectToJSON.csproj", "{AB787366-8D1D-482D-8836-89C7FEB1868F}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Elementy rozwiązania", "Elementy rozwiązania", "{D48EF423-BBE2-47AE-AE12-4A7DD7594EF7}"
+	ProjectSection(SolutionItems) = preProject
+		test.ps1 = test.ps1
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

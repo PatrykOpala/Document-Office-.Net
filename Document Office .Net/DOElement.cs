@@ -10,6 +10,20 @@ namespace Document_Office.Net
         string GetType();
     }
 
+    public class ChooseTable
+    {
+        public Guid TableRowGuid { get; set; }
+        public Guid TableCellGuid { get; set; }
+        public Guid TableParagraphGuid { get; set; }
+
+        public ChooseTable(Guid tableRowGuid, Guid tableCellGuid, Guid tableParagraphGuid)
+        {
+            TableRowGuid = tableRowGuid;
+            TableCellGuid = tableCellGuid;
+            TableParagraphGuid = tableParagraphGuid;
+        }
+    }
+
     public class DOItem
     {
         public Guid itemID { get; set; }

@@ -15,6 +15,7 @@ namespace Document_Office.Net.Forms
         List<IDOElement> ButtonElements = new List<IDOElement>();
         Dictionary<string, DODocumentTemplate> documentTemplateDictionary = new Dictionary<string, DODocumentTemplate>();
         TextBox textBox1 = null;
+        int PanelNewspaperHeight = 0;
         static float FONT_SIZE = 20.0F;
         static string INITIALIZE_COMBOBOX_VALUE = "Wybierz Wiersz";
         ushort NeededCountFile = 0;
@@ -25,6 +26,7 @@ namespace Document_Office.Net.Forms
         string oldV = "";
 
         DOParagraph docParag = new DOParagraph();
+        DOTable docTable = new DOTable();
 
         public EdytorWindow(string file, ushort countFile)
         {
@@ -45,10 +47,10 @@ namespace Document_Office.Net.Forms
         void InitializeValues()
         {
             duplicateLabel.Text = $"Liczba kopii możliwych do zrobienia: {DuplicateCount}";
-            panelNewspaper.Location = new System.Drawing.Point((panelEdytor.Size.Width / 4),
-                (panelEdytor.Size.Height / 7));
+            panelNewspaper.Location = new Point((panelEdytor.Size.Width / 4), (panelEdytor.Size.Height / 7));
             comboBox1.Items.Add(INITIALIZE_COMBOBOX_VALUE);
             comboBox1.Text = INITIALIZE_COMBOBOX_VALUE;
+            PanelNewspaperHeight = (int)(panelNewspaper.Size.Height / 1.3);
         }
 
         void OpenDocx(string f)
@@ -101,10 +103,9 @@ namespace Document_Office.Net.Forms
             oldV = label.Text;
             TextBox textBox = new TextBox()
             {
-                Size = new System.Drawing.Size((int)((panelNewspaper.Size.Width / 1.2) + 10), 70),
-                Location = new Point(59, (int)(panelNewspaper.Size.Height / 1.3)),
-                Font = new System.Drawing.Font("Microsoft Sans Serif", FONT_SIZE,
-                FontStyle.Regular, GraphicsUnit.Point, 238)
+                Size = new Size((int)((panelNewspaper.Size.Width / 1.2) + 10), 70),
+                Location = new Point(59, PanelNewspaperHeight),
+                Font = new System.Drawing.Font("Microsoft Sans Serif", FONT_SIZE, FontStyle.Regular, GraphicsUnit.Point, 238)
             };
             int t = 0;
             textBox.KeyDown += new KeyEventHandler((object keySender, KeyEventArgs keyArgs) =>
@@ -128,8 +129,8 @@ namespace Document_Office.Net.Forms
                     else { MessageBox.Show("Nieznaleziono elementu"); }
                 }
             });
-            panelNewspaper.Size = new System.Drawing.Size(793, 552);
-            button1.Location = new System.Drawing.Point(610, 474);
+            panelNewspaper.Size = new Size(793, 552);
+            button1.Location = new Point(610, 474);
             panelNewspaper.Controls.Add(textBox);
             textBox1 = textBox;
         }
@@ -241,9 +242,72 @@ namespace Document_Office.Net.Forms
             else
                 x += LabelRun.Size.Width + 4;
         }
-        void TableClickHandler(object sender, EventArgs tableEventArgs)
+        void TableEventClick(object sender, EventArgs tableEventArgs)
         {
+            if (textBox1 != null)
+            {
+                panelNewspaper.Controls.Remove(textBox1);
+            }
             var tableL = (Label)sender;
+            if (DuplicateCount == 0)
+            {
+                DuplicateCount = NeededCountFile;
+                duplicateLabel.Text = $"Liczba kopii możliwych do zrobienia: {DuplicateCount}";
+            }
+            oldV = tableL.Text;
+            TextBox textBox = new TextBox()
+            {
+                Size = new Size((int)((panelNewspaper.Size.Width / 1.2) + 10), 70),
+                Location = new Point(59, PanelNewspaperHeight),
+                Font = new System.Drawing.Font("Microsoft Sans Serif", FONT_SIZE, FontStyle.Regular, GraphicsUnit.Point, 238)
+            };
+            int t = 0;
+            textBox.KeyDown += new KeyEventHandler((object keySender, KeyEventArgs keyArgs) =>
+            {
+                TextBox Box1 = (TextBox)keySender;
+                if (keyArgs.KeyValue == 13)
+                {
+                    keyArgs.SuppressKeyPress = true;
+                    if (docParag != null)
+                    {
+                        if (DuplicateCount > 0)
+                        {
+                            t++;
+                            DuplicateCount = DuplicateCount -= 1;
+                            duplicateLabel.Text = $"Liczba kopii możliwych do zrobienia: {DuplicateCount}";
+                            //MapDODocumentObject(docParag, ref t, ref oldV, Box1.Text);
+                            Box1.Text = "";
+                        }
+                        else { return; }
+                    }
+                    else { MessageBox.Show("Nieznaleziono elementu"); }
+                }
+            });
+            panelNewspaper.Size = new Size(793, 552);
+            button1.Location = new Point(610, 474);
+            panelNewspaper.Controls.Add(textBox);
+            textBox1 = textBox;
+
+
+
+
+
+
+            /*ButtonElements.ForEach((f) =>
+            {
+                //Console.WriteLine(f.GetType());
+                if(f.GetType() == "Table")
+                {
+                    //Console.WriteLine(f.ToString());
+
+                }
+                else
+                {
+                    return;
+                }
+            }
+            );*/
+
             //Console.WriteLine(tableL.Tag);
         }
         void CreateTable(DOTable table)
@@ -258,27 +322,30 @@ namespace Document_Office.Net.Forms
                 int index = 0;
                 foreach (var tableX in table.TableGrid.GridColumns)
                 {
-                    Panel panel = new Panel();
-                    panel.Location = new Point(x, y);
-                    panel.Size = new System.Drawing.Size(width, height);
-                    panel.BorderStyle = BorderStyle.FixedSingle;
+                    Panel panel = new Panel
+                    {
+                        Location = new Point(x, y),
+                        Size = new System.Drawing.Size(width, height),
+                        BorderStyle = BorderStyle.FixedSingle
+                    };
 
                     foreach (var tableParag in tableY.TableCells[index].TableParagraphs)
                     {
                         int xParag = 0;
                         int yParag = 0;
-                        Label label = new Label();
-                        label.Location = new Point(xParag + 30, yParag + 10);
-                        label.Tag = tableParag.GetDOID();
+                        Label label = new Label
+                        {
+                            Location = new Point(xParag + 30, yParag + 10),
+                            Tag = tableParag.GetDOID()
+                        };
                         foreach (var tableRun in tableParag.ListRuns)
                         {
-                            Console.WriteLine(tableRun.DORunID);
                             foreach (var tableText in tableRun.ListText)
                             {
                                 label.Text = tableText;
                             }
                         }
-                        label.Click += new EventHandler(TableClickHandler);
+                        label.Click += new EventHandler(TableEventClick);
                         panel.Controls.Add(label);
                     }
                     DOElementContainer.Controls.Add(panel);
@@ -314,7 +381,7 @@ namespace Document_Office.Net.Forms
                     DOElementContainer.AutoScroll = true;
                     IDOElement dOElementTable = ButtonElements.Find(el => el.DOID == ((DOItem)combo.SelectedItem).itemID);
                     DOTable tableElement = (DOTable)dOElementTable;
-
+                    docTable = tableElement;
                     //int tableWidth = table.TableProperties.TableWidth.getCalculateWidth(DOElementContainer.Size.Width);
 
                     CreateTable(tableElement);

@@ -12,6 +12,8 @@ namespace Document_Office.Net
 
         public List<DOTableRow> TableRowList = new List<DOTableRow>();
 
+        public DOTable() {}
+
         public DOTable(DocumentFormat.OpenXml.Wordprocessing.Table table, Guid id)
         {
             ((IDOElement)this).DOID = id;
@@ -208,10 +210,12 @@ namespace Document_Office.Net
     public class DOGridColumn
     {
         public string Width { get; set; }
+        public Guid GridColumnGuid { get; set; }
 
         public DOGridColumn(DocumentFormat.OpenXml.Wordprocessing.GridColumn gridColumn)
         {
             Width = gridColumn.Width;
+            GridColumnGuid = Guid.NewGuid();
         }
     }
 
@@ -233,7 +237,11 @@ namespace Document_Office.Net
     {
         public object TableRowProperties { get; set; }
         public List<DOTableCell> TableCells = new List<DOTableCell>();
-        public DOTableRow(){}
+        public Guid TableRowGuid { get; set; }
+        public DOTableRow()
+        {
+            TableRowGuid = Guid.NewGuid();
+        }
 
         public DOTableRow(DocumentFormat.OpenXml.Wordprocessing.TableRow tableRow, Guid doID)
         {
@@ -260,8 +268,10 @@ namespace Document_Office.Net
     {
         public DOTableCellProp TableCellProperties { get; set; }
         public List<DOParagraph> TableParagraphs = new List<DOParagraph>();
+        public Guid TableCellGuid { get; set; }
         public DOTableCell(DocumentFormat.OpenXml.Wordprocessing.TableCell tableCell, Guid d)
         {
+            TableCellGuid = Guid.NewGuid();
             foreach (DocumentFormat.OpenXml.Wordprocessing.TableCellProperties tCellProp in tableCell.Elements<DocumentFormat.OpenXml.Wordprocessing.TableCellProperties>())
                 TableCellProperties = new DOTableCellProp(tCellProp);
             foreach (DocumentFormat.OpenXml.Wordprocessing.Paragraph TCellParagraph in tableCell.Elements<DocumentFormat.OpenXml.Wordprocessing.Paragraph>())
