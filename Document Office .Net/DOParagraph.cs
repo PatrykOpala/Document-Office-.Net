@@ -106,7 +106,105 @@ namespace Document_Office.Net
             }
         }
     }
-    public class DORunProp
+
+    public struct DORunProp
+    {
+        private bool Bold;
+        private DOBorder Border;
+        private bool BoldComplexScript;
+        private bool Caps;
+        private Color? _Color;
+        private bool CharakterScale;
+        private bool ComplexScript;
+        private bool Highlight;
+        private bool Italic;
+        private bool ItalicComplexScript;
+        private bool NumberSpacing;
+        private bool Outline;
+        private System.Drawing.Font FontSize;
+        private bool SmallCaps;
+        private bool Spacing;
+        private bool Strike;
+        private string Underline;
+
+        public bool GetBold() => Bold;
+        public DOBorder GetBorder() => Border;
+        public bool GetBoldComplexScript() => BoldComplexScript;
+        public bool GetCaps() => Caps;
+        public Color? GetColor() => _Color;
+        public bool GetCharakterScale() => CharakterScale;
+        public bool GetComplexScript() => ComplexScript;
+        public bool GetHighlight() => Highlight;
+        public bool GetItalic() => Italic;
+        public bool GetItalicComplexScript() => ItalicComplexScript;
+        public bool GetNumberSpacing() => NumberSpacing;
+        public bool GetOutline() => Outline;
+        public System.Drawing.Font GetFont() => FontSize;
+        public bool GetSmallCaps() => SmallCaps;
+        public bool GetStrike() => Strike;
+        public bool GetSpacing() => Spacing;
+        public string GetUnderline() => Underline;
+
+        public DORunProp(DocumentFormat.OpenXml.Wordprocessing.RunProperties runProperties)
+        {
+            Bold = false;
+            Border = null;
+            BoldComplexScript = false;
+            Caps = false;
+            _Color = null;
+            CharakterScale = false;
+            ComplexScript = false;
+            Highlight = false;
+            Italic = false;
+            ItalicComplexScript = false;
+            NumberSpacing = false;
+            Outline = false;
+            FontSize = new System.Drawing.Font("Microsoft Sans Serif", 30, FontStyle.Regular, GraphicsUnit.Point, 238);
+            SmallCaps = false;
+            Spacing = false;
+            Strike = false;
+            Underline = "";
+
+
+            if (runProperties != null)
+            {
+                if (runProperties.Bold != null && runProperties.BoldComplexScript != null)
+                {
+                    Bold = true;
+                    BoldComplexScript = true;
+                }
+
+                if (runProperties.FontSize != null)
+                {
+                    FontSize = new System.Drawing.Font("Microsoft Sans Serif", float.Parse(runProperties.FontSize.Val.Value), 
+                        FontStyle.Regular, GraphicsUnit.Point, 238);
+                }
+
+                if (runProperties.Color != null)
+                {
+                    _Color = ColorTranslator.FromHtml("#" + runProperties.Color.Val);
+                }
+
+                if (runProperties.Italic != null && runProperties.ItalicComplexScript != null)
+                {
+                    Italic = true;
+                    ItalicComplexScript = true;
+                }
+
+                if (runProperties.Strike != null)
+                {
+                    Strike = true;
+                }
+
+                if (runProperties.Underline != null)
+                {
+                    Underline = runProperties.Underline.Val;
+                }
+            }
+        }
+    }
+
+    /*public class DORunProp
     {
         public bool Bold { get; set; }
         public DOBorder Border { get; set; }
@@ -182,7 +280,7 @@ namespace Document_Office.Net
                 Underline = "";
             }
         }
-    }
+    }*/
 
     public class DOShading
     {

@@ -3,15 +3,25 @@ namespace Document_Office.Net
 {
     public class DOBorder
     {
-        public string Color { get; set; }
-        public string Frame { get; set; }
-        public string Shadow { get; set; }
-        public string Size { get; set; }
-        public string Space { get; set; }
-        public string ThemeColor { get; set; }
-        public string ThemeShade { get; set; }
-        public string ThemeTint { get; set; }
-        public string Val { get; set; }
+        private string Color;
+        private string Frame;
+        private string Shadow;
+        private string Size;
+        private string Space;
+        private string ThemeColor;
+        private string ThemeShade;
+        private string ThemeTint;
+        private string Val;
+
+        public string GetColor() => Color;
+        public string GetFrame() => Frame;
+        public string GetShadow() => Shadow;
+        public string GetSize() => Size;
+        public string GetSpace() => Space;
+        public string GetThemeColor() => ThemeColor;
+        public string GetThemeShade() => ThemeShade;
+        public string GetThemeTint() => ThemeTint;
+        public string GetVal() => Val;
 
         public DOBorder(DocumentFormat.OpenXml.Wordprocessing.BorderType borderType)
         {
@@ -25,12 +35,24 @@ namespace Document_Office.Net
             ThemeTint = borderType.ThemeTint;
             Val = borderType.Val.InnerText;
         }
+        
+        public DOBorder(DOBorder border)
+        {
+            Color = border.GetColor();
+            Frame = border.GetFrame();
+            Shadow = border.GetShadow();
+            Size = border.GetSize();
+            Space = border.GetSpace();
+            ThemeColor = border.GetThemeColor();
+            ThemeShade = border.GetThemeShade();
+            ThemeTint = border.GetThemeTint();
+            Val = border.GetVal();
+        }
     }
 
     public class DOBottomBorder : DOBorder
     {
         public DOBottomBorder(DocumentFormat.OpenXml.Wordprocessing.BottomBorder bottomBorder) : base(bottomBorder) { }
-
     }
 
     public class DOEndBorder : DOBorder
