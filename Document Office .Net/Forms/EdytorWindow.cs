@@ -43,7 +43,6 @@ namespace Document_Office.Net.Forms
             FileFullName = FileName;
             DocumentTmpName = Path.GetFileNameWithoutExtension(FileName);
         }
-
         void InitializeValues()
         {
             duplicateLabel.Text = $"Liczba kopii możliwych do zrobienia: {DuplicateCount}";
@@ -52,7 +51,6 @@ namespace Document_Office.Net.Forms
             comboBox1.Text = INITIALIZE_COMBOBOX_VALUE;
             PanelNewspaperHeight = (int)(panelNewspaper.Size.Height / 1.3);
         }
-
         void OpenDocx(string f)
         {
             using (WordprocessingDocument word = WordprocessingDocument.Open(f, true))
@@ -87,7 +85,6 @@ namespace Document_Office.Net.Forms
                 }
             }
         }
-
         void LabelRun_Event_Click(object sender, EventArgs e)
         {
             if (textBox1 != null)
@@ -108,6 +105,7 @@ namespace Document_Office.Net.Forms
                 Font = new System.Drawing.Font("Microsoft Sans Serif", FONT_SIZE, FontStyle.Regular, GraphicsUnit.Point, 238)
             };
             int t = 0;
+            //DOEngine(ref textBox, label.Text);
             textBox.KeyDown += new KeyEventHandler((object keySender, KeyEventArgs keyArgs) =>
             {
                 TextBox Box1 = (TextBox)keySender;
@@ -134,7 +132,6 @@ namespace Document_Office.Net.Forms
             panelNewspaper.Controls.Add(textBox);
             textBox1 = textBox;
         }
-
         void MapDODocumentObject(DOParagraph docParag, ref int t, ref string oldV, string newValue)
         {
             if (t > NeededCountFile)
@@ -149,14 +146,14 @@ namespace Document_Office.Net.Forms
                 dODocumentTemplate.NameDocument = DocTmpName;
                 dODocumentTemplate.FullPathWithFileName = Path.GetDirectoryName(FileFullName);
                 DOParagraph dOParagraph = new DOParagraph();
+                dOParagraph.SetDOID(docParag.GetDOID());
 
                 foreach (DORun doc in docParag.ListRuns)
                 {
                     DORun oRun = new DORun();
+                    oRun.SetGuid(doc.DORunID);
 
-                    DORunProp newRunProp = doc.Properties;
-
-                    oRun.Properties = newRunProp;
+                    oRun.Properties = doc.Properties;
 
                     foreach (string oText in doc.ListText)
                     {
@@ -177,6 +174,181 @@ namespace Document_Office.Net.Forms
             else
             {
                 DODocumentTemplate documentTemplate2 = documentTemplateDictionary[j];
+                DODocumentTemplate dODocumentTemplate3 = new DODocumentTemplate();
+                dODocumentTemplate3.NameDocument = documentTemplateDictionary[j].NameDocument;
+
+                foreach (DOParagraph dOParagraph1 in documentTemplate2.NewDocsElements)
+                {
+                    DOParagraph dOParagraph2 = new DOParagraph();
+                    dOParagraph2.SetDOID(dOParagraph1.GetDOID());
+                    dOParagraph2.paragraphProperties = dOParagraph1.paragraphProperties;
+
+                    foreach (DORun dORun in dOParagraph1.ListRuns)
+                    {
+                        DORun dO = new DORun();
+                        dO.SetGuid(dORun.DORunID);
+                        dO.Properties = dORun.Properties;
+
+                        foreach (string dOText2 in dORun.ListText)
+                        {
+                            if (dOText2 != oldV)
+                                dO.ListText.Add(dOText2);
+
+                            if (dOText2 == oldV)
+                                dO.ListText.Add(newValue);
+                        }
+                        dOParagraph2.ListRuns.Add(dO);
+                    }
+                    dODocumentTemplate3.NewDocsElements.Add(dOParagraph2);
+                }
+                documentTemplateDictionary[j] = dODocumentTemplate3;
+            }
+        }
+        void CheckIndex(ref int idx, int maxCount)
+        {
+            if (idx < maxCount)
+            {
+                idx++;
+            }
+            else
+            {
+                idx = 0;
+            }
+        }
+        void CreateLabel(DORun FindedRun, ref int x)
+        {
+            Label LabelRun = new Label()
+            {
+                Location = new Point(x, 0),
+                BorderStyle = BorderStyle.FixedSingle,
+                Cursor = Cursors.Hand,
+                AutoSize = true,
+                Tag = FindedRun.DORunID,
+                Font = FindedRun.Properties.GetFontSize()
+            };
+            LabelRun.Click += new EventHandler(LabelRun_Event_Click);
+            foreach (string FindedStr in FindedRun.ListText)
+            {
+                LabelRun.Text = FindedStr;
+                if (LabelRun.Text == " ")
+                    x += 17;
+            }
+            DOElementContainer.Controls.Add(LabelRun);
+            if (LabelRun.Size.Width <= 20)
+                x += LabelRun.Size.Width - 13;
+            else
+                x += LabelRun.Size.Width + 4;
+        }
+
+        void MapDOTableObject(DOTable dOTable, ref int x, ref string oldValue, string newValue)
+        {
+            if (x > NeededCountFile)
+                x = 1;
+
+            string DocTmpName = $"{DocumentTmpName} {x}{Path.GetExtension(FileFullName)}";
+            j = DocTmpName;
+
+            if (!documentTemplateDictionary.ContainsKey(j))
+            {
+                DODocumentTemplate dODocumentTemplate = 
+                    new DODocumentTemplate();
+                dODocumentTemplate.NameDocument = DocTmpName;
+                dODocumentTemplate.FullPathWithFileName =
+                    Path.GetDirectoryName(FileFullName);
+
+                DOTable table = new DOTable();
+                table.SetDOID(dOTable.GetDOID());
+                table.TableProperties = dOTable.TableProperties;
+                table.TableGrid = dOTable.TableGrid;
+
+                foreach (DOTableRow rowList in dOTable.TableRowList)
+                {
+                    DOTableRow row = new DOTableRow();
+                    row.SetGuid(rowList.TableRowGuid);
+                    row.TableRowProperties = rowList.TableRowProperties;
+
+                   foreach(DOTableCell cell in rowList.TableCells)
+                    {
+                        DOTableCell dOTableCell = new DOTableCell();
+                        dOTableCell.SetGuid(cell.TableCellGuid);
+                        dOTableCell.TableCellProperties = cell.TableCellProperties;
+
+                       foreach(DOParagraph pa in cell.TableParagraphs)
+                        {
+                            DOParagraph dOParagraph = new DOParagraph();
+                            dOParagraph.SetDOID(pa.GetDOID());
+                            dOParagraph.paragraphProperties = pa.paragraphProperties;
+
+                            foreach (DORun doc in pa.ListRuns)
+                            {
+                                DORun oRun = new DORun();
+                                oRun.SetGuid(doc.DORunID);
+
+                                oRun.Properties = doc.Properties;
+
+                                foreach (string oText in doc.ListText)
+                                {
+                                    if (oText != null)
+                                    {
+                                        if (oText != oldValue)
+                                            oRun.ListText.Add(oText);
+
+                                        if (oText == oldValue)
+                                            oRun.ListText.Add(newValue);
+                                    }
+                                }
+                                dOParagraph.ListRuns.Add(oRun);
+                            }
+                            dOTableCell.TableParagraphs.Add(dOParagraph);
+                        }
+                       row.TableCells.Add(dOTableCell);
+                    }
+                   table.TableRowList.Add(row);
+                }
+
+                dODocumentTemplate.NewDocsElements.Add(table);
+                documentTemplateDictionary.Add(DocTmpName, dODocumentTemplate);
+
+                var jjjjjjjjjjjj = documentTemplateDictionary;
+
+
+
+
+
+
+
+
+
+
+
+
+                /*foreach (DORun doc in docParag.ListRuns)
+                {
+                    DORun oRun = new DORun();
+
+                    DORunProp newRunProp = doc.Properties;
+
+                    oRun.Properties = newRunProp;
+
+                    foreach (string oText in doc.ListText)
+                    {
+                        if (oText != null)
+                        {
+                            if (oText != oldV)
+                                oRun.ListText.Add(oText);
+
+                            if (oText == oldV)
+                                oRun.ListText.Add(newValue);
+                        }
+                    }
+                    dOParagraph.ListRuns.Add(oRun);
+                }*/
+                /*dODocumentTemplate.NewDocsElements.Add(dOParagraph);
+                documentTemplateDictionary.Add(DocTmpName, dODocumentTemplate);*/
+            }
+            else
+            {
+                /*DODocumentTemplate documentTemplate2 = documentTemplateDictionary[j];
                 DODocumentTemplate dODocumentTemplate3 = new DODocumentTemplate();
                 dODocumentTemplate3.NameDocument = j;
 
@@ -202,46 +374,10 @@ namespace Document_Office.Net.Forms
                     }
                     dODocumentTemplate3.NewDocsElements.Add(dOParagraph2);
                 }
-                documentTemplateDictionary[j] = dODocumentTemplate3;
+                documentTemplateDictionary[j] = dODocumentTemplate3;*/
             }
         }
 
-        void CheckIndex(ref int idx, int maxCount)
-        {
-            if (idx < maxCount)
-            {
-                idx++;
-            }
-            else
-            {
-                idx = 0;
-            }
-        }
-
-        void CreateLabel(DORun FindedRun, ref int x)
-        {
-            Label LabelRun = new Label()
-            {
-                Location = new Point(x, 0),
-                BorderStyle = BorderStyle.FixedSingle,
-                Cursor = Cursors.Hand,
-                AutoSize = true,
-                Tag = FindedRun.DORunID,
-                Font = FindedRun.Properties.FontSize
-            };
-            LabelRun.Click += new EventHandler(LabelRun_Event_Click);
-            foreach (string FindedStr in FindedRun.ListText)
-            {
-                LabelRun.Text = FindedStr;
-                if (LabelRun.Text == " ")
-                    x += 17;
-            }
-            DOElementContainer.Controls.Add(LabelRun);
-            if (LabelRun.Size.Width <= 20)
-                x += LabelRun.Size.Width - 13;
-            else
-                x += LabelRun.Size.Width + 4;
-        }
         void TableEventClick(object sender, EventArgs tableEventArgs)
         {
             if (textBox1 != null)
@@ -258,7 +394,7 @@ namespace Document_Office.Net.Forms
             TextBox textBox = new TextBox()
             {
                 Size = new Size((int)((panelNewspaper.Size.Width / 1.2) + 10), 70),
-                Location = new Point(59, PanelNewspaperHeight),
+                Location = new Point(41, PanelNewspaperHeight + 20),
                 Font = new System.Drawing.Font("Microsoft Sans Serif", FONT_SIZE, FontStyle.Regular, GraphicsUnit.Point, 238)
             };
             int t = 0;
@@ -275,7 +411,7 @@ namespace Document_Office.Net.Forms
                             t++;
                             DuplicateCount = DuplicateCount -= 1;
                             duplicateLabel.Text = $"Liczba kopii możliwych do zrobienia: {DuplicateCount}";
-                            //MapDODocumentObject(docParag, ref t, ref oldV, Box1.Text);
+                            MapDOTableObject(docTable, ref t, ref oldV, Box1.Text);
                             Box1.Text = "";
                         }
                         else { return; }
@@ -356,7 +492,6 @@ namespace Document_Office.Net.Forms
                 x = 4;
             }
         }
-
         void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             ComboBox combo = (ComboBox)sender;
@@ -388,7 +523,11 @@ namespace Document_Office.Net.Forms
                 }
             }
         }
-
         void button1_Click(object sender, EventArgs e){}
+        void DOEngine(ref TextBox textBox, string labelText) 
+        {
+            string placeholder = $"Z({labelText})N()W()";
+            textBox.Text = placeholder;
+        }
     }
 }

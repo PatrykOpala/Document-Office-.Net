@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Windows.Forms.VisualStyles;
 
 namespace Document_Office.Net
 {
@@ -28,6 +29,8 @@ namespace Document_Office.Net
         }
 
         public Guid GetDOID() => ((IDOElement)this).DOID;
+
+        public void SetDOID(Guid guid) => ((IDOElement)this).DOID = guid; 
 
         string IDOElement.GetType() => ((IDOElement)this).Type;
     }
@@ -238,13 +241,13 @@ namespace Document_Office.Net
         public object TableRowProperties { get; set; }
         public List<DOTableCell> TableCells = new List<DOTableCell>();
         public Guid TableRowGuid { get; set; }
-        public DOTableRow()
-        {
-            TableRowGuid = Guid.NewGuid();
-        }
+        public DOTableRow(){}
 
+        public void SetGuid(Guid guid) => this.TableRowGuid = guid;
         public DOTableRow(DocumentFormat.OpenXml.Wordprocessing.TableRow tableRow, Guid doID)
         {
+            TableRowGuid = Guid.NewGuid();
+
             foreach (DocumentFormat.OpenXml.Wordprocessing.TableRowProperties tableRowProperties in tableRow.Elements<DocumentFormat.OpenXml.Wordprocessing.TableRowProperties>())
                 TableRowProperties = new DOTableRowProp(tableRowProperties);
 
@@ -269,6 +272,8 @@ namespace Document_Office.Net
         public DOTableCellProp TableCellProperties { get; set; }
         public List<DOParagraph> TableParagraphs = new List<DOParagraph>();
         public Guid TableCellGuid { get; set; }
+        public void SetGuid(Guid guid) => this.TableCellGuid = guid;
+        public DOTableCell() { }
         public DOTableCell(DocumentFormat.OpenXml.Wordprocessing.TableCell tableCell, Guid d)
         {
             TableCellGuid = Guid.NewGuid();

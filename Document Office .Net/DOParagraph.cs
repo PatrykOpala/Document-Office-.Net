@@ -28,6 +28,8 @@ namespace Document_Office.Net
 
         public Guid GetDOID() => ((IDOElement)this).DOID;
 
+        public void SetDOID(Guid guid) => ((IDOElement)this).DOID = guid;
+
         string IDOElement.GetType() => ((IDOElement)this).Type;
 
         public bool GetIsEmpty() => this.IsEmpty;
@@ -96,7 +98,7 @@ namespace Document_Office.Net
         public DORun() { }
         public DORun(DocumentFormat.OpenXml.Wordprocessing.Run r, Guid id)
         {
-            DORunID = id;
+            DORunID = Guid.NewGuid();
             DORunProp props = new DORunProp(r.RunProperties);
             Properties = props;
 
@@ -105,6 +107,8 @@ namespace Document_Office.Net
                 ListText.Add(rText.Text);
             }
         }
+
+        public void SetGuid(Guid guid) => DORunID = guid;
     }
 
     public struct DORunProp
@@ -139,7 +143,7 @@ namespace Document_Office.Net
         public bool GetItalicComplexScript() => ItalicComplexScript;
         public bool GetNumberSpacing() => NumberSpacing;
         public bool GetOutline() => Outline;
-        public System.Drawing.Font GetFont() => FontSize;
+        public System.Drawing.Font GetFontSize() => FontSize;
         public bool GetSmallCaps() => SmallCaps;
         public bool GetStrike() => Strike;
         public bool GetSpacing() => Spacing;

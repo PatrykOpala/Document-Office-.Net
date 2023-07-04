@@ -83,7 +83,9 @@
     <Compile Include="Forms\EdytorWindow.Designer.cs">
       <DependentUpon>EdytorWindow.cs</DependentUpon>
     </Compile>
+    <Compile Include="Models\DOElementsModel.cs" />
     <Compile Include="PhItem.cs" />
+    <Compile Include="ProcessesDOElements.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Forms\EdytorWindow.resx">
