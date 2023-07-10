@@ -175,13 +175,13 @@ namespace Document_Office.Net.Forms
             {
                 DODocumentTemplate documentTemplate2 = documentTemplateDictionary[j];
                 DODocumentTemplate dODocumentTemplate3 = new DODocumentTemplate();
-                dODocumentTemplate3.NameDocument = documentTemplateDictionary[j].NameDocument;
+                dODocumentTemplate3.NameDocument = documentTemplate2.NameDocument;
 
                 foreach (DOParagraph dOParagraph1 in documentTemplate2.NewDocsElements)
                 {
                     DOParagraph dOParagraph2 = new DOParagraph();
                     dOParagraph2.SetDOID(dOParagraph1.GetDOID());
-                    dOParagraph2.paragraphProperties = dOParagraph1.paragraphProperties;
+                    dOParagraph2.SetParagraphProperties(dOParagraph1.GetParagraphProperties());
 
                     foreach (DORun dORun in dOParagraph1.ListRuns)
                     {
@@ -271,13 +271,13 @@ namespace Document_Office.Net.Forms
                     {
                         DOTableCell dOTableCell = new DOTableCell();
                         dOTableCell.SetGuid(cell.TableCellGuid);
-                        dOTableCell.TableCellProperties = cell.TableCellProperties;
+                        dOTableCell.SetTableCellProperties(cell.GetTableCellProperties());
 
                        foreach(DOParagraph pa in cell.TableParagraphs)
                         {
                             DOParagraph dOParagraph = new DOParagraph();
                             dOParagraph.SetDOID(pa.GetDOID());
-                            dOParagraph.paragraphProperties = pa.paragraphProperties;
+                            dOParagraph.SetParagraphProperties(pa.GetParagraphProperties());
 
                             foreach (DORun doc in pa.ListRuns)
                             {
@@ -309,72 +309,67 @@ namespace Document_Office.Net.Forms
                 dODocumentTemplate.NewDocsElements.Add(table);
                 documentTemplateDictionary.Add(DocTmpName, dODocumentTemplate);
 
-                var jjjjjjjjjjjj = documentTemplateDictionary;
-
-
-
-
-
-
-
-
-
-
-
-
-                /*foreach (DORun doc in docParag.ListRuns)
-                {
-                    DORun oRun = new DORun();
-
-                    DORunProp newRunProp = doc.Properties;
-
-                    oRun.Properties = newRunProp;
-
-                    foreach (string oText in doc.ListText)
-                    {
-                        if (oText != null)
-                        {
-                            if (oText != oldV)
-                                oRun.ListText.Add(oText);
-
-                            if (oText == oldV)
-                                oRun.ListText.Add(newValue);
-                        }
-                    }
-                    dOParagraph.ListRuns.Add(oRun);
-                }*/
-                /*dODocumentTemplate.NewDocsElements.Add(dOParagraph);
-                documentTemplateDictionary.Add(DocTmpName, dODocumentTemplate);*/
+                //var jjjjjjjjjjjj = documentTemplateDictionary;
             }
             else
             {
-                /*DODocumentTemplate documentTemplate2 = documentTemplateDictionary[j];
+                DODocumentTemplate documentTemplate2 = documentTemplateDictionary[j];
                 DODocumentTemplate dODocumentTemplate3 = new DODocumentTemplate();
-                dODocumentTemplate3.NameDocument = j;
+                dODocumentTemplate3.NameDocument = documentTemplate2.NameDocument;
+                dODocumentTemplate3.FullPathWithFileName = documentTemplate2.FullPathWithFileName;
 
-                foreach (DOParagraph dOParagraph1 in documentTemplate2.NewDocsElements)
+                foreach(DOTable table1 in documentTemplate2.NewDocsElements)
                 {
-                    DOParagraph dOParagraph2 = new DOParagraph();
-
-                    foreach (DORun dORun in dOParagraph1.ListRuns)
+                    DOTable table2 = new DOTable();
+                    table2.SetDOID(table1.GetDOID());
+                    table2.TableProperties = table1.TableProperties;
+                    table2.TableGrid = table1.TableGrid;
+                    
+                    foreach(DOTableRow row2 in table1.TableRowList)
                     {
-                        DORun dO = new DORun();
-                        DORunProp newRunProp2 = dORun.Properties;
-                        dO.Properties = newRunProp2;
-
-                        foreach (string dOText2 in dORun.ListText)
+                        DOTableRow row3 = new DOTableRow();
+                        row3.SetGuid(row2.TableRowGuid);
+                        row3.TableRowProperties = row2.TableRowProperties;
+                        
+                        foreach(DOTableCell dOTableCell in row2.TableCells)
                         {
-                            if (dOText2 != oldV)
-                                dO.ListText.Add(dOText2);
+                            DOTableCell dOTableCell2 = new DOTableCell();
+                            dOTableCell2.SetGuid(dOTableCell.GetTableCellGuid());
+                            dOTableCell2.SetTableCellProperties(dOTableCell.GetTableCellProperties());
+                            
+                            foreach(DOParagraph dOParagraph in dOTableCell.TableParagraphs)
+                            {
+                                DOParagraph dOParagraph2 = new DOParagraph();
+                                dOParagraph2.SetParagraphProperties(dOParagraph.GetParagraphProperties());
+                                dOParagraph2.SetDOID(dOParagraph.GetDOID());
+                                
+                                foreach(DORun dORun2 in dOParagraph.ListRuns)
+                                {
+                                    DORun dO = new DORun();
+                                    dO.SetGuid(dORun2.DORunID);
+                                    dO.Properties = dORun2.Properties;
 
-                            if (dOText2 == oldV)
-                                dO.ListText.Add(newValue);
+                                    foreach (string dOText2 in dORun2.ListText)
+                                    {
+                                        if (dOText2 != oldValue)
+                                            dO.ListText.Add(dOText2);
+
+                                        if (dOText2 == oldValue)
+                                            dO.ListText.Add(newValue);
+                                    }
+                                    dOParagraph2.ListRuns.Add(dO);
+                                }
+                                dOTableCell2.TableParagraphs.Add(dOParagraph2);
+                            }
+                            row3.TableCells.Add(dOTableCell2);
                         }
-                        dOParagraph2.ListRuns.Add(dO);
+                        table2.TableRowList.Add(row3);
                     }
-                    dODocumentTemplate3.NewDocsElements.Add(dOParagraph2);
+                    dODocumentTemplate3.NewDocsElements.Add(table2);
                 }
-                documentTemplateDictionary[j] = dODocumentTemplate3;*/
+                documentTemplateDictionary[j] = dODocumentTemplate3;
+
+                var controlPoint = documentTemplateDictionary[j];
             }
         }
 

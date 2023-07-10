@@ -8,7 +8,7 @@ namespace Document_Office.Net
     {
         string IDOElement.Type { get; set; } = "Paragraph";
         public List<DORun> ListRuns = new List<DORun>();
-        public DOParagProp paragraphProperties { get; set; }
+        private DOParagProp paragraphProperties { get; set; }
 
         private bool IsEmpty { get; set; }
 
@@ -33,6 +33,10 @@ namespace Document_Office.Net
         string IDOElement.GetType() => ((IDOElement)this).Type;
 
         public bool GetIsEmpty() => this.IsEmpty;
+        public void SetParagraphProperties(DOParagProp paragraphProperties) => this.paragraphProperties = paragraphProperties;
+        public DOParagProp GetParagraphProperties() => paragraphProperties;
+
+        public List<DORun> GetListRuns() => ListRuns;
     }
 
     public class DOParagProp

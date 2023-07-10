@@ -18,7 +18,7 @@ namespace Document_Office.Net
                 ListRuns.Add(dORunModel);
             }
 
-            DOParagPropModel dOParagPropModel = new DOParagPropModel(parag.paragraphProperties);
+            DOParagPropModel dOParagPropModel = new DOParagPropModel(parag.GetParagraphProperties());
 
             ParagraphProperties = dOParagPropModel;
         }

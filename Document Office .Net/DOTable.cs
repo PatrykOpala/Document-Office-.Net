@@ -269,10 +269,9 @@ namespace Document_Office.Net
 
     public class DOTableCell
     {
-        public DOTableCellProp TableCellProperties { get; set; }
+        private DOTableCellProp TableCellProperties { get; set; }
         public List<DOParagraph> TableParagraphs = new List<DOParagraph>();
         public Guid TableCellGuid { get; set; }
-        public void SetGuid(Guid guid) => this.TableCellGuid = guid;
         public DOTableCell() { }
         public DOTableCell(DocumentFormat.OpenXml.Wordprocessing.TableCell tableCell, Guid d)
         {
@@ -282,6 +281,10 @@ namespace Document_Office.Net
             foreach (DocumentFormat.OpenXml.Wordprocessing.Paragraph TCellParagraph in tableCell.Elements<DocumentFormat.OpenXml.Wordprocessing.Paragraph>())
                 TableParagraphs.Add(new DOParagraph(TCellParagraph, d));
         }
+        public void SetGuid(Guid guid) => TableCellGuid = guid;
+        public Guid GetTableCellGuid() => TableCellGuid;
+        public void SetTableCellProperties(DOTableCellProp TableCellProperties) => this.TableCellProperties = TableCellProperties;
+        public DOTableCellProp GetTableCellProperties() => TableCellProperties;
     }
 
     public class DOTableCellProp
