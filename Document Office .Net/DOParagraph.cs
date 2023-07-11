@@ -6,40 +6,34 @@ namespace Document_Office.Net
 {
     public class DOParagraph : IDOElement
     {
-        string IDOElement.Type { get; set; } = "Paragraph";
-        public List<DORun> ListRuns = new List<DORun>();
-        private DOParagProp paragraphProperties { get; set; }
+        private string _type = "Paragraph";
+        public string Type { get; }
+        private List<DORun> _listRuns = new List<DORun>();
+        public DORun[] ListRuns { get { return _listRuns.ToArray(); } }
+        private DOParagProp _paragraphProperties;
+        public DOParagProp ParagraphProperties { get { return _paragraphProperties; } set { _paragraphProperties = value; } }
 
-        private bool IsEmpty { get; set; }
+        public bool IsEmpty { get; private set; }
 
-        Guid IDOElement.DOID { get; set; }
+        private Guid _paragraphGuid;
+        public Guid ParagraphGuid { get { return _paragraphGuid; } set { _paragraphGuid = value; } }
 
         public DOParagraph(){}
 
-        public DOParagraph(DocumentFormat.OpenXml.Wordprocessing.Paragraph b, Guid id)
+        public DOParagraph(DocumentFormat.OpenXml.Wordprocessing.Paragraph b)
         {
-            ((IDOElement)this).DOID = id;
+            
             foreach (DocumentFormat.OpenXml.Wordprocessing.Run r in b.Elements<DocumentFormat.OpenXml.Wordprocessing.Run>())
             {
                 IsEmpty = String.IsNullOrEmpty(r.InnerText);
-                ListRuns.Add(new DORun(r, Guid.NewGuid()));
+                _listRuns.Add(new DORun(r));
             }
         }
 
-        public Guid GetDOID() => ((IDOElement)this).DOID;
-
-        public void SetDOID(Guid guid) => ((IDOElement)this).DOID = guid;
-
-        string IDOElement.GetType() => ((IDOElement)this).Type;
-
-        public bool GetIsEmpty() => this.IsEmpty;
-        public void SetParagraphProperties(DOParagProp paragraphProperties) => this.paragraphProperties = paragraphProperties;
-        public DOParagProp GetParagraphProperties() => paragraphProperties;
-
-        public List<DORun> GetListRuns() => ListRuns;
+        public void AddRunToListRuns(DORun dORun) => _listRuns.Add(dORun);
     }
 
-    public class DOParagProp
+    public struct DOParagProp
     {
         /*
          AdjustRightIndent
@@ -96,63 +90,44 @@ namespace Document_Office.Net
 
     public class DORun
     {
-        public Guid DORunID { get; set; }
-        public List<string> ListText = new List<string>();
+        private Guid _doRunGuid;
+        public Guid DORunGuid { get { return _doRunGuid; } set { _doRunGuid = value; } }
+        private List<string> _listText = new List<string>();
+        public string[] ListText { get { return _listText.ToArray(); } }
         public DORunProp Properties { get; set; }
         public DORun() { }
-        public DORun(DocumentFormat.OpenXml.Wordprocessing.Run r, Guid id)
+        public DORun(DocumentFormat.OpenXml.Wordprocessing.Run r)
         {
-            DORunID = Guid.NewGuid();
+            DORunGuid = Guid.NewGuid();
             DORunProp props = new DORunProp(r.RunProperties);
             Properties = props;
 
             foreach (DocumentFormat.OpenXml.Wordprocessing.Text rText in r.Elements<DocumentFormat.OpenXml.Wordprocessing.Text>())
             {
-                ListText.Add(rText.Text);
+                _listText.Add(rText.Text);
             }
         }
-
-        public void SetGuid(Guid guid) => DORunID = guid;
     }
 
     public struct DORunProp
     {
-        private bool Bold;
-        private DOBorder Border;
-        private bool BoldComplexScript;
-        private bool Caps;
-        private Color? _Color;
-        private bool CharakterScale;
-        private bool ComplexScript;
-        private bool Highlight;
-        private bool Italic;
-        private bool ItalicComplexScript;
-        private bool NumberSpacing;
-        private bool Outline;
-        private System.Drawing.Font FontSize;
-        private bool SmallCaps;
-        private bool Spacing;
-        private bool Strike;
-        private string Underline;
-
-        public bool GetBold() => Bold;
-        public DOBorder GetBorder() => Border;
-        public bool GetBoldComplexScript() => BoldComplexScript;
-        public bool GetCaps() => Caps;
-        public Color? GetColor() => _Color;
-        public bool GetCharakterScale() => CharakterScale;
-        public bool GetComplexScript() => ComplexScript;
-        public bool GetHighlight() => Highlight;
-        public bool GetItalic() => Italic;
-        public bool GetItalicComplexScript() => ItalicComplexScript;
-        public bool GetNumberSpacing() => NumberSpacing;
-        public bool GetOutline() => Outline;
-        public System.Drawing.Font GetFontSize() => FontSize;
-        public bool GetSmallCaps() => SmallCaps;
-        public bool GetStrike() => Strike;
-        public bool GetSpacing() => Spacing;
-        public string GetUnderline() => Underline;
-
+        public bool Bold { get; private set; }
+        public DOBorder Border { get; private set; }
+        public bool BoldComplexScript { get; private set; }
+        public bool Caps { get; private set; }
+        public Color? _Color { get; private set; }
+        public bool CharakterScale { get; private set; }
+        public bool ComplexScript { get; private set; }
+        public bool Highlight { get; private set; }
+        public bool Italic { get; private set; }
+        public bool ItalicComplexScript { get; private set; }
+        public bool NumberSpacing { get; private set; }
+        public bool Outline { get; private set; }
+        public System.Drawing.Font? FontSize { get; private set; }
+        public bool SmallCaps { get; private set; }
+        public bool Spacing { get; private set; }
+        public bool Strike { get; private set; }
+        public string Underline { get; private set; }
         public DORunProp(DocumentFormat.OpenXml.Wordprocessing.RunProperties runProperties)
         {
             Bold = false;
@@ -167,7 +142,7 @@ namespace Document_Office.Net
             ItalicComplexScript = false;
             NumberSpacing = false;
             Outline = false;
-            FontSize = new System.Drawing.Font("Microsoft Sans Serif", 30, FontStyle.Regular, GraphicsUnit.Point, 238);
+            FontSize = null;
             SmallCaps = false;
             Spacing = false;
             Strike = false;
@@ -214,23 +189,23 @@ namespace Document_Office.Net
 
     /*public class DORunProp
     {
-        public bool Bold { get; set; }
-        public DOBorder Border { get; set; }
-        public bool BoldComplexScript { get; set; }
-        public bool Caps { get; set; }
-        public Color? _Color { get; set; }
-        public bool CharakterScale { get; set; }
-        public bool ComplexScript { get; set; }
-        public bool Highlight { get; set; }
-        public bool Italic { get; set; }
-        public bool ItalicComplexScript { get; set; }
-        public bool NumberSpacing { get; set; }
-        public bool Outline { get; set; }
-        public System.Drawing.Font FontSize { get; set; }
-        public bool SmallCaps { get; set; }
-        public bool Spacing { get; set; }
-        public bool Strike { get; set; }
-        public string Underline { get; set; }
+        public bool Bold { get; private set; }
+        public DOBorder Border { get; private set; }
+        public bool BoldComplexScript { get; private set; }
+        public bool Caps { get; private set; }
+        public Color? _Color { get; private set; }
+        public bool CharakterScale { get; private set; }
+        public bool ComplexScript { get; private set; }
+        public bool Highlight { get; private set; }
+        public bool Italic { get; private set; }
+        public bool ItalicComplexScript { get; private set; }
+        public bool NumberSpacing { get; private set; }
+        public bool Outline { get; private set; }
+        public System.Drawing.Font FontSize { get;private set; }
+        public bool SmallCaps { get; private set; }
+        public bool Spacing { get; private set; }
+        public bool Strike { get; private set; }
+        public string Underline { get; private set; }
         public DORunProp(DocumentFormat.OpenXml.Wordprocessing.RunProperties runProperties)
         {
             if(runProperties != null)
@@ -290,7 +265,7 @@ namespace Document_Office.Net
         }
     }*/
 
-    public class DOShading
+    public struct DOShading
     {
         public string Color { get; set; }
         public string Fill { get; set; }
@@ -303,44 +278,44 @@ namespace Document_Office.Net
         public string Val { get; set; }
     }
 
-    public class ExtendsDORunProp
+    public struct ExtendsDORunProp
     {
-        public bool ContextualAlternatives { get; set; } = false;
-        public bool DoubleStrike { get; set; } = false;
-        public bool EastAsianLayout { get; set; } = false;
-        public bool Emboss { get; set; } = false;
-        public bool Emphasis { get; set; } = false;
-        public bool FillTextEffect { get; set; } = false;
-        public bool FitText { get; set; } = false;
-        public bool FontSizeComplexScript { get; set; } = false;
-        public bool Glow { get; set; } = false;
-        public bool Imprint { get; set; } = false;
-        public bool Kern { get; set; } = false;
-        public bool Languages { get; set; } = false;
-        public bool Ligatures { get; set; } = false;
-        public bool NoProof { get; set; } = false;
-        public bool NumberSpacing { get; set; } = false;
-        public bool NumberingFormat { get; set; } = false;
-        public bool Position { get; set; } = false;
-        public bool Properties3D { get; set; } = false;
-        public bool Reflection { get; set; } = false;
-        public bool RightToLeftText { get; set; } = false;
-        public bool RunFonts { get; set; } = false;
-        public bool RunPropertiesChange { get; set; } = false;
-        public bool RunStyle { get; set; } = false;
-        public bool Scene3D { get; set; } = false;
+        public bool ContextualAlternatives { get; set; }
+        public bool DoubleStrike { get; set; }
+        public bool EastAsianLayout { get; set; }
+        public bool Emboss { get; set; }
+        public bool Emphasis { get; set; }
+        public bool FillTextEffect { get; set; }
+        public bool FitText { get; set; }
+        public bool FontSizeComplexScript { get; set; }
+        public bool Glow { get; set; }
+        public bool Imprint { get; set; }
+        public bool Kern { get; set; }
+        public bool Languages { get; set; }
+        public bool Ligatures { get; set; }
+        public bool NoProof { get; set; }
+        public bool NumberSpacing { get; set; }
+        public bool NumberingFormat { get; set; }
+        public bool Position { get; set; }
+        public bool Properties3D { get; set; }
+        public bool Reflection { get; set; }
+        public bool RightToLeftText { get; set; }
+        public bool RunFonts { get; set; }
+        public bool RunPropertiesChange { get; set; }
+        public bool RunStyle { get; set; }
+        public bool Scene3D { get; set; }
         public DOShading Shading { get; set; }
-        public bool Shadow { get; set; } = false;
-        public bool Shadow14 { get; set; } = false;
-        public bool SnapToGrid { get; set; } = false;
-        public bool Spacing { get; set; } = false;
-        public bool SpecVanish { get; set; } = false;
-        public bool StylisticSets { get; set; } = false;
-        public bool TextEffect { get; set; } = false;
-        public bool TextOutlineEffect { get; set; } = false;
-        public bool Vanish { get; set; } = false;
-        public bool VerticalTextAlignment { get; set; } = false;
-        public bool WebHidden { get; set; } = false;
+        public bool Shadow { get; set; }
+        public bool Shadow14 { get; set; }
+        public bool SnapToGrid { get; set; }
+        public bool Spacing { get; set; }
+        public bool SpecVanish { get; set; }
+        public bool StylisticSets { get; set; }
+        public bool TextEffect { get; set; }
+        public bool TextOutlineEffect { get; set; }
+        public bool Vanish { get; set; }
+        public bool VerticalTextAlignment { get; set; }
+        public bool WebHidden { get; set; }
 
     }
 }
