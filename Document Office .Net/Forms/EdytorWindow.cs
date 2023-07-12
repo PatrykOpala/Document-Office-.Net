@@ -60,9 +60,9 @@ namespace Document_Office.Net.Forms
                 {
                     if (bd.LocalName == "p")
                     {
-                        DOParagraph paragrapgh = new DOParagraph((Paragraph)bd, Guid.NewGuid());
-                        if (paragrapgh.GetIsEmpty())
-                            comboBox1.Items.Add(new DOItem(paragrapgh.GetDOID(), "Wiersz: [Pusty]", "Wiersz: [Pusty]"));
+                        DOParagraph paragrapgh = new DOParagraph((Paragraph)bd);
+                        if (paragrapgh.IsEmpty)
+                            comboBox1.Items.Add(new DOItem(paragrapgh.ParagraphGuid, "Wiersz: [Pusty]", "Wiersz: [Pusty]"));
                         else
                         {
                             string m = "Wiersz: ";
@@ -71,15 +71,15 @@ namespace Document_Office.Net.Forms
                                 foreach (string str in run.ListText)
                                     m += str;
                             }
-                            comboBox1.Items.Add(new DOItem(paragrapgh.GetDOID(), m, m));
+                            comboBox1.Items.Add(new DOItem(paragrapgh.ParagraphGuid, m, m));
                         }
                         ButtonElements.Add(paragrapgh);
                     }
                     if (bd.LocalName == "tbl")
                     {
                         o++;
-                        DOTable table = new DOTable((Table)bd, Guid.NewGuid());
-                        comboBox1.Items.Add(new DOItem(table.GetDOID(), $"Tabela: {o}", $"Tabela: {o}"));
+                        DOTable table = new DOTable((Table)bd);
+                        comboBox1.Items.Add(new DOItem(table.TableGuid, $"Tabela: {o}", $"Tabela: {o}"));
                         ButtonElements.Add(table);
                     }
                 }
@@ -146,12 +146,12 @@ namespace Document_Office.Net.Forms
                 dODocumentTemplate.NameDocument = DocTmpName;
                 dODocumentTemplate.FullPathWithFileName = Path.GetDirectoryName(FileFullName);
                 DOParagraph dOParagraph = new DOParagraph();
-                dOParagraph.SetDOID(docParag.GetDOID());
+                dOParagraph.ParagraphGuid = docParag.ParagraphGuid;
 
                 foreach (DORun doc in docParag.ListRuns)
                 {
                     DORun oRun = new DORun();
-                    oRun.SetGuid(doc.DORunID);
+                    oRun.DORunGuid = doc.DORunGuid;
 
                     oRun.Properties = doc.Properties;
 
@@ -160,13 +160,13 @@ namespace Document_Office.Net.Forms
                         if (oText != null)
                         {
                             if (oText != oldV)
-                                oRun.ListText.Add(oText);
+                                oRun.AddText(oText);
 
                             if (oText == oldV)
-                                oRun.ListText.Add(newValue);
+                                oRun.AddText(newValue);
                         }
                     }
-                    dOParagraph.ListRuns.Add(oRun);
+                    dOParagraph.AddRun(oRun);
                 }
                 dODocumentTemplate.NewDocsElements.Add(dOParagraph);
                 documentTemplateDictionary.Add(DocTmpName, dODocumentTemplate);
@@ -180,24 +180,24 @@ namespace Document_Office.Net.Forms
                 foreach (DOParagraph dOParagraph1 in documentTemplate2.NewDocsElements)
                 {
                     DOParagraph dOParagraph2 = new DOParagraph();
-                    dOParagraph2.SetDOID(dOParagraph1.GetDOID());
-                    dOParagraph2.SetParagraphProperties(dOParagraph1.GetParagraphProperties());
+                    dOParagraph2.ParagraphGuid = dOParagraph1.ParagraphGuid;
+                    dOParagraph2.ParagraphProperties = dOParagraph1.ParagraphProperties;
 
                     foreach (DORun dORun in dOParagraph1.ListRuns)
                     {
                         DORun dO = new DORun();
-                        dO.SetGuid(dORun.DORunID);
+                        dO.DORunGuid = dORun.DORunGuid;
                         dO.Properties = dORun.Properties;
 
                         foreach (string dOText2 in dORun.ListText)
                         {
                             if (dOText2 != oldV)
-                                dO.ListText.Add(dOText2);
+                                dO.AddText(dOText2);
 
                             if (dOText2 == oldV)
-                                dO.ListText.Add(newValue);
+                                dO.AddText(newValue);
                         }
-                        dOParagraph2.ListRuns.Add(dO);
+                        dOParagraph2.AddRun(dO);
                     }
                     dODocumentTemplate3.NewDocsElements.Add(dOParagraph2);
                 }
@@ -257,33 +257,32 @@ namespace Document_Office.Net.Forms
                     Path.GetDirectoryName(FileFullName);
 
                 DOTable table = new DOTable();
-                table.SetDOID(dOTable.GetDOID());
+                table.TableGuid = dOTable.TableGuid;
                 table.TableProperties = dOTable.TableProperties;
                 table.TableGrid = dOTable.TableGrid;
 
-                foreach (DOTableRow rowList in dOTable.TableRowList)
+                foreach (DOTableRow rowList in dOTable.TableRows)
                 {
                     DOTableRow row = new DOTableRow();
-                    row.SetGuid(rowList.TableRowGuid);
+                    row.TableRowGuid = rowList.TableRowGuid;
                     row.TableRowProperties = rowList.TableRowProperties;
 
                    foreach(DOTableCell cell in rowList.TableCells)
                     {
                         DOTableCell dOTableCell = new DOTableCell();
-                        dOTableCell.SetGuid(cell.TableCellGuid);
-                        dOTableCell.SetTableCellProperties(cell.GetTableCellProperties());
+                        dOTableCell.TableCellGuid = cell.TableCellGuid;
+                        dOTableCell.TableCellProperties = cell.TableCellProperties;
 
                        foreach(DOParagraph pa in cell.TableParagraphs)
                         {
                             DOParagraph dOParagraph = new DOParagraph();
-                            dOParagraph.SetDOID(pa.GetDOID());
-                            dOParagraph.SetParagraphProperties(pa.GetParagraphProperties());
+                            dOParagraph.ParagraphGuid = pa.ParagraphGuid;
+                            dOParagraph.ParagraphProperties = pa.ParagraphProperties;
 
                             foreach (DORun doc in pa.ListRuns)
                             {
                                 DORun oRun = new DORun();
-                                oRun.SetGuid(doc.DORunID);
-
+                                oRun.DORunGuid = doc.DORunGuid;
                                 oRun.Properties = doc.Properties;
 
                                 foreach (string oText in doc.ListText)
@@ -291,19 +290,19 @@ namespace Document_Office.Net.Forms
                                     if (oText != null)
                                     {
                                         if (oText != oldValue)
-                                            oRun.ListText.Add(oText);
+                                            oRun.AddText(oText);
 
                                         if (oText == oldValue)
-                                            oRun.ListText.Add(newValue);
+                                            oRun.AddText(newValue);
                                     }
                                 }
-                                dOParagraph.ListRuns.Add(oRun);
+                                dOParagraph.AddRun(oRun);
                             }
-                            dOTableCell.TableParagraphs.Add(dOParagraph);
+                            dOTableCell.AddParagraph(dOParagraph);
                         }
-                       row.TableCells.Add(dOTableCell);
+                       row.AddCell(dOTableCell);
                     }
-                   table.TableRowList.Add(row);
+                   table.AddTableRow(row);
                 }
 
                 dODocumentTemplate.NewDocsElements.Add(table);
@@ -321,49 +320,49 @@ namespace Document_Office.Net.Forms
                 foreach(DOTable table1 in documentTemplate2.NewDocsElements)
                 {
                     DOTable table2 = new DOTable();
-                    table2.SetDOID(table1.GetDOID());
+                    table2.TableGuid = table1.TableGuid;
                     table2.TableProperties = table1.TableProperties;
                     table2.TableGrid = table1.TableGrid;
                     
-                    foreach(DOTableRow row2 in table1.TableRowList)
+                    foreach(DOTableRow row2 in table1.TableRows)
                     {
                         DOTableRow row3 = new DOTableRow();
-                        row3.SetGuid(row2.TableRowGuid);
+                        row3.TableRowGuid = row2.TableRowGuid;
                         row3.TableRowProperties = row2.TableRowProperties;
                         
                         foreach(DOTableCell dOTableCell in row2.TableCells)
                         {
                             DOTableCell dOTableCell2 = new DOTableCell();
-                            dOTableCell2.SetGuid(dOTableCell.GetTableCellGuid());
-                            dOTableCell2.SetTableCellProperties(dOTableCell.GetTableCellProperties());
+                            dOTableCell2.TableCellGuid = dOTableCell.TableCellGuid;
+                            dOTableCell2.TableCellProperties = dOTableCell.TableCellProperties;
                             
                             foreach(DOParagraph dOParagraph in dOTableCell.TableParagraphs)
                             {
                                 DOParagraph dOParagraph2 = new DOParagraph();
-                                dOParagraph2.SetParagraphProperties(dOParagraph.GetParagraphProperties());
-                                dOParagraph2.SetDOID(dOParagraph.GetDOID());
+                                dOParagraph2.ParagraphProperties = dOParagraph.ParagraphProperties;
+                                dOParagraph2.ParagraphGuid = dOParagraph.ParagraphGuid;
                                 
                                 foreach(DORun dORun2 in dOParagraph.ListRuns)
                                 {
                                     DORun dO = new DORun();
-                                    dO.SetGuid(dORun2.DORunID);
+                                    dO.DORunGuid = dORun2.DORunGuid;
                                     dO.Properties = dORun2.Properties;
 
                                     foreach (string dOText2 in dORun2.ListText)
                                     {
                                         if (dOText2 != oldValue)
-                                            dO.ListText.Add(dOText2);
+                                            dO.AddText(dOText2);
 
                                         if (dOText2 == oldValue)
-                                            dO.ListText.Add(newValue);
+                                            dO.AddText(newValue);
                                     }
-                                    dOParagraph2.ListRuns.Add(dO);
+                                    dOParagraph2.AddRun(dO);
                                 }
-                                dOTableCell2.TableParagraphs.Add(dOParagraph2);
+                                dOTableCell2.AddParagraph(dOParagraph2);
                             }
-                            row3.TableCells.Add(dOTableCell2);
+                            row3.AddCell(dOTableCell2);
                         }
-                        table2.TableRowList.Add(row3);
+                        table2.AddTableRow(row3);
                     }
                     dODocumentTemplate3.NewDocsElements.Add(table2);
                 }

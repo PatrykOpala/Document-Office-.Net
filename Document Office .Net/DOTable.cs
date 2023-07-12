@@ -3,57 +3,57 @@ using System.Collections.Generic;
 
 namespace Document_Office.Net
 {
-    public class DOTable : IDOElement
-    {
-        private string type = "Table";
-        public string Type { get { return type; } }
-        public DOTableProp TableProperties { get; set; }
-        public DOTableGrid TableGrid { get; set; }
-
-        private Guid tableGuid;
-        public Guid TableGuid
+        public class DOTable : IDOElement
         {
-            get
+            private string type = "Table";
+            public string Type { get { return type; } }
+            public DOTableProp TableProperties { get; set; }
+            public DOTableGrid TableGrid { get; set; }
+
+            private Guid tableGuid;
+            public Guid TableGuid
             {
-                return tableGuid;
+                get
+                {
+                    return tableGuid;
+                }
+                set
+                {
+                    tableGuid = value;
+                }
             }
-            set
+
+            private List<DOTableRow> dOTableRows = new List<DOTableRow>();
+            public DOTableRow[] TableRows { get { return dOTableRows.ToArray(); } }
+
+            public DOTable() { }
+
+            public DOTable(DocumentFormat.OpenXml.Wordprocessing.Table table)
             {
-                tableGuid = value;
+                TableGuid = Guid.NewGuid();
+                foreach (DocumentFormat.OpenXml.Wordprocessing.TableProperties tablePro in table.Elements<DocumentFormat.OpenXml.Wordprocessing.TableProperties>())
+                    TableProperties = new DOTableProp(tablePro);
+
+                foreach (DocumentFormat.OpenXml.Wordprocessing.TableGrid tableGrid in table.Elements<DocumentFormat.OpenXml.Wordprocessing.TableGrid>())
+                    TableGrid = new DOTableGrid(tableGrid);
+
+                foreach (DocumentFormat.OpenXml.Wordprocessing.TableRow tableRow in table.Elements<DocumentFormat.OpenXml.Wordprocessing.TableRow>())
+                    dOTableRows.Add(new DOTableRow(tableRow));
             }
+            public void AddTableRow(DOTableRow tableRow) => dOTableRows.Add(tableRow);
         }
-
-        private List<DOTableRow> dOTableRows = new List<DOTableRow>();
-        public DOTableRow[] TableRows { get { return dOTableRows.ToArray(); } }
-
-        public DOTable() { }
-
-        public DOTable(DocumentFormat.OpenXml.Wordprocessing.Table table)
-        {
-            TableGuid = Guid.NewGuid();
-            foreach (DocumentFormat.OpenXml.Wordprocessing.TableProperties tablePro in table.Elements<DocumentFormat.OpenXml.Wordprocessing.TableProperties>())
-                TableProperties = new DOTableProp(tablePro);
-
-            foreach (DocumentFormat.OpenXml.Wordprocessing.TableGrid tableGrid in table.Elements<DocumentFormat.OpenXml.Wordprocessing.TableGrid>())
-                TableGrid = new DOTableGrid(tableGrid);
-
-            foreach (DocumentFormat.OpenXml.Wordprocessing.TableRow tableRow in table.Elements<DocumentFormat.OpenXml.Wordprocessing.TableRow>())
-                dOTableRows.Add(new DOTableRow(tableRow));
-        }
-        public void AddTableRowItem(DOTableRow tableRow) => dOTableRows.Add(tableRow);
-
         public struct DOTableProp
         {
             public object BiDiVisual { get; set; }
             public object Shading { get; set; }
             public object TableBorders { get; set; }
             public object TableCaption { get; set; }
-            public DOTableCellMarginDefault TableCellMarginDefault { get; set; }
+            public DOTableCellMarginDefault? TableCellMarginDefault { get; set; }
             public object TableCellSpacing { get; set; }
             public object TableDescription { get; set; }
             public DOTableIndentation TableIndentation { get; set; }
-            public DOTableJustification TableJustification { get; set; }
-            public DOTableLayout TableLayout { get; set; }
+            public DOTableJustification? TableJustification { get; set; }
+            public DOTableLayout? TableLayout { get; set; }
             public object TableLook { get; set; }
             public object TableOverlap { get; set; }
             public object TablePositionProperties { get; set; }
@@ -204,7 +204,7 @@ namespace Document_Office.Net
             private object _tableRowProperties;
             public object TableRowProperties { get { return _tableRowProperties; } set { _tableRowProperties = value; } }
             private List<DOTableCell> _tableCells = new List<DOTableCell>();
-            private DOTableCell[] TableCells { get { return _tableCells.ToArray(); } }
+            public DOTableCell[] TableCells { get { return _tableCells.ToArray(); } }
             private Guid _tableRowGuid;
             public Guid TableRowGuid { get { return _tableRowGuid; } set { _tableRowGuid = value; } }
             public DOTableRow() { }
@@ -218,6 +218,7 @@ namespace Document_Office.Net
                 foreach (DocumentFormat.OpenXml.Wordprocessing.TableCell tableCell in tableRow.Elements<DocumentFormat.OpenXml.Wordprocessing.TableCell>())
                     _tableCells.Add(new DOTableCell(tableCell));
             }
+            public void AddCell(DOTableCell cell) => _tableCells.Add(cell);
         }
 
         public struct DOTableRowProp
@@ -231,7 +232,7 @@ namespace Document_Office.Net
         public class DOTableCell
         {
             private DOTableCellProp _tableCellProperties;
-            private DOTableCellProp TableCellProperties { get { return _tableCellProperties; } set { _tableCellProperties = value; } }
+            public DOTableCellProp TableCellProperties { get { return _tableCellProperties; } set { _tableCellProperties = value; } }
             private List<DOParagraph> _tableParagraphs = new List<DOParagraph>();
             public DOParagraph[] TableParagraphs { get { return _tableParagraphs.ToArray(); } }
             private Guid _tableCellGuid;
@@ -245,6 +246,7 @@ namespace Document_Office.Net
                 foreach (DocumentFormat.OpenXml.Wordprocessing.Paragraph TCellParagraph in tableCell.Elements<DocumentFormat.OpenXml.Wordprocessing.Paragraph>())
                     _tableParagraphs.Add(new DOParagraph(TCellParagraph));
             }
+            public void AddParagraph(DOParagraph paragraph) => _tableParagraphs.Add(paragraph);
         }
 
         public struct DOTableCellProp
@@ -437,5 +439,4 @@ namespace Document_Office.Net
                 return 0;
             }
         }
-    }
 }

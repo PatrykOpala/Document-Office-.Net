@@ -30,7 +30,7 @@ namespace Document_Office.Net
             }
         }
 
-        public void AddRunToListRuns(DORun dORun) => _listRuns.Add(dORun);
+        public void AddRun(DORun dORun) => _listRuns.Add(dORun);
     }
 
     public struct DOParagProp
@@ -107,6 +107,8 @@ namespace Document_Office.Net
                 _listText.Add(rText.Text);
             }
         }
+
+        public void AddText(string text) => _listText.Add(text);
     }
 
     public struct DORunProp
