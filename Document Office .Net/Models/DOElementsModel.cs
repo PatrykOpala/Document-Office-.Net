@@ -13,8 +13,8 @@ namespace Document_Office.Net.Models
         public DORunProp Properties { get; set; }
         public DORunModel(DORun run)
         {
-            ListText = run.ListText;
-            Properties = run.Properties;
+            ListText = new List<string>();
+            Properties = new DORunProp();
         }
     }
 

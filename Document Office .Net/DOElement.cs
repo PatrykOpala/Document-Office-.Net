@@ -4,6 +4,7 @@ namespace Document_Office.Net
 {
     public interface IDOElement
     {
+        Guid IDOElementGuid { get; }
     }
 
     public class ChooseTable

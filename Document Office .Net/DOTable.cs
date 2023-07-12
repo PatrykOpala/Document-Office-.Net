@@ -3,13 +3,13 @@ using System.Collections.Generic;
 
 namespace Document_Office.Net
 {
-        public class DOTable : IDOElement
-        {
+       public class DOTable : IDOElement
+       {
             private string type = "Table";
             public string Type { get { return type; } }
             public DOTableProp TableProperties { get; set; }
             public DOTableGrid TableGrid { get; set; }
-
+            /*
             private Guid tableGuid;
             public Guid TableGuid
             {
@@ -21,16 +21,19 @@ namespace Document_Office.Net
                 {
                     tableGuid = value;
                 }
-            }
+            }*/
 
             private List<DOTableRow> dOTableRows = new List<DOTableRow>();
             public DOTableRow[] TableRows { get { return dOTableRows.ToArray(); } }
+
+            public Guid IDOElementGuid { get; set; }
 
             public DOTable() { }
 
             public DOTable(DocumentFormat.OpenXml.Wordprocessing.Table table)
             {
-                TableGuid = Guid.NewGuid();
+                IDOElementGuid = Guid.NewGuid();
+
                 foreach (DocumentFormat.OpenXml.Wordprocessing.TableProperties tablePro in table.Elements<DocumentFormat.OpenXml.Wordprocessing.TableProperties>())
                     TableProperties = new DOTableProp(tablePro);
 
@@ -39,7 +42,7 @@ namespace Document_Office.Net
 
                 foreach (DocumentFormat.OpenXml.Wordprocessing.TableRow tableRow in table.Elements<DocumentFormat.OpenXml.Wordprocessing.TableRow>())
                     dOTableRows.Add(new DOTableRow(tableRow));
-            }
+             }
             public void AddTableRow(DOTableRow tableRow) => dOTableRows.Add(tableRow);
         }
         public struct DOTableProp

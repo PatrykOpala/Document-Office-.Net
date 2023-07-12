@@ -7,7 +7,7 @@ namespace Document_Office.Net
     public class DOParagraph : IDOElement
     {
         private string _type = "Paragraph";
-        public string Type { get; }
+        public string Type { get { return _type; } }
         private List<DORun> _listRuns = new List<DORun>();
         public DORun[] ListRuns { get { return _listRuns.ToArray(); } }
         private DOParagProp _paragraphProperties;
@@ -15,8 +15,10 @@ namespace Document_Office.Net
 
         public bool IsEmpty { get; private set; }
 
-        private Guid _paragraphGuid;
+        /*private Guid _paragraphGuid;
         public Guid ParagraphGuid { get { return _paragraphGuid; } set { _paragraphGuid = value; } }
+        */
+        public Guid IDOElementGuid { get; set; }
 
         public DOParagraph(){}
 
@@ -26,6 +28,7 @@ namespace Document_Office.Net
             foreach (DocumentFormat.OpenXml.Wordprocessing.Run r in b.Elements<DocumentFormat.OpenXml.Wordprocessing.Run>())
             {
                 IsEmpty = String.IsNullOrEmpty(r.InnerText);
+                IDOElementGuid = Guid.NewGuid();
                 _listRuns.Add(new DORun(r));
             }
         }
@@ -125,7 +128,7 @@ namespace Document_Office.Net
         public bool ItalicComplexScript { get; private set; }
         public bool NumberSpacing { get; private set; }
         public bool Outline { get; private set; }
-        public System.Drawing.Font? FontSize { get; private set; }
+        public System.Drawing.Font Font { get; private set; }
         public bool SmallCaps { get; private set; }
         public bool Spacing { get; private set; }
         public bool Strike { get; private set; }
@@ -144,7 +147,7 @@ namespace Document_Office.Net
             ItalicComplexScript = false;
             NumberSpacing = false;
             Outline = false;
-            FontSize = null;
+            Font = new System.Drawing.Font("Microsoft Sans Serif", 20f,FontStyle.Regular, GraphicsUnit.Point, 238);
             SmallCaps = false;
             Spacing = false;
             Strike = false;
@@ -161,7 +164,7 @@ namespace Document_Office.Net
 
                 if (runProperties.FontSize != null)
                 {
-                    FontSize = new System.Drawing.Font("Microsoft Sans Serif", float.Parse(runProperties.FontSize.Val.Value), 
+                    Font = new System.Drawing.Font("Microsoft Sans Serif", float.Parse(runProperties.FontSize.Val.Value), 
                         FontStyle.Regular, GraphicsUnit.Point, 238);
                 }
 

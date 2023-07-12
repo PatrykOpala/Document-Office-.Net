@@ -18,7 +18,7 @@ namespace Document_Office.Net
                 ListRuns.Add(dORunModel);
             }
 
-            DOParagPropModel dOParagPropModel = new DOParagPropModel(parag.GetParagraphProperties());
+            DOParagPropModel dOParagPropModel = new DOParagPropModel(parag.ParagraphProperties);
 
             ParagraphProperties = dOParagPropModel;
         }
@@ -34,9 +34,9 @@ namespace Document_Office.Net
 
         internal ProcessesDOTable(DOTable table)
         {
-            TableProperties = table.TableProperties;
+            /*TableProperties = table.TableProperties;
             TableGrid = table.TableGrid;
-            TableRowList = table.TableRowList;
+            TableRowList = table.TableRows;*/
         }
     }
 
