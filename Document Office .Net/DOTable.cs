@@ -5,8 +5,7 @@ namespace Document_Office.Net
 {
        public class DOTable : IDOElement
        {
-            private string type = "Table";
-            public string Type { get { return type; } }
+            public string Type { get; } = "Table";
             public DOTableProp TableProperties { get; set; }
             public DOTableGrid TableGrid { get; set; }
             /*

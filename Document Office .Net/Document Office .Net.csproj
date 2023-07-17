@@ -71,6 +71,12 @@
     <Compile Include="DOElement.cs" />
     <Compile Include="DOParagraph.cs" />
     <Compile Include="DOTable.cs" />
+    <Compile Include="Forms\DialogStartWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\DialogStartWindow.Designer.cs">
+      <DependentUpon>DialogStartWindow.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\StartWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -88,6 +94,9 @@
     <Compile Include="ProcessesDOElements.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Forms\DialogStartWindow.resx">
+      <DependentUpon>DialogStartWindow.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\EdytorWindow.resx">
       <DependentUpon>EdytorWindow.cs</DependentUpon>
     </EmbeddedResource>

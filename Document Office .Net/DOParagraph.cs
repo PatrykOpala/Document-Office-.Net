@@ -6,8 +6,7 @@ namespace Document_Office.Net
 {
     public class DOParagraph : IDOElement
     {
-        private string _type = "Paragraph";
-        public string Type { get { return _type; } }
+        public string Type { get; } = "Paragraph";
         private List<DORun> _listRuns = new List<DORun>();
         public DORun[] ListRuns { get { return _listRuns.ToArray(); } }
         private DOParagProp _paragraphProperties;
