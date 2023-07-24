@@ -304,7 +304,6 @@ namespace Document_Office.Net.Forms
                     }
                     table.AddTableRow(row);
                 }
-
                 dODocumentTemplate.NewDocsElements.Add(table);
                 tableDocumentTemplateDictionary.Add(DocTmpName, dODocumentTemplate);
             }
@@ -315,14 +314,14 @@ namespace Document_Office.Net.Forms
                 dODocumentTemplate3.NameDocument = documentTemplate2.NameDocument;
                 dODocumentTemplate3.FullPathWithFileName = documentTemplate2.FullPathWithFileName;
                 
-                foreach (var idoelement in documentTemplate2.NewDocsElements)
+                foreach (DOTable idoelement in documentTemplate2.NewDocsElements)
                 {
                     DOTable dOTable2 = new DOTable();
-                    dOTable2.TableGrid = dOTable.TableGrid;
-                    dOTable2.IDOElementGuid = dOTable.IDOElementGuid;
-                    dOTable2.TableProperties = dOTable.TableProperties;
+                    dOTable2.TableGrid = idoelement.TableGrid;
+                    dOTable2.IDOElementGuid = idoelement.IDOElementGuid;
+                    dOTable2.TableProperties = idoelement.TableProperties;
 
-                    foreach (DOTableRow row2 in dOTable.TableRows)
+                    foreach (DOTableRow row2 in idoelement.TableRows)
                     {
                         DOTableRow row3 = new DOTableRow();
                         row3.TableRowGuid = row2.TableRowGuid;
