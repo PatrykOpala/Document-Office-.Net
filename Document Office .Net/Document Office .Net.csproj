@@ -77,6 +77,12 @@
     <Compile Include="Forms\DialogStartWindow.Designer.cs">
       <DependentUpon>DialogStartWindow.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\NewEditorConcept.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\NewEditorConcept.Designer.cs">
+      <DependentUpon>NewEditorConcept.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\StartWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -99,6 +105,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\EdytorWindow.resx">
       <DependentUpon>EdytorWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\NewEditorConcept.resx">
+      <DependentUpon>NewEditorConcept.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\StartWindow.resx">
       <DependentUpon>StartWindow.cs</DependentUpon>

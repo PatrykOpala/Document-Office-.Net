@@ -1,9 +1,36 @@
-﻿using System;
+﻿using Document_Office.Net.Forms;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Windows.Forms;
 
 namespace Document_Office.Net
 {
+    public class DBRun
+    {
+        public bool start_paragraph { get; set; }
+        public bool end_paragraph { get; set; }
+
+        public DORunProp run_properties { get; set; }
+
+        public DBRun(bool start_paragraph, bool end_paragraph)
+        {
+            this.start_paragraph = start_paragraph;
+            this.end_paragraph = end_paragraph;
+        }
+
+        public DBRun(DORunProp run_prop)
+        {
+            this.run_properties = run_prop;
+        }
+
+        public DBRun(bool start_paragraph, DORunProp run_prop, bool end_paragraph)
+        {
+            this.start_paragraph = start_paragraph;
+            this.end_paragraph = end_paragraph;
+            this.run_properties = run_prop;
+        }
+    }
     public class DOParagraph : IDOElement
     {
         public string Type { get; } = "Paragraph";
@@ -14,9 +41,6 @@ namespace Document_Office.Net
 
         public bool IsEmpty { get; private set; }
 
-        /*private Guid _paragraphGuid;
-        public Guid ParagraphGuid { get { return _paragraphGuid; } set { _paragraphGuid = value; } }
-        */
         public Guid IDOElementGuid { get; set; }
 
         public DOParagraph(){}
@@ -33,6 +57,92 @@ namespace Document_Office.Net
         }
 
         public void AddRun(DORun dORun) => _listRuns.Add(dORun);
+
+        public void generateParagraphUI(NewEditorConcept rootWindow, int startX, int startY)
+        {
+            Panel paragraph = new Panel()
+            {
+                Location = new Point(startX, startY),
+                Size = new Size(1175, 100),
+                BackColor = Color.FromArgb(230, 230, 230),
+                BorderStyle = BorderStyle.FixedSingle
+            };
+            if (IsEmpty)
+            {
+                //ForeColor = Color.FromArgb(100,0,0,0)
+                Label empty_run = new Label()
+                {
+                    Location = new Point(46, 40),
+                    Font = new System.Drawing.Font(new FontFamily("Microsoft Sans Serif"), 14.25F, FontStyle.Regular,
+                                GraphicsUnit.Point, ((byte)(238))),
+                    TextAlign = ContentAlignment.MiddleCenter,
+                    AutoSize = true,
+                    Text = "[Pusty Akapit]",
+                    ForeColor = Color.FromArgb(0, 0, 0)
+
+                };
+                paragraph.Controls.Add(empty_run);
+                rootWindow.Controls.Add(paragraph);
+                return;
+            }
+
+            int Empty_Run = 46;
+            int Run_X = 46;
+
+            if(_listRuns.Count > 0)
+            {
+                for (int idx = 0; idx < _listRuns.Count; idx++)
+                {
+                    DORun oRun = _listRuns[idx];
+                    Label run = new Label()
+                    {
+                        Location = new Point(Run_X, 40),
+                        Font = new System.Drawing.Font(new FontFamily("Microsoft Sans Serif"), 14.25F, FontStyle.Regular,
+                                GraphicsUnit.Point, ((byte)(238))),
+                        TextAlign = ContentAlignment.MiddleCenter,
+                        AutoSize = true,
+                        ForeColor = (Color)oRun.Properties._Color,
+                    };
+
+                    if(idx == 0)
+                    {
+                        run.Tag = new DBRun(true, oRun.Properties, false);
+                    }
+
+                    if(idx > 0 && idx < _listRuns.Count - 1)
+                    {
+                        run.Tag = new DBRun(oRun.Properties);
+                    }
+
+                    if (idx == _listRuns.Count - 1)
+                    {
+                        run.Tag = new DBRun(false, oRun.Properties, true);
+                    }
+
+                    foreach (string runText in oRun.ListText)
+                    {
+                        run.Text = runText;
+
+                        if (run.Text == " ")
+                        {
+                            run.Text = "[Spacja]";
+                            run.Location = new Point(Empty_Run + 60, 40);
+                        }
+                        else
+                            Run_X += 140;
+                    }
+                    run.Click += Run_Click;
+                    paragraph.Controls.Add(run);
+                }
+            }
+            rootWindow.Controls.Add(paragraph);
+        }
+
+        private void Run_Click(object sender, EventArgs e)
+        {
+            Label k = (Label)sender;
+            Console.WriteLine(k.Tag);
+        }
     }
 
     public struct DOParagProp
