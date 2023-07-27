@@ -6,6 +6,16 @@ using System.Windows.Forms;
 
 namespace Document_Office.Net
 {
+
+    /*
+     
+
+    Font = new System.Drawing.Font(new FontFamily("Microsoft Sans Serif"), 14.25F, FontStyle.Regular,
+                                GraphicsUnit.Point, ((byte)(238))),
+     
+     
+     */
+
     public class DBRun
     {
         public bool start_paragraph { get; set; }
@@ -58,21 +68,22 @@ namespace Document_Office.Net
 
         public void AddRun(DORun dORun) => _listRuns.Add(dORun);
 
-        public void generateParagraphUI(NewEditorConcept rootWindow, int startX, int startY)
+        public int generateParagraphUI(NewEditorConcept rootWindow, int startX, int startY)
         {
             Panel paragraph = new Panel()
             {
                 Location = new Point(startX, startY),
-                Size = new Size(1175, 100),
+                Size = new Size(1175, 40),
                 BackColor = Color.FromArgb(230, 230, 230),
-                BorderStyle = BorderStyle.FixedSingle
+                BorderStyle = BorderStyle.FixedSingle,
+                AutoSize = true,
             };
+            int paragraphHeight = paragraph.Size.Height / 4 - 4;
             if (IsEmpty)
             {
-                //ForeColor = Color.FromArgb(100,0,0,0)
                 Label empty_run = new Label()
                 {
-                    Location = new Point(46, 40),
+                    Location = new Point(46, paragraphHeight),
                     Font = new System.Drawing.Font(new FontFamily("Microsoft Sans Serif"), 14.25F, FontStyle.Regular,
                                 GraphicsUnit.Point, ((byte)(238))),
                     TextAlign = ContentAlignment.MiddleCenter,
@@ -83,7 +94,7 @@ namespace Document_Office.Net
                 };
                 paragraph.Controls.Add(empty_run);
                 rootWindow.Controls.Add(paragraph);
-                return;
+                return 0;
             }
 
             int Empty_Run = 46;
@@ -96,9 +107,8 @@ namespace Document_Office.Net
                     DORun oRun = _listRuns[idx];
                     Label run = new Label()
                     {
-                        Location = new Point(Run_X, 40),
-                        Font = new System.Drawing.Font(new FontFamily("Microsoft Sans Serif"), 14.25F, FontStyle.Regular,
-                                GraphicsUnit.Point, ((byte)(238))),
+                        Location = new Point(Run_X, paragraphHeight),
+                        Font = oRun.Properties.Font,
                         TextAlign = ContentAlignment.MiddleCenter,
                         AutoSize = true,
                         ForeColor = (Color)oRun.Properties._Color,
@@ -126,16 +136,18 @@ namespace Document_Office.Net
                         if (run.Text == " ")
                         {
                             run.Text = "[Spacja]";
-                            run.Location = new Point(Empty_Run + 60, 40);
+                            run.Location = new Point(Empty_Run + (run.Size.Width - run.Size.Height), paragraphHeight);
+                            Run_X += Empty_Run + (run.Size.Width - run.Size.Height);
                         }
                         else
-                            Run_X += 140;
+                            Run_X += (run.Size.Width - run.Size.Height - 10);
                     }
                     run.Click += Run_Click;
                     paragraph.Controls.Add(run);
                 }
             }
             rootWindow.Controls.Add(paragraph);
+            return paragraph.Size.Height;
         }
 
         private void Run_Click(object sender, EventArgs e)

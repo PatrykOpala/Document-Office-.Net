@@ -49,12 +49,21 @@ namespace Document_Office.Net.Forms
                 {
                     DOParagraph dOParag = (DOParagraph)element;
 
-                    dOParag.generateParagraphUI(this, Paragraph_Start_Point_X, Paragraph_Start_Point_Y);
-                    Paragraph_Start_Point_Y += 110;
+                    int v = dOParag.generateParagraphUI(this, Paragraph_Start_Point_X, Paragraph_Start_Point_Y);
+                    if (v > 0)
+                    {
+                        Paragraph_Start_Point_Y += v - 40;
+                    }
+                    
+                    Paragraph_Start_Point_Y += 46;
                 }
-                else
+
+                if (element.Type == "Table")
                 {
-                    return;
+                    DOTable dOTab = (DOTable)element;
+
+                    dOTab.generateTableUI(this, Paragraph_Start_Point_X, Paragraph_Start_Point_Y);
+                    Paragraph_Start_Point_Y += 131;
                 }
             }
         }
