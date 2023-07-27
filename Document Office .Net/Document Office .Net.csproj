@@ -71,6 +71,7 @@
     <Compile Include="DOElement.cs" />
     <Compile Include="DOParagraph.cs" />
     <Compile Include="DOTable.cs" />
+    <Compile Include="DOTableProp.cs" />
     <Compile Include="Forms\DialogStartWindow.cs">
       <SubType>Form</SubType>
     </Compile>
