@@ -105,9 +105,10 @@ namespace Document_Office.Net
                 for (int idx = 0; idx < _listRuns.Count; idx++)
                 {
                     DORun oRun = _listRuns[idx];
+                    //Location = new Point(Run_X, paragraphHeight),
                     Label run = new Label()
                     {
-                        Location = new Point(Run_X, paragraphHeight),
+                        
                         Font = oRun.Properties.Font,
                         TextAlign = ContentAlignment.MiddleCenter,
                         AutoSize = true,
@@ -136,11 +137,19 @@ namespace Document_Office.Net
                         if (run.Text == " ")
                         {
                             run.Text = "[Spacja]";
-                            run.Location = new Point(Empty_Run + (run.Size.Width - run.Size.Height), paragraphHeight);
+                            run.Location = new Point(Empty_Run + (run.Size.Width - run.Size.Height), run.Size.Height);
                             Run_X += Empty_Run + (run.Size.Width - run.Size.Height);
                         }
                         else
+                        {
+                            if(run.Font.Size >= 40)
+                            {
+                                run.BorderStyle = BorderStyle.FixedSingle;
+                                run.Location = new Point(Run_X, 3);
+                            }
+                            run.Location = new Point(Run_X, run.Size.Height);
                             Run_X += (run.Size.Width - run.Size.Height - 10);
+                        }
                     }
                     run.Click += Run_Click;
                     paragraph.Controls.Add(run);

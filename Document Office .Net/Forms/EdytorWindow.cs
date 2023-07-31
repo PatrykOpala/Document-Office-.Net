@@ -61,7 +61,7 @@ namespace Document_Office.Net.Forms
                     {
                         DOParagraph paragrapgh = new DOParagraph((Paragraph)bd);
                         if (paragrapgh.IsEmpty)
-                            comboBox1.Items.Add(new DOItem(paragrapgh.IDOElementGuid, "Wiersz: [Pusty]", "Wiersz: [Pusty]"));
+                            comboBox1.Items.Add(new DOItem(paragrapgh.IDOElementGuid, "[Pusty Akapit]", "[Pusty Akapit]"));
                         else
                         {
                             string m = "Wiersz: ";
@@ -232,7 +232,12 @@ namespace Document_Office.Net.Forms
             {
                 LabelRun.Text = FindedStr;
                 if (LabelRun.Text == " ")
+                {
+                    LabelRun.Location = new Point(x + 4, 0);
                     x += 17;
+                    LabelRun.Text = "[Spacja]";
+                    LabelRun.Padding = new Padding(0, 0, 0, 5);
+                }
             }
             DOElementContainer.Controls.Add(LabelRun);
             if (LabelRun.Size.Width <= 20)
