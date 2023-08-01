@@ -12,6 +12,7 @@ namespace Document_Office.Net.Forms
     public partial class EdytorWindow : Form
     {
         // ./WriteDocxObjectToJSON -f='C:\Users\patry\Desktop\test.docx'
+        List<(int, Guid)> idoTuples = new List<(int, Guid)>();
         List<IDOElement> IDOElements = new List<IDOElement>();
         Dictionary<string, DODocumentTemplate> documentTemplateDictionary = new Dictionary<string, DODocumentTemplate>();
         Dictionary<string, DODocumentTemplate> tableDocumentTemplateDictionary = new Dictionary<string, DODocumentTemplate>();
@@ -55,6 +56,7 @@ namespace Document_Office.Net.Forms
             using (WordprocessingDocument word = WordprocessingDocument.Open(f, true))
             {
                 int o = 0;
+                int tIdx = 0;
                 foreach (var bd in word.MainDocumentPart.Document.Body.ChildElements)
                 {
                     if (bd.LocalName == "p")
@@ -72,14 +74,18 @@ namespace Document_Office.Net.Forms
                             }
                             comboBox1.Items.Add(new DOItem(paragrapgh.IDOElementGuid, m, m));
                         }
+                        idoTuples.Add((tIdx, paragrapgh.IDOElementGuid));
                         IDOElements.Add(paragrapgh);
+                        tIdx++;
                     }
                     if (bd.LocalName == "tbl")
                     {
                         o++;
                         DOTable table = new DOTable((Table)bd);
                         comboBox1.Items.Add(new DOItem(table.IDOElementGuid, $"Tabela: {o}", $"Tabela: {o}"));
+                        idoTuples.Add((tIdx, table.IDOElementGuid));
                         IDOElements.Add(table);
+                        tIdx++;
                     }
                 }
                 var ctrP = IDOElements;
