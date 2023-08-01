@@ -250,7 +250,7 @@ namespace Document_Office.Net
         public DOBorder Border { get; private set; }
         public bool BoldComplexScript { get; private set; }
         public bool Caps { get; private set; }
-        public Color? _Color { get; private set; }
+        public Color _Color { get; private set; }
         public bool CharakterScale { get; private set; }
         public bool ComplexScript { get; private set; }
         public bool Highlight { get; private set; }
@@ -269,7 +269,7 @@ namespace Document_Office.Net
             Border = null;
             BoldComplexScript = false;
             Caps = false;
-            _Color = null;
+            _Color = Color.FromArgb(0, 0, 0);
             CharakterScale = false;
             ComplexScript = false;
             Highlight = false;

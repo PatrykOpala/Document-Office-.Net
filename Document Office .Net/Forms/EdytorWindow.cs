@@ -225,7 +225,8 @@ namespace Document_Office.Net.Forms
                 Cursor = Cursors.Hand,
                 AutoSize = true,
                 Tag = FindedRun.DORunGuid,
-                Font = FindedRun.Properties.Font
+                Font = FindedRun.Properties.Font,
+                ForeColor = FindedRun.Properties._Color
             };
             LabelRun.Click += new EventHandler(LabelRun_Event_Click);
             foreach (string FindedStr in FindedRun.ListText)
@@ -474,6 +475,10 @@ namespace Document_Office.Net.Forms
         }
         void CreateTable(DOTable table)
         {
+            if (textBox1 != null)
+            {
+                panelNewspaper.Controls.Remove(textBox1);
+            }
             DOElementContainer.Controls.Clear();
             int x = 4;
             int y = 0;
@@ -498,10 +503,14 @@ namespace Document_Office.Net.Forms
                         Label label = new Label
                         {
                             Location = new Point(xParag + 30, yParag + 10),
-                            Tag = tableParag.IDOElementGuid
+                            Tag = tableParag.IDOElementGuid,
                         };
                         foreach (var tableRun in tableParag.ListRuns)
                         {
+                            if(tableRun.Properties._Color != null)
+                            {
+                                label.ForeColor = tableRun.Properties._Color;
+                            }
                             foreach (var tableText in tableRun.ListText)
                             {
                                 label.Text = tableText;
