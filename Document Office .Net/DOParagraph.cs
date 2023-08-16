@@ -6,16 +6,6 @@ using System.Windows.Forms;
 
 namespace Document_Office.Net
 {
-
-    /*
-     
-
-    Font = new System.Drawing.Font(new FontFamily("Microsoft Sans Serif"), 14.25F, FontStyle.Regular,
-                                GraphicsUnit.Point, ((byte)(238))),
-     
-     
-     */
-
     public class DBRun
     {
         public bool start_paragraph { get; set; }
@@ -48,16 +38,12 @@ namespace Document_Office.Net
         public DORun[] ListRuns { get { return _listRuns.ToArray(); } }
         private DOParagProp _paragraphProperties;
         public DOParagProp ParagraphProperties { get { return _paragraphProperties; } set { _paragraphProperties = value; } }
-
         public bool IsEmpty { get; private set; }
-
         public Guid IDOElementGuid { get; set; }
-
+        public string Target { get; set; }
         public DOParagraph(){}
-
         public DOParagraph(DocumentFormat.OpenXml.Wordprocessing.Paragraph b)
         {
-            
             foreach (DocumentFormat.OpenXml.Wordprocessing.Run r in b.Elements<DocumentFormat.OpenXml.Wordprocessing.Run>())
             {
                 IsEmpty = String.IsNullOrEmpty(r.InnerText);
@@ -65,9 +51,7 @@ namespace Document_Office.Net
                 _listRuns.Add(new DORun(r));
             }
         }
-
         public void AddRun(DORun dORun) => _listRuns.Add(dORun);
-
         public int generateParagraphUI(NewEditorConcept rootWindow, int startX, int startY)
         {
             Panel paragraph = new Panel()
@@ -90,16 +74,13 @@ namespace Document_Office.Net
                     AutoSize = true,
                     Text = "[Pusty Akapit]",
                     ForeColor = Color.FromArgb(0, 0, 0)
-
                 };
                 paragraph.Controls.Add(empty_run);
                 rootWindow.Controls.Add(paragraph);
                 return 0;
             }
-
             int Empty_Run = 46;
             int Run_X = 46;
-
             if(_listRuns.Count > 0)
             {
                 for (int idx = 0; idx < _listRuns.Count; idx++)
@@ -108,48 +89,39 @@ namespace Document_Office.Net
                     //Location = new Point(Run_X, paragraphHeight),
                     Label run = new Label()
                     {
-                        
                         Font = oRun.Properties.Font,
                         TextAlign = ContentAlignment.MiddleCenter,
                         AutoSize = true,
-                        ForeColor = (Color)oRun.Properties._Color,
+                        ForeColor = oRun.Properties._Color,
                     };
-
                     if(idx == 0)
                     {
                         run.Tag = new DBRun(true, oRun.Properties, false);
                     }
-
                     if(idx > 0 && idx < _listRuns.Count - 1)
                     {
                         run.Tag = new DBRun(oRun.Properties);
                     }
-
                     if (idx == _listRuns.Count - 1)
                     {
                         run.Tag = new DBRun(false, oRun.Properties, true);
                     }
-
-                    foreach (string runText in oRun.ListText)
+                    run.Text = oRun.Text;
+                    if (run.Text == " ")
                     {
-                        run.Text = runText;
-
-                        if (run.Text == " ")
+                        run.Text = "[Spacja]";
+                        run.Location = new Point(Empty_Run + (run.Size.Width - run.Size.Height), run.Size.Height);
+                        Run_X += Empty_Run + (run.Size.Width - run.Size.Height);
+                    }
+                    else
+                    {
+                        if(run.Font.Size >= 40)
                         {
-                            run.Text = "[Spacja]";
-                            run.Location = new Point(Empty_Run + (run.Size.Width - run.Size.Height), run.Size.Height);
-                            Run_X += Empty_Run + (run.Size.Width - run.Size.Height);
+                            run.BorderStyle = BorderStyle.FixedSingle;
+                            run.Location = new Point(Run_X, 3);
                         }
-                        else
-                        {
-                            if(run.Font.Size >= 40)
-                            {
-                                run.BorderStyle = BorderStyle.FixedSingle;
-                                run.Location = new Point(Run_X, 3);
-                            }
-                            run.Location = new Point(Run_X, run.Size.Height);
-                            Run_X += (run.Size.Width - run.Size.Height - 10);
-                        }
+                        run.Location = new Point(Run_X, run.Size.Height);
+                        Run_X += (run.Size.Width - run.Size.Height - 10);
                     }
                     run.Click += Run_Click;
                     paragraph.Controls.Add(run);
@@ -158,14 +130,17 @@ namespace Document_Office.Net
             rootWindow.Controls.Add(paragraph);
             return paragraph.Size.Height;
         }
-
         private void Run_Click(object sender, EventArgs e)
         {
             Label k = (Label)sender;
             Console.WriteLine(k.Tag);
         }
-    }
 
+        public void AddTarget(string target)
+        {
+            this.Target = target;
+        }
+    }
     public struct DOParagProp
     {
         /*
@@ -220,13 +195,11 @@ namespace Document_Office.Net
          WordWrap
          */
     }
-
     public class DORun
     {
         private Guid _doRunGuid;
         public Guid DORunGuid { get { return _doRunGuid; } set { _doRunGuid = value; } }
-        private List<string> _listText = new List<string>();
-        public string[] ListText { get { return _listText.ToArray(); } }
+        public string Text { get; set; } = "";
         public DORunProp Properties { get; set; }
         public DORun() { }
         public DORun(DocumentFormat.OpenXml.Wordprocessing.Run r)
@@ -237,13 +210,10 @@ namespace Document_Office.Net
 
             foreach (DocumentFormat.OpenXml.Wordprocessing.Text rText in r.Elements<DocumentFormat.OpenXml.Wordprocessing.Text>())
             {
-                _listText.Add(rText.Text);
+                Text = rText.Text;
             }
         }
-
-        public void AddText(string text) => _listText.Add(text);
     }
-
     public struct DORunProp
     {
         public bool Bold { get; private set; }
@@ -282,8 +252,6 @@ namespace Document_Office.Net
             Spacing = false;
             Strike = false;
             Underline = "";
-
-
             if (runProperties != null)
             {
                 if (runProperties.Bold != null && runProperties.BoldComplexScript != null)
@@ -291,29 +259,24 @@ namespace Document_Office.Net
                     Bold = true;
                     BoldComplexScript = true;
                 }
-
                 if (runProperties.FontSize != null)
                 {
                     Font = new System.Drawing.Font("Microsoft Sans Serif", float.Parse(runProperties.FontSize.Val.Value), 
                         FontStyle.Regular, GraphicsUnit.Point, 238);
                 }
-
                 if (runProperties.Color != null)
                 {
                     _Color = ColorTranslator.FromHtml("#" + runProperties.Color.Val);
                 }
-
                 if (runProperties.Italic != null && runProperties.ItalicComplexScript != null)
                 {
                     Italic = true;
                     ItalicComplexScript = true;
                 }
-
                 if (runProperties.Strike != null)
                 {
                     Strike = true;
                 }
-
                 if (runProperties.Underline != null)
                 {
                     Underline = runProperties.Underline.Val;
@@ -321,7 +284,6 @@ namespace Document_Office.Net
             }
         }
     }
-
     /*public class DORunProp
     {
         public bool Bold { get; private set; }
@@ -399,7 +361,6 @@ namespace Document_Office.Net
             }
         }
     }*/
-
     public struct DOShading
     {
         public string Color { get; set; }
@@ -412,7 +373,6 @@ namespace Document_Office.Net
         public string ThemeTint { get; set; }
         public string Val { get; set; }
     }
-
     public struct ExtendsDORunProp
     {
         public bool ContextualAlternatives { get; set; }

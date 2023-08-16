@@ -6,6 +6,7 @@ namespace Document_Office.Net
     {
         Guid IDOElementGuid { get; }
         string Type { get; }
+        string Target { get; set; }
     }
 
     public class ChooseTable

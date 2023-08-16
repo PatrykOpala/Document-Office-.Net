@@ -11,29 +11,12 @@ namespace Document_Office.Net
         public string Type { get; } = "Table";
         public DOTableProp TableProperties { get; set; }
         public DOTableGrid TableGrid { get; set; }
-        /*
-        private Guid tableGuid;
-        public Guid TableGuid
-        {
-            get
-            {
-                return tableGuid;
-            }
-            set
-            {
-                tableGuid = value;
-            }
-        }*/
-
         private List<DOTableRow> dOTableRows = new List<DOTableRow>();
         public DOTableRow[] TableRows { get { return dOTableRows.ToArray(); } }
-
         public Guid IDOElementGuid { get; set; }
-
+        public string Target { get; set; }
         private int index = 0;
-
         public DOTable() { }
-
         public DOTable(DocumentFormat.OpenXml.Wordprocessing.Table table)
         {
             IDOElementGuid = Guid.NewGuid();
@@ -48,9 +31,7 @@ namespace Document_Office.Net
                 dOTableRows.Add(new DOTableRow(tableRow));
             }
         public void AddTableRow(DOTableRow tableRow) => dOTableRows.Add(tableRow);
-
-        public void generateTableUI(NewEditorConcept rootWindow, 
-            int startX, int startY)
+        public void generateTableUI(NewEditorConcept rootWindow, int startX, int startY)
         {
             Panel Table = new Panel()
             {
@@ -69,9 +50,7 @@ namespace Document_Office.Net
 
             rootWindow.Controls.Add(Table);
         }
-
-        private void generateTableRowUI(Panel table_root, 
-            DOTableRow table_row, ref int x, ref int y)
+        private void generateTableRowUI(Panel table_root, DOTableRow table_row, ref int x, ref int y)
         {
             foreach(var table_grid_columns in this.TableGrid.GridColumns)
             {
@@ -90,9 +69,7 @@ namespace Document_Office.Net
             y += 40;
             x = 46;
         }
-
-        private void generateTableColumnsUI(Panel table_row_root, 
-            DOTableCell table_cell)
+        private void generateTableColumnsUI(Panel table_row_root, DOTableCell table_cell)
         {
             foreach(var tableParag in table_cell.TableParagraphs)
             {
@@ -117,7 +94,6 @@ namespace Document_Office.Net
                 table_row_root.Controls.Add(label);
             }
         }
-
         private void CheckIndex(ref int idx, int max_value)
         {
             if (idx >= max_value)
@@ -129,8 +105,7 @@ namespace Document_Office.Net
                 idx++;
             }
         }
-    }
-        
+    } 
     public class DOTableGrid
     {
         private List<DOGridColumn> dOGridColumns = new List<DOGridColumn>();
@@ -144,7 +119,6 @@ namespace Document_Office.Net
             }
         }
     }
-
     public struct DOGridColumn
     {
         private string _width;
@@ -155,7 +129,6 @@ namespace Document_Office.Net
             _width = gridColumn.Width;
         }
     }
-
     public struct DORsid
     {
         //DocumentFormat.OpenXml.HexBinaryValue
@@ -168,7 +141,6 @@ namespace Document_Office.Net
         public object TableRowProperties { get; set; }
         public object TextId { get; set; }
     }
-
     public class DOTableRow
     {
         private object _tableRowProperties;
@@ -190,7 +162,6 @@ namespace Document_Office.Net
         }
         public void AddCell(DOTableCell cell) => _tableCells.Add(cell);
     }
-
     public struct DOTableRowProp
     {
         public DOTableRowProp(DocumentFormat.OpenXml.Wordprocessing.TableRowProperties tableRowProperties)
@@ -198,7 +169,6 @@ namespace Document_Office.Net
 
         }
     }
-
     public class DOTableCell
     {
         private DOTableCellProp _tableCellProperties;
@@ -218,7 +188,6 @@ namespace Document_Office.Net
         }
         public void AddParagraph(DOParagraph paragraph) => _tableParagraphs.Add(paragraph);
     }
-
     public struct DOTableCellProp
     {
         public object GridSpan { get; set; }
@@ -261,7 +230,6 @@ namespace Document_Office.Net
             }
         }
     }
-
     public struct DOTableCellBorders
     {
         public DOBottomBorder BottomBorder { get; private set; }
@@ -320,9 +288,8 @@ namespace Document_Office.Net
             }
         }
     }
-
     public struct DOTableCellWidth
-        {
+    {
             public string Type { get; private set; }
             public string Width { get; private set; }
 
@@ -331,5 +298,5 @@ namespace Document_Office.Net
                 Type = tableCellWidth.Type;
                 Width = tableCellWidth.Width;
             }
-        }
+     }
 }

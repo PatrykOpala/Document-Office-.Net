@@ -7,9 +7,6 @@ namespace Document_Office.Net
 {
     public partial class StartWindow : Form
     {
-        string filePath = "";
-        ushort countFile = 0;
-
         public StartWindow()
         {
             InitializeComponent();
