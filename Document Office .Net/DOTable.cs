@@ -15,6 +15,7 @@ namespace Document_Office.Net
         public DOTableRow[] TableRows { get { return dOTableRows.ToArray(); } }
         public Guid IDOElementGuid { get; set; }
         public string Target { get; set; }
+
         private int index = 0;
         public DOTable() { }
         public DOTable(DocumentFormat.OpenXml.Wordprocessing.Table table)

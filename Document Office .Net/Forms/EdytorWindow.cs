@@ -147,33 +147,38 @@ namespace Document_Office.Net.Forms
 
             DOParagraph dOParagraph = new DOParagraph{IDOElementGuid = docParag.IDOElementGuid};
             string targetLabel = $"{documentTemplate.NameDocument} {idx}";
-            documentTemplate.NameDocument = targetLabel;
             dOParagraph.AddTarget(targetLabel);
-            Console.WriteLine(targetLabel);
+
+            foreach (DORun doc in docParag.ListRuns)
+            {
+                DORun oRun = new DORun
+                {
+                    DORunGuid = doc.DORunGuid,
+                    Properties = doc.Properties
+                };
+                if (doc.Text != null)
+                {
+                    if (doc.Text != oldV)
+                        oRun.Text = doc.Text;
+
+                    if (doc.Text == oldV)
+                        oRun.Text = newValue;
+                }
+                dOParagraph.AddRun(oRun);
+            }
+            documentTemplate.NewDocsElements.Add(dOParagraph);
+
+            //var ctrlP = documentTemplate.NewDocsElements;
+
+            /*
 
             if (documentTemplate.NewDocsElements.Count == 0)
             {
-                foreach (DORun doc in docParag.ListRuns)
-                {
-                    DORun oRun = new DORun
-                    {
-                        DORunGuid = doc.DORunGuid,
-                        Properties = doc.Properties
-                    };
-                    if (doc.Text != null)
-                    {
-                        if (doc.Text != oldV)
-                            oRun.Text = doc.Text;
-
-                        if (doc.Text == oldV)
-                            oRun.Text = newValue;
-                    }
-                    dOParagraph.AddRun(oRun);
-                }
-                documentTemplate.NewDocsElements.Add(dOParagraph);
+                
             }
             else
             {
+                /*
                 int newDocsIdx = 0;
                 DODocumentTemplate template = new DODocumentTemplate
                 {
@@ -209,7 +214,8 @@ namespace Document_Office.Net.Forms
                     Console.WriteLine(idx);
                     var ctrlP = template;
                 }
-            }
+                
+            }*/
         }
         void CheckIndex(ref int idx, int maxCount)
         {
