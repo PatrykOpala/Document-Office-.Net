@@ -24,7 +24,7 @@ namespace Document_Office.Net.Forms
         private DODocumentTemplate documentTemplate = new DODocumentTemplate();
         TextBox textBox1 = null;
         int PanelNewspaperHeight = 0;
-        ushort iterator = 0;
+        ushort iterator = 1;
         static float FONT_SIZE = 20.0F;
         static string INITIALIZE_COMBOBOX_VALUE = "Wybierz Wiersz";
         ushort NeededCountFile = 0;
@@ -51,7 +51,7 @@ namespace Document_Office.Net.Forms
         }
         void InitializeValues()
         {
-            duplicateLabel.Text = $"Aktualnie pracujesz nad: {documentTemplate.NameDocument} {(iterator < DuplicateCount ? iterator += 1 : iterator)}.docx";
+            duplicateLabel.Text = $"Aktualnie pracujesz nad: {documentTemplate.NameDocument} {iterator}.docx";
             panelNewspaper.Location = new Point(panelEdytor.Size.Width / 4, panelEdytor.Size.Height / 7);
             comboBox1.Items.Add(INITIALIZE_COMBOBOX_VALUE);
             comboBox1.Text = INITIALIZE_COMBOBOX_VALUE;
@@ -102,7 +102,6 @@ namespace Document_Office.Net.Forms
                 panelNewspaper.Controls.Remove(textBox1);
             }
             Label label = (Label)sender;
-            Console.WriteLine(iterator);
             duplicateLabel.Text = $"Aktualnie pracujesz nad: {documentTemplate.NameDocument} {iterator}.docx";
             oldV = label.Text;
             TextBox textBox = new TextBox()
@@ -121,15 +120,19 @@ namespace Document_Office.Net.Forms
                     {
                         if (DuplicateCount > 0)
                         {
-                            Console.WriteLine("Dup 2");
                             int k = Convert.ToInt32(iterator);
-                            if(iterator <= DuplicateCount)
+                            Console.WriteLine(iterator);
+                            
+                            if (iterator < DuplicateCount + 1)
                             {
-                                iterator++;
-                                duplicateLabel.Text = $"Aktualnie pracujesz nad: {documentTemplate.NameDocument} {iterator}.docx";
                                 MapDODocumentObject(docParag, ref k, ref oldV, Box1.Text);
+                                Box1.Text = "";
+                                iterator += 1;
+                                if(iterator <= DuplicateCount)
+                                {
+                                    duplicateLabel.Text = $"Aktualnie pracujesz nad: {documentTemplate.NameDocument} {iterator}.docx";
+                                }
                             }
-                            Box1.Text = "";
                         }
                         else { return; }
                     }
