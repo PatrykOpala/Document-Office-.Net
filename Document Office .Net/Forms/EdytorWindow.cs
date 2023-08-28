@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Windows.Forms;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
@@ -10,6 +9,11 @@ using Label = System.Windows.Forms.Label;
 
 namespace Document_Office.Net.Forms
 {
+    internal enum DisplayDuplicateLabelType
+    {
+        DOUBLE_VALUE = 0,
+        SINGLE_VALUE = 1
+    }
     public partial class EdytorWindow : Form
     {
         // ./WriteDocxObjectToJSON -f='C:\Users\patry\Desktop\test.docx'
@@ -51,7 +55,6 @@ namespace Document_Office.Net.Forms
         }
         void InitializeValues()
         {
-            duplicateLabel.Text = $"Aktualnie pracujesz nad: {documentTemplate.NameDocument} {iterator}.docx";
             panelNewspaper.Location = new Point(panelEdytor.Size.Width / 4, panelEdytor.Size.Height / 7);
             comboBox1.Items.Add(INITIALIZE_COMBOBOX_VALUE);
             comboBox1.Text = INITIALIZE_COMBOBOX_VALUE;
@@ -97,12 +100,11 @@ namespace Document_Office.Net.Forms
         }
         void LabelRun_Event_Click(object sender, EventArgs e)
         {
-            if (textBox1 != null)
-            {
-                panelNewspaper.Controls.Remove(textBox1);
-            }
+            ClearPanelNewspaper();
             Label label = (Label)sender;
-            duplicateLabel.Text = $"Aktualnie pracujesz nad: {documentTemplate.NameDocument} {iterator}.docx";
+            iterator = 1;
+            string[] displayInitValues = { $"{documentTemplate.NameDocument}", $"{iterator}" };
+            DisplayDuplicateLabel(DisplayDuplicateLabelType.DOUBLE_VALUE, displayInitValues, null);
             oldV = label.Text;
             TextBox textBox = new TextBox()
             {
@@ -112,31 +114,30 @@ namespace Document_Office.Net.Forms
             };
             textBox.KeyDown += new KeyEventHandler((object keySender, KeyEventArgs keyArgs) =>
             {
-                TextBox Box1 = (TextBox)keySender;
-                if (keyArgs.KeyValue == 13)
+                if (KeyValid(keyArgs, 13))
                 {
                     keyArgs.SuppressKeyPress = true;
-                    if (docParag != null)
+                    
+                    if (DuplicateCount > 0)
                     {
-                        if (DuplicateCount > 0)
+                        int k = Convert.ToInt32(iterator);
+                        if (iterator < DuplicateCount + 1)
                         {
-                            int k = Convert.ToInt32(iterator);
-                            Console.WriteLine(iterator);
-                            
-                            if (iterator < DuplicateCount + 1)
+                            MapDODocumentObject(docParag, ref k, ref oldV, textBox.Text);
+                            textBox.Text = "";
+                            iterator += 1;
+                            if(iterator <= DuplicateCount)
                             {
-                                MapDODocumentObject(docParag, ref k, ref oldV, Box1.Text);
-                                Box1.Text = "";
-                                iterator += 1;
-                                if(iterator <= DuplicateCount)
-                                {
-                                    duplicateLabel.Text = $"Aktualnie pracujesz nad: {documentTemplate.NameDocument} {iterator}.docx";
-                                }
+                                string[] displayValues = { $"{documentTemplate.NameDocument}", $"{iterator}" };
+                                DisplayDuplicateLabel(DisplayDuplicateLabelType.DOUBLE_VALUE, displayValues, null);
+                            }
+                            if (iterator > DuplicateCount)
+                            {
+                                DisplayDuplicateLabel(DisplayDuplicateLabelType.SINGLE_VALUE, null, "Gotowe. Możesz wybrać kolejne słowo do podmianki.");
                             }
                         }
-                        else { return; }
                     }
-                    else { MessageBox.Show("Nieznaleziono elementu"); }
+                    else { return; }
                 }
             });
             panelNewspaper.Size = new Size(793, 552);
@@ -392,16 +393,9 @@ namespace Document_Office.Net.Forms
         }
         void TableEventClick(object sender, EventArgs tableEventArgs)
         {
-            if (textBox1 != null)
-            {
-                panelNewspaper.Controls.Remove(textBox1);
-            }
+            ClearPanelNewspaper();
             var tableL = (Label)sender;
-            if (DuplicateCount == 0)
-            {
-                DuplicateCount = NeededCountFile;
-                duplicateLabel.Text = $"Liczba kopii możliwych do zrobienia: {DuplicateCount}";
-            }
+            duplicateLabel.Text = $"Liczba kopii możliwych do zrobienia: {DuplicateCount}";
             oldV = tableL.Text;
             TextBox textBox = new TextBox()
             {
@@ -409,27 +403,29 @@ namespace Document_Office.Net.Forms
                 Location = new Point(41, PanelNewspaperHeight + 20),
                 Font = new System.Drawing.Font("Microsoft Sans Serif", FONT_SIZE, FontStyle.Regular, GraphicsUnit.Point, 238)
             };
-            int vc = 0;
             textBox.KeyDown += new KeyEventHandler((object keySender, KeyEventArgs keyArgs) =>
             {
                 TextBox Box1 = (TextBox)keySender;
                 if (keyArgs.KeyValue == 13)
                 {
                     keyArgs.SuppressKeyPress = true;
-                    if (docParag != null)
+                    
+                    if (DuplicateCount > 0)
                     {
-                        if (DuplicateCount > 0)
+                        int k = Convert.ToInt32(iterator);
+
+                        if (iterator < DuplicateCount + 1)
                         {
-                            vc++;
-                            DuplicateCount = DuplicateCount -= 1;
-                            duplicateLabel.Text = $"Liczba kopii możliwych do zrobienia: {DuplicateCount}";
-                            MapDOTableObject(docTable, ref vc, ref oldV, Box1.Text);
-                            var ctrlP = documentTemplate.NewDocsElements;
+                            MapDOTableObject(docTable, ref k, ref oldV, Box1.Text);
                             Box1.Text = "";
+                            iterator += 1;
+                            if (iterator <= DuplicateCount)
+                            {
+                                duplicateLabel.Text = $"Aktualnie pracujesz nad: {documentTemplate.NameDocument} {iterator}.docx";
+                            }
                         }
-                        else { return; }
                     }
-                    else { MessageBox.Show("Nieznaleziono elementu"); }
+                    else { return; }
                 }
             });
             panelNewspaper.Size = new Size(793, 552);
@@ -534,6 +530,33 @@ namespace Document_Office.Net.Forms
         {
             string placeholder = $"Z({labelText})N()W()";
             textBox.Text = placeholder;
+        }
+        void ClearPanelNewspaper()
+        {
+            if (textBox1 != null)
+            {
+                panelNewspaper.Controls.Remove(textBox1);
+            }
+        }
+        bool KeyValid(KeyEventArgs Key, int keyValue)
+        {
+            if(Key.KeyValue == keyValue)
+            {
+                return true;
+            }
+            return false;
+        }
+        void DisplayDuplicateLabel(DisplayDuplicateLabelType displayType, string[] doubleValues, string singleValue)
+        {
+            if(displayType == DisplayDuplicateLabelType.DOUBLE_VALUE)
+            {
+                duplicateLabel.Text = $"Aktualnie pracujesz nad: {doubleValues[0]} {doubleValues[1]}.docx";
+            }
+
+            if (displayType == DisplayDuplicateLabelType.SINGLE_VALUE)
+            {
+                duplicateLabel.Text = singleValue;
+            }
         }
     }
 }
