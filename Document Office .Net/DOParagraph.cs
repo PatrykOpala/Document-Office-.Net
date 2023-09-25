@@ -133,9 +133,7 @@ namespace Document_Office.Net
         private void Run_Click(object sender, EventArgs e)
         {
             Label k = (Label)sender;
-            Console.WriteLine(k.Tag);
         }
-
         public void AddTarget(string target)
         {
             this.Target = target;

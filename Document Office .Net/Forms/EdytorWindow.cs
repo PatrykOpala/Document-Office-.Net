@@ -150,9 +150,10 @@ namespace Document_Office.Net.Forms
             if (idx > NeededCountFile)
                 idx = 1;
 
-            DOParagraph dOParagraph = new DOParagraph{IDOElementGuid = docParag.IDOElementGuid};
             string targetLabel = $"{documentTemplate.NameDocument} {idx}";
-            dOParagraph.AddTarget(targetLabel);
+            DOAbstractParagraph dOAbstractParagraph = new DOAbstractParagraph();
+            dOAbstractParagraph.IDOElementGuid = docParag.IDOElementGuid;
+            dOAbstractParagraph.Target = targetLabel;
 
             foreach (DORun doc in docParag.ListRuns)
             {
@@ -164,16 +165,21 @@ namespace Document_Office.Net.Forms
                 if (doc.Text != null)
                 {
                     if (doc.Text != oldV)
+                    {
                         oRun.Text = doc.Text;
+                    }
 
                     if (doc.Text == oldV)
+                    {
                         oRun.Text = newValue;
+                        dOAbstractParagraph.IsReplace = true;
+                    }
                 }
-                dOParagraph.AddRun(oRun);
+                dOAbstractParagraph.ListRuns.Add(oRun);
             }
-            documentTemplate.NewDocsElements.Add(dOParagraph);
+            documentTemplate.NewDocsElements.Add(dOAbstractParagraph);
 
-            //var ctrlP = documentTemplate.NewDocsElements;
+            var ctrlP = documentTemplate.NewDocsElements;
 
             /*
 
@@ -252,6 +258,7 @@ namespace Document_Office.Net.Forms
                 LabelRun.Padding = new Padding(0, 0, 0, 5);
             }
 
+            DOElementContainer.AutoScroll = true;
             DOElementContainer.Controls.Add(LabelRun);
             if (LabelRun.Size.Width <= 20)
                 x += LabelRun.Size.Width - 13;
@@ -264,6 +271,14 @@ namespace Document_Office.Net.Forms
                 indx = 1;
 
             string targetLabel = $"{documentTemplate.NameDocument} {indx}";
+
+            DOAbstractTable dOAbstractTable = new DOAbstractTable
+            {
+                IDOElementGuid = dOTable.IDOElementGuid,
+                TableProperties = dOTable.TableProperties,
+                TableGrid = dOTable.TableGrid,
+                Target = dOTable.Target
+            };
 
             DOTable table = new DOTable
             {
@@ -305,10 +320,16 @@ namespace Document_Office.Net.Forms
                             if (doc.Text != null)
                             {
                                 if (doc.Text != oldValue)
+                                {
                                     oRun.Text = doc.Text;
+                                    dOAbstractTable.IsReplace = false;
+                                }
 
                                 if (doc.Text == oldValue)
+                                {
                                     oRun.Text = newValue;
+                                    dOAbstractTable.IsReplace = true;
+                                }
                             }
                             dOParagraph.AddRun(oRun);
                         }
@@ -316,10 +337,11 @@ namespace Document_Office.Net.Forms
                     }
                     row.AddCell(dOTableCell);
                 }
-                table.AddTableRow(row);
+                dOAbstractTable.TableRows.Add(row);
             }
-            documentTemplate.NewDocsElements.Add(table);
-            
+            documentTemplate.NewDocsElements.Add(dOAbstractTable);
+            dOAbstractTable.IsReplace = false;
+
 
 
 
@@ -395,7 +417,9 @@ namespace Document_Office.Net.Forms
         {
             ClearPanelNewspaper();
             var tableL = (Label)sender;
-            duplicateLabel.Text = $"Liczba kopii możliwych do zrobienia: {DuplicateCount}";
+            iterator = 1;
+            string[] displayInitValues = { $"{documentTemplate.NameDocument}", $"{iterator}" };
+            DisplayDuplicateLabel(DisplayDuplicateLabelType.DOUBLE_VALUE, displayInitValues, null);
             oldV = tableL.Text;
             TextBox textBox = new TextBox()
             {
@@ -408,6 +432,7 @@ namespace Document_Office.Net.Forms
                 TextBox Box1 = (TextBox)keySender;
                 if (keyArgs.KeyValue == 13)
                 {
+                    Console.WriteLine("dupa blada");
                     keyArgs.SuppressKeyPress = true;
                     
                     if (DuplicateCount > 0)
@@ -421,7 +446,12 @@ namespace Document_Office.Net.Forms
                             iterator += 1;
                             if (iterator <= DuplicateCount)
                             {
-                                duplicateLabel.Text = $"Aktualnie pracujesz nad: {documentTemplate.NameDocument} {iterator}.docx";
+                                string[] displayValues = { $"{documentTemplate.NameDocument}", $"{iterator}" };
+                                DisplayDuplicateLabel(DisplayDuplicateLabelType.DOUBLE_VALUE, displayValues, null);
+                            }
+                            if (iterator > DuplicateCount)
+                            {
+                                DisplayDuplicateLabel(DisplayDuplicateLabelType.SINGLE_VALUE, null, "Gotowe. Możesz wybrać kolejne słowo do podmianki.");
                             }
                         }
                     }
@@ -524,7 +554,9 @@ namespace Document_Office.Net.Forms
         }
         void button1_Click(object sender, EventArgs e)
         {
-            //var ctrP = documentTemplateDictionary;
+            //List<IDOElement> newElements = new List<IDOElement>();
+
+            //var ctrP = documentTemplate.NewDocsElements;
         }
         void DOEngine(ref TextBox textBox, string labelText) 
         {

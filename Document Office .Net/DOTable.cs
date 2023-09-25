@@ -15,7 +15,6 @@ namespace Document_Office.Net
         public DOTableRow[] TableRows { get { return dOTableRows.ToArray(); } }
         public Guid IDOElementGuid { get; set; }
         public string Target { get; set; }
-
         private int index = 0;
         public DOTable() { }
         public DOTable(DocumentFormat.OpenXml.Wordprocessing.Table table)
@@ -30,7 +29,7 @@ namespace Document_Office.Net
 
             foreach (DocumentFormat.OpenXml.Wordprocessing.TableRow tableRow in table.Elements<DocumentFormat.OpenXml.Wordprocessing.TableRow>())
                 dOTableRows.Add(new DOTableRow(tableRow));
-            }
+        }
         public void AddTableRow(DOTableRow tableRow) => dOTableRows.Add(tableRow);
         public void generateTableUI(NewEditorConcept rootWindow, int startX, int startY)
         {
