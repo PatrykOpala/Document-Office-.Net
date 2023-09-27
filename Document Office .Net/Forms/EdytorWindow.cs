@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
@@ -151,9 +152,11 @@ namespace Document_Office.Net.Forms
                 idx = 1;
 
             string targetLabel = $"{documentTemplate.NameDocument} {idx}";
-            DOAbstractParagraph dOAbstractParagraph = new DOAbstractParagraph();
-            dOAbstractParagraph.IDOElementGuid = docParag.IDOElementGuid;
-            dOAbstractParagraph.Target = targetLabel;
+            DOParagraph dOParagraph = new DOParagraph
+            {
+                IDOElementGuid = docParag.IDOElementGuid,
+                Target = targetLabel
+            };
 
             foreach (DORun doc in docParag.ListRuns)
             {
@@ -172,14 +175,13 @@ namespace Document_Office.Net.Forms
                     if (doc.Text == oldV)
                     {
                         oRun.Text = newValue;
-                        dOAbstractParagraph.IsReplace = true;
                     }
                 }
-                dOAbstractParagraph.ListRuns.Add(oRun);
+                dOParagraph.AddRun(oRun);
             }
-            documentTemplate.NewDocsElements.Add(dOAbstractParagraph);
+            documentTemplate.NewDocsElements.Add(dOParagraph);
 
-            var ctrlP = documentTemplate.NewDocsElements;
+            //var ctrlP = documentTemplate.NewDocsElements;
 
             /*
 
@@ -272,14 +274,6 @@ namespace Document_Office.Net.Forms
 
             string targetLabel = $"{documentTemplate.NameDocument} {indx}";
 
-            DOAbstractTable dOAbstractTable = new DOAbstractTable
-            {
-                IDOElementGuid = dOTable.IDOElementGuid,
-                TableProperties = dOTable.TableProperties,
-                TableGrid = dOTable.TableGrid,
-                Target = dOTable.Target
-            };
-
             DOTable table = new DOTable
             {
                 IDOElementGuid = dOTable.IDOElementGuid,
@@ -322,13 +316,11 @@ namespace Document_Office.Net.Forms
                                 if (doc.Text != oldValue)
                                 {
                                     oRun.Text = doc.Text;
-                                    dOAbstractTable.IsReplace = false;
                                 }
 
                                 if (doc.Text == oldValue)
                                 {
                                     oRun.Text = newValue;
-                                    dOAbstractTable.IsReplace = true;
                                 }
                             }
                             dOParagraph.AddRun(oRun);
@@ -337,10 +329,9 @@ namespace Document_Office.Net.Forms
                     }
                     row.AddCell(dOTableCell);
                 }
-                dOAbstractTable.TableRows.Add(row);
+                table.AddTableRow(row);
             }
-            documentTemplate.NewDocsElements.Add(dOAbstractTable);
-            dOAbstractTable.IsReplace = false;
+            documentTemplate.NewDocsElements.Add(table);
 
 
 
@@ -554,7 +545,16 @@ namespace Document_Office.Net.Forms
         }
         void button1_Click(object sender, EventArgs e)
         {
-            //List<IDOElement> newElements = new List<IDOElement>();
+            List<IDOElement> newElements = new List<IDOElement>();
+            foreach ((int, Guid) tuple in idoTuples)
+            {
+                List<IDOElement> element = documentTemplate.NewDocsElements.FindAll(idoElement => idoElement.IDOElementGuid == tuple.Item2);
+                if(element != null && element.Count > 0)
+                {
+                    Console.WriteLine(element);
+                    //newElements.Add(element);
+                }
+            }
 
             //var ctrP = documentTemplate.NewDocsElements;
         }
