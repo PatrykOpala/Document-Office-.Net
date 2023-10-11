@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Windows.Forms;
 using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Spreadsheet;
 using DocumentFormat.OpenXml.Wordprocessing;
 using Label = System.Windows.Forms.Label;
 
@@ -90,7 +90,7 @@ namespace Document_Office.Net.Forms
                     if (bd.LocalName == "tbl")
                     {
                         o++;
-                        DOTable table = new DOTable((Table)bd);
+                        DOTable table = new DOTable((DocumentFormat.OpenXml.Wordprocessing.Table)bd);
                         comboBox1.Items.Add(new DOItem(table.IDOElementGuid, $"Tabela: {o}", $"Tabela: {o}"));
                         idoTuples.Add((tIdx, table.IDOElementGuid));
                         DocsTableElements.Add(table);
@@ -423,7 +423,7 @@ namespace Document_Office.Net.Forms
                 TextBox Box1 = (TextBox)keySender;
                 if (keyArgs.KeyValue == 13)
                 {
-                    Console.WriteLine("dupa blada");
+                    //Console.WriteLine("dupa blada");
                     keyArgs.SuppressKeyPress = true;
                     
                     if (DuplicateCount > 0)
@@ -545,16 +545,73 @@ namespace Document_Office.Net.Forms
         }
         void button1_Click(object sender, EventArgs e)
         {
-            List<IDOElement> newElements = new List<IDOElement>();
-            foreach ((int, Guid) tuple in idoTuples)
+            int fileIndex = 1;
+            int tupleIndex = 0;
+
+            for(int it = 0; it < NeededCountFile; it++)
             {
-                List<IDOElement> element = documentTemplate.NewDocsElements.FindAll(idoElement => idoElement.IDOElementGuid == tuple.Item2);
-                if(element != null && element.Count > 0)
-                {
-                    Console.WriteLine(element);
-                    //newElements.Add(element);
-                }
+                string checkFileName = $"{documentTemplate.NameDocument} {it + 1}";
+                var j = documentTemplate.NewDocsElements.FindAll(idoelement => idoelement.Target == checkFileName);
+                Console.WriteLine("\n");
+                j.ForEach(jEl => Console.WriteLine(jEl.Target));
+
+                Console.WriteLine("\n");
+                Console.WriteLine("\n");
             }
+
+            //do
+            //{
+            //    //Guid singleTupleGuid = idoTuples[tupleIndex].Item2;
+            //    for (int i = 0; i < documentTemplate.NewDocsElements.Count; i++)
+            //    {
+
+            //        IDOElement v = documentTemplate.NewDocsElements[i];
+
+            //        if (v.Target == checkFileName)
+            //        {
+            //            Console.WriteLine(v);
+            //        }
+
+            //    }
+
+
+
+            //    if (fileIndex < NeededCountFile)
+            //    {
+            //        fileIndex++;
+            //    }
+            //    else
+            //    {
+            //        fileIndex = 1;
+            //    }
+            //    tupleIndex++;
+            //    //if(j.Count > 0)
+            //    //{
+            //    //   Console.WriteLine(j[0].Target);
+            //    //}
+            //    //Console.WriteLine(j.Count.ToString());
+            //} while (tupleIndex < idoTuples.Count);
+
+            //documentTemplate.NewDocsElements.ForEach(idoElement => Console.WriteLine(idoElement.Target));
+            //foreach ((int, Guid) tuple in idoTuples)
+            //{
+
+            //Console.WriteLine(checkFileName);
+
+
+
+            //List<IDOElement> element = documentTemplate.NewDocsElements.FindAll(idoElement => idoElement.IDOElementGuid == tuple.Item2);
+            //if(element != null && element.Count > 0)
+            //{
+            //Console.WriteLine(element);
+            //newElements.Add(element);
+            //}
+            //else
+            //{
+            //newElements.Add();
+            //}
+            //fileIndex++;
+            //}
 
             //var ctrP = documentTemplate.NewDocsElements;
         }
