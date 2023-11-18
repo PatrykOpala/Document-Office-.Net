@@ -31,6 +31,25 @@ namespace Document_Office.Net
             this.run_properties = run_prop;
         }
     }
+
+    public enum ReplaceType
+    {
+        Paragraph,
+        TableParagraph
+    }
+    public class Replaceable
+    {
+        public bool IsReplace { get; private set; } = false;
+        public ReplaceType ReplaceType { get; private set; }
+        public Guid ReplaceRunGuid { get; private set; }
+        public Replaceable(bool isReplace, ReplaceType replaceType, Guid replaceRunGuid)
+        {
+            IsReplace = isReplace;
+            ReplaceType = replaceType;
+            ReplaceRunGuid = replaceRunGuid;
+        }
+    }
+
     public class DOParagraph : IDOElement
     {
         public string Type { get; } = "Paragraph";
@@ -41,6 +60,7 @@ namespace Document_Office.Net
         public bool IsEmpty { get; private set; }
         public Guid IDOElementGuid { get; set; }
         public string Target { get; set; }
+        public Replaceable Replaceable { get; set; }
         public DOParagraph(){}
         public DOParagraph(DocumentFormat.OpenXml.Wordprocessing.Paragraph b)
         {

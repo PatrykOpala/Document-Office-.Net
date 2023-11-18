@@ -79,12 +79,6 @@
     <Compile Include="Forms\DialogStartWindow.Designer.cs">
       <DependentUpon>DialogStartWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\DOMessageBox.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\DOMessageBox.Designer.cs">
-      <DependentUpon>DOMessageBox.cs</DependentUpon>
-    </Compile>
     <Compile Include="Forms\NewEditorConcept.cs">
       <SubType>Form</SubType>
     </Compile>

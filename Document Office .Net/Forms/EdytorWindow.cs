@@ -4,7 +4,6 @@ using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using DocumentFormat.OpenXml.Packaging;
-using DocumentFormat.OpenXml.Spreadsheet;
 using DocumentFormat.OpenXml.Wordprocessing;
 using Label = System.Windows.Forms.Label;
 
@@ -19,8 +18,6 @@ namespace Document_Office.Net.Forms
     {
         // ./WriteDocxObjectToJSON -f='C:\Users\patry\Desktop\test.docx'
 
-        // [#1, Przyjrzeć się czy nie trzeba trochę posprzątać w kodzie]
-        // [#2, Zrobić generowanie właściwych plików]
         //Dictionary<string, DODocumentTemplate> documentTemplateDictionary = new Dictionary<string, DODocumentTemplate>();
         //Dictionary<string, DODocumentTemplate> tableDocumentTemplateDictionary = new Dictionary<string, DODocumentTemplate>();
         private List<(int, Guid)> idoTuples = new List<(int, Guid)>();
@@ -175,6 +172,8 @@ namespace Document_Office.Net.Forms
                     if (doc.Text == oldV)
                     {
                         oRun.Text = newValue;
+                        Replaceable replaceable = new Replaceable(true, ReplaceType.Paragraph, oRun.DORunGuid);
+                        dOParagraph.Replaceable = replaceable;
                     }
                 }
                 dOParagraph.AddRun(oRun);
@@ -423,7 +422,6 @@ namespace Document_Office.Net.Forms
                 TextBox Box1 = (TextBox)keySender;
                 if (keyArgs.KeyValue == 13)
                 {
-                    //Console.WriteLine("dupa blada");
                     keyArgs.SuppressKeyPress = true;
                     
                     if (DuplicateCount > 0)
@@ -553,13 +551,16 @@ namespace Document_Office.Net.Forms
                 string checkFileName = $"{documentTemplate.NameDocument} {it + 1}";
                 var j = documentTemplate.NewDocsElements.FindAll(idoelement => idoelement.Target == checkFileName);
                 Console.WriteLine("\n");
-                j.ForEach(jEl => Console.WriteLine(jEl.Target));
+                //j.ForEach(jEl => Console.WriteLine(jEl.Target));
+                // #[Zrobić składanie elementów na podstawie etykiety]
+                var shortArray = ShortDOArray();
+                // #[Pociągnąć do przodu kwestie generowania zmienionych dokumentów]
 
                 Console.WriteLine("\n");
                 Console.WriteLine("\n");
             }
 
-            //do
+            /*do
             //{
             //    //Guid singleTupleGuid = idoTuples[tupleIndex].Item2;
             //    for (int i = 0; i < documentTemplate.NewDocsElements.Count; i++)
@@ -613,8 +614,16 @@ namespace Document_Office.Net.Forms
             //fileIndex++;
             //}
 
+            */
+            
             //var ctrP = documentTemplate.NewDocsElements;
         }
+
+        private List<IDOElement> ShortDOArray()
+        {
+            throw new NotImplementedException();
+        }
+
         void DOEngine(ref TextBox textBox, string labelText) 
         {
             string placeholder = $"Z({labelText})N()W()";
