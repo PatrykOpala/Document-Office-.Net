@@ -40,7 +40,7 @@ namespace Document_Office.Net.Forms
         {
             Thread edytorThread = new Thread(() =>
             {
-                Application.Run(new EdytorWindow(filePath, countFile));
+                Application.Run(new EdytorWindow2(filePath, countFile));
             });
             edytorThread.SetApartmentState(ApartmentState.STA);
             edytorThread.Start();

@@ -42,11 +42,13 @@ namespace Document_Office.Net
         public bool IsReplace { get; private set; } = false;
         public ReplaceType ReplaceType { get; private set; }
         public Guid ReplaceRunGuid { get; private set; }
-        public Replaceable(bool isReplace, ReplaceType replaceType, Guid replaceRunGuid)
+        public string ToText {  get; private set; }
+        public Replaceable(bool isReplace, ReplaceType replaceType, Guid replaceRunGuid, string toText)
         {
             IsReplace = isReplace;
             ReplaceType = replaceType;
             ReplaceRunGuid = replaceRunGuid;
+            ToText = toText;
         }
     }
 
@@ -218,6 +220,7 @@ namespace Document_Office.Net
         private Guid _doRunGuid;
         public Guid DORunGuid { get { return _doRunGuid; } set { _doRunGuid = value; } }
         public string Text { get; set; } = "";
+        public Dictionary<string, string> NewRunValues = new Dictionary<string, string>();
         public DORunProp Properties { get; set; }
         public DORun() { }
         public DORun(DocumentFormat.OpenXml.Wordprocessing.Run r)
@@ -230,6 +233,15 @@ namespace Document_Office.Net
             {
                 Text = rText.Text;
             }
+        }
+
+        public DORun CloneDORun()
+        {
+            DORun dORun = new DORun();
+            dORun.Properties = Properties;
+            dORun.DORunGuid = DORunGuid;
+
+            return dORun;
         }
     }
     public struct DORunProp

@@ -1,0 +1,42 @@
+﻿using Document_Office.Net.Environment;
+using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Wordprocessing;
+using System.Windows.Forms;
+
+namespace Document_Office.Net.Forms
+{
+    public partial class EdytorWindow2 : Form
+    {
+        private DOEnvironment Environment = new DOEnvironment();
+
+        public EdytorWindow2(string file, ushort countFile)
+        {
+            InitializeComponent();
+            OpenDocx(file);
+        }
+
+        void OpenDocx(string f)
+        {
+            using (WordprocessingDocument word = WordprocessingDocument.Open(f, true))
+            {
+                //int tIdx = 0;
+                foreach (var bd in word.MainDocumentPart.Document.Body.ChildElements)
+                {
+                    if (bd.LocalName == "p")
+                    {
+                        DOParagraph paragrapgh = new DOParagraph((Paragraph)bd);
+
+                        Environment.AddParagraph(paragrapgh, paragrapgh.IDOElementGuid);
+                        //tIdx++;
+                    }
+                    if (bd.LocalName == "tbl")
+                    {
+                        DOTable table = new DOTable((Table)bd);
+                        Environment.AddTable(table, table.IDOElementGuid);
+                        //tIdx++;
+                    }
+                }
+            }
+        }
+    }
+}

@@ -17,13 +17,13 @@ namespace Document_Office.Net.Forms
     public partial class EdytorWindow : Form
     {
         // ./WriteDocxObjectToJSON -f='C:\Users\patry\Desktop\test.docx'
-
         //Dictionary<string, DODocumentTemplate> documentTemplateDictionary = new Dictionary<string, DODocumentTemplate>();
         //Dictionary<string, DODocumentTemplate> tableDocumentTemplateDictionary = new Dictionary<string, DODocumentTemplate>();
         private List<(int, Guid)> idoTuples = new List<(int, Guid)>();
         private List<DOParagraph> DocsParagraphElements = new List<DOParagraph>();
         private List<DOTable> DocsTableElements = new List<DOTable>();
         private DODocumentTemplate documentTemplate = new DODocumentTemplate();
+
         TextBox textBox1 = null;
         int PanelNewspaperHeight = 0;
         ushort iterator = 1;
@@ -141,6 +141,7 @@ namespace Document_Office.Net.Forms
             panelNewspaper.Size = new Size(793, 552);
             button1.Location = new Point(610, 474);
             panelNewspaper.Controls.Add(textBox);
+            textBox.Focus();
             textBox1 = textBox;
         }
         void MapDODocumentObject(DOParagraph docParag, ref int idx, ref string oldV, string newValue)
@@ -172,15 +173,14 @@ namespace Document_Office.Net.Forms
                     if (doc.Text == oldV)
                     {
                         oRun.Text = newValue;
-                        Replaceable replaceable = new Replaceable(true, ReplaceType.Paragraph, oRun.DORunGuid);
+                        Replaceable replaceable = new Replaceable(true, ReplaceType.Paragraph, oRun.DORunGuid, newValue);
                         dOParagraph.Replaceable = replaceable;
                     }
+                    dOParagraph.AddRun(oRun);
                 }
-                dOParagraph.AddRun(oRun);
+                
             }
             documentTemplate.NewDocsElements.Add(dOParagraph);
-
-            //var ctrlP = documentTemplate.NewDocsElements;
 
             /*
 
@@ -519,7 +519,7 @@ namespace Document_Office.Net.Forms
                     var v = idoTuples;
 
                     var elementGuid = idoTuples.Find(el => el.Item2 == ((DOItem)combo.SelectedItem).itemID);
-                    DOParagraph paragraph = DocsParagraphElements.Find((c) => c.IDOElementGuid == elementGuid.Item2);
+                    DOParagraph paragraph = DocsParagraphElements.Find(c => c.IDOElementGuid == elementGuid.Item2);
 
                     docParag = paragraph;
                     int x = 60;
@@ -553,11 +553,13 @@ namespace Document_Office.Net.Forms
                 Console.WriteLine("\n");
                 //j.ForEach(jEl => Console.WriteLine(jEl.Target));
                 // #[Zrobić składanie elementów na podstawie etykiety]
-                var shortArray = ShortDOArray();
+                var engine = new DOElementEngine();
+                var paragraphObject = engine.GenerateParagraphObject(j);
+                //var shortArray = ShortDOArray();
                 // #[Pociągnąć do przodu kwestie generowania zmienionych dokumentów]
 
-                Console.WriteLine("\n");
-                Console.WriteLine("\n");
+                //Console.WriteLine("\n");
+                //Console.WriteLine("\n");
             }
 
             /*do

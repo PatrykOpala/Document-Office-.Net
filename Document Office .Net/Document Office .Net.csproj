@@ -70,14 +70,22 @@
     <Compile Include="DOBorder.cs" />
     <Compile Include="DODocumentTemplate.cs" />
     <Compile Include="DOElement.cs" />
+    <Compile Include="DOEngine.cs" />
     <Compile Include="DOParagraph.cs" />
     <Compile Include="DOTable.cs" />
     <Compile Include="DOTableProp.cs" />
+    <Compile Include="Environment\DOEnvironment.cs" />
     <Compile Include="Forms\DialogStartWindow.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\DialogStartWindow.Designer.cs">
       <DependentUpon>DialogStartWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\EdytorWindow2.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\EdytorWindow2.Designer.cs">
+      <DependentUpon>EdytorWindow2.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\NewEditorConcept.cs">
       <SubType>Form</SubType>
@@ -107,6 +115,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\EdytorWindow.resx">
       <DependentUpon>EdytorWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\EdytorWindow2.resx">
+      <DependentUpon>EdytorWindow2.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\NewEditorConcept.resx">
       <DependentUpon>NewEditorConcept.cs</DependentUpon>
