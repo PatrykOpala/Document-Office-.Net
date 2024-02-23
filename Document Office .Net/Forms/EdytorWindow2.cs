@@ -1,6 +1,7 @@
 ﻿using Document_Office.Net.Environment;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
+using System;
 using System.Windows.Forms;
 
 namespace Document_Office.Net.Forms
@@ -13,6 +14,10 @@ namespace Document_Office.Net.Forms
         {
             InitializeComponent();
             OpenDocx(file);
+            Environment.AddEnvironmentFileName(file);
+            Environment.AddCountCopies(countFile);
+            Environment.AddRootWindowToEnvironment(this);
+            Environment.InitUI(this.Size.Width);
         }
 
         void OpenDocx(string f)
