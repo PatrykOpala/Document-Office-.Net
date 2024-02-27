@@ -17,7 +17,7 @@ namespace Document_Office.Net.Forms
             Environment.AddEnvironmentFileName(file);
             Environment.AddCountCopies(countFile);
             Environment.AddRootWindowToEnvironment(this);
-            Environment.InitUI(this.Size.Width);
+            Environment.InitUI(Size.Width);
         }
 
         void OpenDocx(string f)

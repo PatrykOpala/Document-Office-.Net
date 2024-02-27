@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Windows.Forms;
 
 namespace Document_Office.Net.Environment
 {
@@ -9,16 +11,38 @@ namespace Document_Office.Net.Environment
         private string fileName = "";
         public DOEnvironmentUI() { }
 
-        public void GenerateUI(int width, string fileName, System.Windows.Forms.Form form)
+        public void GenerateUI(int width, int height, int x, int y, string fileName, Form form, string TestText = "")
         {
             this.fileName = fileName;
-
-            // form.Controls.Add();
+            PrepareEnvContainer(width, height, x, y, form, TestText);
         }
 
         public void SaveToFile()
         {
 
+        }
+
+        private void PrepareEnvContainer(int width, int height, int x, int y, Form form, string TestText) 
+        {
+            form.AutoScroll = true;
+
+            Panel EnvPanel = new Panel()
+            {
+                Size = new Size(width, height),
+                BackColor = Color.Magenta,
+                Location = new Point(x, y),
+            };
+
+            TextBox textBox = new TextBox()
+            {
+                Text = TestText,
+                TextAlign = HorizontalAlignment.Center,
+                Font = new Font("Arial", 30.0f),
+            };
+            EnvPanel.Controls.Add(textBox);
+            
+
+            form.Controls.Add(EnvPanel);
         }
 
         public void AddElementsToList(List<IDOElement> elements) => this.elements = elements;
@@ -29,11 +53,12 @@ namespace Document_Office.Net.Environment
         private List<Guid> ido = new List<Guid>();
         private List<DOParagraph> DocsParagraphElements = new List<DOParagraph>();
         private List<DOTable> DocsTableElements = new List<DOTable>();
+        private List<DOEnvironmentUI> environmentUIs = new List<DOEnvironmentUI>();
+
         private int countCopies = 0;
         private string EnvironmentFileName = "";
-        private System.Windows.Forms.Form RootWindow = null;
+        private Form RootWindow = null;
 
-        private List<DOEnvironmentUI> environmentUIs = new List<DOEnvironmentUI>();
 
         public DOEnvironment(){ }
 
@@ -48,11 +73,11 @@ namespace Document_Office.Net.Environment
             ido.Add(guid);
         }
 
-        public void AddRootWindowToEnvironment(System.Windows.Forms.Form rootWindow) => this.RootWindow = rootWindow;
+        public void AddRootWindowToEnvironment(Form rootWindow) => RootWindow = rootWindow;
 
-        public void AddEnvironmentFileName(string fileName) => this.EnvironmentFileName = fileName;
+        public void AddEnvironmentFileName(string fileName) => EnvironmentFileName = fileName;
 
-        public void InitUI(int width) 
+        public void InitUI(int width)
         {
             List<IDOElement> dOElements = new List<IDOElement>();
             foreach(Guid elementGuid in ido)
@@ -79,11 +104,42 @@ namespace Document_Office.Net.Environment
                     }
                 }
             }
-            DOEnvironmentUI envUI = new DOEnvironmentUI();
-            envUI.AddElementsToList(dOElements);
-            envUI.GenerateUI(width, EnvironmentFileName, RootWindow);
 
-            this.environmentUIs.Add(envUI);
+            int xEnv = 0;
+            int yEnv = 0;
+
+            for(int iterator = 1; iterator < countCopies + 1; iterator++)
+            {
+                DOEnvironmentUI envUI = new DOEnvironmentUI();
+                envUI.AddElementsToList(dOElements);
+                envUI.GenerateUI(width + 135, 600, xEnv, yEnv, EnvironmentFileName, RootWindow, iterator.ToString());
+                environmentUIs.Add(envUI);
+
+                if(iterator % 2 == 1)
+                {
+                    if (xEnv > 0)
+                    {
+                        xEnv = 0;
+                    }
+                    else
+                    {
+                        xEnv = width + 136;
+                    }
+                }
+
+                if(iterator % 2 == 0)
+                {
+                    if (yEnv > 0)
+                    {
+                        yEnv = 0;
+                    }
+                    else
+                    {
+                        yEnv = 600 + 1;
+                    }
+                }
+            }
+
         }
 
         public void AddCountCopies(int count) => countCopies = count;
