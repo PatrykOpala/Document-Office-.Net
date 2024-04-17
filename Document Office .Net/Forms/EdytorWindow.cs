@@ -333,11 +333,6 @@ namespace Document_Office.Net.Forms
             documentTemplate.NewDocsElements.Add(table);
 
 
-
-
-
-
-
             /*
 
             if (documentTemplate.DocsTableElements.Count == 0)
@@ -563,58 +558,58 @@ namespace Document_Office.Net.Forms
             }
 
             /*do
-            //{
-            //    //Guid singleTupleGuid = idoTuples[tupleIndex].Item2;
-            //    for (int i = 0; i < documentTemplate.NewDocsElements.Count; i++)
-            //    {
+            {
+                //Guid singleTupleGuid = idoTuples[tupleIndex].Item2;
+                for (int i = 0; i < documentTemplate.NewDocsElements.Count; i++)
+                {
 
-            //        IDOElement v = documentTemplate.NewDocsElements[i];
+                    IDOElement v = documentTemplate.NewDocsElements[i];
 
-            //        if (v.Target == checkFileName)
-            //        {
-            //            Console.WriteLine(v);
-            //        }
+                    if (v.Target == checkFileName)
+                    {
+                        Console.WriteLine(v);
+                    }
 
-            //    }
-
-
-
-            //    if (fileIndex < NeededCountFile)
-            //    {
-            //        fileIndex++;
-            //    }
-            //    else
-            //    {
-            //        fileIndex = 1;
-            //    }
-            //    tupleIndex++;
-            //    //if(j.Count > 0)
-            //    //{
-            //    //   Console.WriteLine(j[0].Target);
-            //    //}
-            //    //Console.WriteLine(j.Count.ToString());
-            //} while (tupleIndex < idoTuples.Count);
-
-            //documentTemplate.NewDocsElements.ForEach(idoElement => Console.WriteLine(idoElement.Target));
-            //foreach ((int, Guid) tuple in idoTuples)
-            //{
-
-            //Console.WriteLine(checkFileName);
+                }
 
 
 
-            //List<IDOElement> element = documentTemplate.NewDocsElements.FindAll(idoElement => idoElement.IDOElementGuid == tuple.Item2);
-            //if(element != null && element.Count > 0)
-            //{
-            //Console.WriteLine(element);
-            //newElements.Add(element);
-            //}
-            //else
-            //{
-            //newElements.Add();
-            //}
-            //fileIndex++;
-            //}
+                if (fileIndex < NeededCountFile)
+                {
+                    fileIndex++;
+                }
+                else
+                {
+                    fileIndex = 1;
+                }
+                tupleIndex++;
+                if(j.Count > 0)
+                {
+                   Console.WriteLine(j[0].Target);
+                }
+                Console.WriteLine(j.Count.ToString());
+            } while (tupleIndex < idoTuples.Count);
+
+            documentTemplate.NewDocsElements.ForEach(idoElement => Console.WriteLine(idoElement.Target));
+            foreach ((int, Guid) tuple in idoTuples)
+            {
+
+            Console.WriteLine(checkFileName);
+
+
+
+            List<IDOElement> element = documentTemplate.NewDocsElements.FindAll(idoElement => idoElement.IDOElementGuid == tuple.Item2);
+            if(element != null && element.Count > 0)
+            {
+            Console.WriteLine(element);
+            newElements.Add(element);
+            }
+            else
+            {
+            newElements.Add();
+            }
+            fileIndex++;
+            }
 
             */
             

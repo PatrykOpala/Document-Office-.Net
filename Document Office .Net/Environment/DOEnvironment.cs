@@ -80,7 +80,6 @@ namespace Document_Office.Net.Environment
 
         public void CreateNewspaperParagraph(DOParagraph paragraph, ref int vertical)
         {
-            Console.WriteLine(paragraph.ListRuns);
             foreach(DORun dORun in paragraph.ListRuns)
             {
                 Label label = new Label()
@@ -99,16 +98,22 @@ namespace Document_Office.Net.Environment
                 if (dORun.Text == "")
                     label.Text = "[Pusty]";
 
+                Graphics gfx = Graphics.FromImage(new Bitmap(1, 1));
+                SizeF stringSize = gfx.MeasureString(dORun.Text, dORun.Properties.Font);
+
                 label.Text = dORun.Text;
 
                 if (dORun.Text == " ")
                 {
-                    label.Location = new Point(vertical + 70, _y);
-                    label.Text = "[Spacja]";
+                    label.Location = new Point(vertical + ((int)stringSize.Width) - 17, _y);
+                    //vertical += label.Size.Width;
+                    label.Text = " ";
                 }
 
                 _newspaperPanel.Controls.Add(label);
-                vertical += 500;
+                Console.WriteLine(stringSize.Width);
+                vertical += label.Size.Width + 5;
+                //((int)stringSize.Width)
             }
             _y += 100;
         }
@@ -189,7 +194,12 @@ namespace Document_Office.Net.Environment
             {
                 DOEnvironmentUI envUI = new DOEnvironmentUI();
                 envUI.AddElementsToList(dOElements);
-                envUI.GenerateUI(width + 135, 600, xEnv, yEnv, EnvironmentFileName, RootWindow, iterator.ToString());
+                Console.WriteLine($"CountCopies: {countCopies}");
+                if (countCopies > 2)
+                    envUI.GenerateUI(width + 135, 600, xEnv, yEnv, EnvironmentFileName, RootWindow, iterator.ToString());
+                else
+                    envUI.GenerateUI(width + 150, 600, xEnv, yEnv, EnvironmentFileName, RootWindow, iterator.ToString());
+
                 foreach (Guid elementGuid in ido)
                 {
                     int x = 0;
