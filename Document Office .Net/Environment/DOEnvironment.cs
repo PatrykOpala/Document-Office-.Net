@@ -8,7 +8,9 @@ namespace Document_Office.Net.Environment
    internal class DOEnvironmentUI
     {
         private List<IDOElement> elements = new List<IDOElement>();
+        private Panel _newspaperPanel = null;
         private string fileName = "";
+        private int _y = 0;
         public DOEnvironmentUI() { }
 
         public void GenerateUI(int width, int height, int x, int y, string fileName, Form form, string TestText = "")
@@ -31,18 +33,94 @@ namespace Document_Office.Net.Environment
                 Size = new Size(width, height),
                 BackColor = Color.Magenta,
                 Location = new Point(x, y),
+                AutoScroll = true,
             };
 
-            TextBox textBox = new TextBox()
+            Label textBox = new Label()
             {
                 Text = TestText,
-                TextAlign = HorizontalAlignment.Center,
+                TextAlign = ContentAlignment.MiddleCenter,
                 Font = new Font("Arial", 30.0f),
+                Size = new Size(30, 50),
+                BackColor= Color.Teal,
             };
             EnvPanel.Controls.Add(textBox);
-            
+
+            EnvPanel.Controls.Add(CreateNewspaper(width));
 
             form.Controls.Add(EnvPanel);
+        }
+
+        public Control CreateNewspaper(int containerWidth)
+        {
+            Panel newspaperPanel = new Panel()
+            {
+                Size = new Size(containerWidth - 160, 500),
+                BackColor = Color.White,
+                Location = new Point(containerWidth / 2 - 460, 50),
+                AutoSize = true,
+            };
+
+            /*if(this.elements.Count > 0 )
+            {
+                foreach( IDOElement idoElement in this.elements )
+                {
+                    Console.WriteLine(idoElement.Type);
+
+                    if(idoElement.Type == "Paragraph")
+                    {
+                        newspaperPanel.Controls.Add(CreateNewspaperParagraph(new DOParagraph()));
+                    }
+                }
+            }*/
+
+            _newspaperPanel = newspaperPanel;
+            return newspaperPanel;
+        }
+
+        public void CreateNewspaperParagraph(DOParagraph paragraph, ref int vertical)
+        {
+            Console.WriteLine(paragraph.ListRuns);
+            foreach(DORun dORun in paragraph.ListRuns)
+            {
+                Label label = new Label()
+                {
+                    Location = new Point(vertical, _y),
+                    BorderStyle = BorderStyle.FixedSingle,
+                    Cursor = Cursors.Hand,
+                    AutoSize = true,
+                    Tag = dORun.DORunGuid,
+                    Font = dORun.Properties.Font,
+                    ForeColor = Color.Black,
+                    Text = dORun.Text
+                    //dORun.Properties._Color
+                };
+
+                if (dORun.Text == "")
+                    label.Text = "[Pusty]";
+
+                label.Text = dORun.Text;
+
+                if (dORun.Text == " ")
+                {
+                    label.Location = new Point(vertical + 70, _y);
+                    label.Text = "[Spacja]";
+                }
+
+                _newspaperPanel.Controls.Add(label);
+                vertical += 500;
+            }
+            _y += 100;
+        }
+
+        public void CreateNewspaperTable(DOTable Table)
+        {
+            Label label = new Label()
+            {
+
+            };
+
+            this._newspaperPanel.Controls.Add(label);
         }
 
         public void AddElementsToList(List<IDOElement> elements) => this.elements = elements;
@@ -58,7 +136,6 @@ namespace Document_Office.Net.Environment
         private int countCopies = 0;
         private string EnvironmentFileName = "";
         private Form RootWindow = null;
-
 
         public DOEnvironment(){ }
 
@@ -80,30 +157,30 @@ namespace Document_Office.Net.Environment
         public void InitUI(int width)
         {
             List<IDOElement> dOElements = new List<IDOElement>();
-            foreach(Guid elementGuid in ido)
-            {
-                foreach(DOParagraph paragraph in DocsParagraphElements)
-                {
-                    if(paragraph != null)
-                    {
-                        if(paragraph.IDOElementGuid == elementGuid)
-                        {
-                            dOElements.Add(paragraph);
-                        }
-                    }
-                }
+            /*foreach(Guid elementGuid in ido)
+            //{
+            //    foreach(DOParagraph paragraph in DocsParagraphElements)
+            //    {
+            //        if(paragraph != null)
+            //        {
+            //            if(paragraph.IDOElementGuid == elementGuid)
+            //            {
+            //                dOElements.Add(paragraph);
+            //            }
+            //        }
+            //    }
 
-                foreach(DOTable table in DocsTableElements)
-                {
-                    if (table != null)
-                    {
-                        if (table.IDOElementGuid == elementGuid)
-                        {
-                            dOElements.Add(table);
-                        }
-                    }
-                }
-            }
+            //    foreach(DOTable table in DocsTableElements)
+            //    {
+            //        if (table != null)
+            //        {
+            //            if (table.IDOElementGuid == elementGuid)
+            //            {
+            //                dOElements.Add(table);
+            //            }
+            //        }
+            //    }
+            }*/
 
             int xEnv = 0;
             int yEnv = 0;
@@ -113,6 +190,33 @@ namespace Document_Office.Net.Environment
                 DOEnvironmentUI envUI = new DOEnvironmentUI();
                 envUI.AddElementsToList(dOElements);
                 envUI.GenerateUI(width + 135, 600, xEnv, yEnv, EnvironmentFileName, RootWindow, iterator.ToString());
+                foreach (Guid elementGuid in ido)
+                {
+                    int x = 0;
+                    foreach (DOParagraph paragraph in DocsParagraphElements)
+                    {
+                        if (paragraph != null)
+                        {
+                            
+                            if (paragraph.IDOElementGuid == elementGuid)
+                            {
+                                envUI.CreateNewspaperParagraph(paragraph, ref x);
+                            }
+                        }
+                    }
+
+                    foreach (DOTable table in DocsTableElements)
+                    {
+                        if (table != null)
+                        {
+                            if (table.IDOElementGuid == elementGuid)
+                            {
+                                //dOElements.Add(table);
+                            }
+                        }
+                    }
+                }
+
                 environmentUIs.Add(envUI);
 
                 if(iterator % 2 == 1)
