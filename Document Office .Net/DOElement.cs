@@ -9,7 +9,7 @@ namespace Document_Office.Net
         string Target { get; set; }
     }
 
-    public class ChooseTable
+    public struct ChooseTable
     {
         public Guid TableRowGuid { get; set; }
         public Guid TableCellGuid { get; set; }
@@ -23,16 +23,17 @@ namespace Document_Office.Net
         }
     }
 
-    public class DOItem
+    public struct DOItem
     {
         public Guid itemID { get; set; }
-        public string itemText { get; set; } = "";
-        public string itemPlaceholder { get; set; } = "";
+        public string itemText { get; set; }
+        public string itemPlaceholder { get; set; }
 
         public DOItem(Guid id, string str)
         {
             itemID = id;
             itemText = str;
+            itemPlaceholder = "";
         }
 
         public DOItem(Guid id, string str, string placeholder)

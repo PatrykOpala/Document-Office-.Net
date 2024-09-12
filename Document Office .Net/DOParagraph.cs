@@ -37,9 +37,9 @@ namespace Document_Office.Net
         Paragraph,
         TableParagraph
     }
-    public class Replaceable
+    public struct Replaceable
     {
-        public bool IsReplace { get; private set; } = false;
+        public bool IsReplace { get; private set; }
         public ReplaceType ReplaceType { get; private set; }
         public Guid ReplaceRunGuid { get; private set; }
         public string ToText {  get; private set; }
@@ -52,28 +52,40 @@ namespace Document_Office.Net
         }
     }
 
-    public class DOParagraph : IDOElement
+    public struct DOParagraph : IDOElement
     {
-        public string Type { get; } = "Paragraph";
-        private List<DORun> _listRuns = new List<DORun>();
-        public DORun[] ListRuns { get { return _listRuns.ToArray(); } }
-        private DOParagProp _paragraphProperties;
-        public DOParagProp ParagraphProperties { get { return _paragraphProperties; } set { _paragraphProperties = value; } }
-        public bool IsEmpty { get; private set; }
+        public string Type { get; }
+        public List<DORun> listRuns;
+        public DOParagProp ParagraphProperties { get; set; }
+        public bool IsEmpty { get; set; }
         public Guid IDOElementGuid { get; set; }
         public string Target { get; set; }
         public Replaceable Replaceable { get; set; }
-        public DOParagraph(){}
-        public DOParagraph(DocumentFormat.OpenXml.Wordprocessing.Paragraph b)
+        public DOParagraph(DOParagraph paragraph)
         {
-            foreach (DocumentFormat.OpenXml.Wordprocessing.Run r in b.Elements<DocumentFormat.OpenXml.Wordprocessing.Run>())
+            Type = paragraph.Type;
+            listRuns = paragraph.listRuns;
+            IsEmpty = paragraph.IsEmpty;
+            IDOElementGuid = paragraph.IDOElementGuid;
+            Target = paragraph.Target;
+            Replaceable = paragraph.Replaceable;
+        }
+        public DOParagraph(DocumentFormat.OpenXml.Wordprocessing.Paragraph wordParagraph)
+        {
+            Type = "Paragraph";
+            listRuns = new List<DORun>();
+            IsEmpty = true;
+            IDOElementGuid = Guid.NewGuid();
+            Target = "";
+            Replaceable = new Replaceable();
+            foreach (DocumentFormat.OpenXml.Wordprocessing.Run r in wordParagraph.Elements<DocumentFormat.OpenXml.Wordprocessing.Run>())
             {
                 IsEmpty = String.IsNullOrEmpty(r.InnerText);
                 IDOElementGuid = Guid.NewGuid();
-                _listRuns.Add(new DORun(r));
+                listRuns.Add(new DORun(r));
             }
         }
-        public void AddRun(DORun dORun) => _listRuns.Add(dORun);
+        public void AddRun(DORun dORun) => listRuns.Add(dORun);
         public int generateParagraphUI(NewEditorConcept rootWindow, int startX, int startY)
         {
             Panel paragraph = new Panel()
@@ -103,7 +115,7 @@ namespace Document_Office.Net
             }
             int Empty_Run = 46;
             int Run_X = 46;
-            if(_listRuns.Count > 0)
+            if(listRuns.Count > 0)
             {
                 for (int idx = 0; idx < _listRuns.Count; idx++)
                 {

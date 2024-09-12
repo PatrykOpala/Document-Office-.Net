@@ -68,12 +68,12 @@
   <ItemGroup>
     <Compile Include="DOAbstractElement.cs" />
     <Compile Include="DOBorder.cs" />
+    <Compile Include="DODocument.cs" />
     <Compile Include="DODocumentTemplate.cs" />
     <Compile Include="DOElement.cs" />
     <Compile Include="DOEngine.cs" />
     <Compile Include="DOParagraph.cs" />
     <Compile Include="DOTable.cs" />
-    <Compile Include="DOTableProp.cs" />
     <Compile Include="Environment\DOEnvironment.cs" />
     <Compile Include="Forms\DialogStartWindow.cs">
       <SubType>Form</SubType>
@@ -105,6 +105,12 @@
     <Compile Include="Forms\EdytorWindow.Designer.cs">
       <DependentUpon>EdytorWindow.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\StartWindow2.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\StartWindow2.Designer.cs">
+      <DependentUpon>StartWindow2.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\DOElementsModel.cs" />
     <Compile Include="PhItem.cs" />
     <Compile Include="ProcessesDOElements.cs" />
@@ -124,6 +130,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\StartWindow.resx">
       <DependentUpon>StartWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\StartWindow2.resx">
+      <DependentUpon>StartWindow2.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

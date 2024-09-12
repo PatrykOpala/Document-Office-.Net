@@ -5,14 +5,13 @@ using System.Windows.Forms;
 
 namespace Document_Office.Net.Environment
 {
-
     internal class LabelTag
     {
         public Guid _guid;
-        public String _oldValue;
-        public String _newValue;
+        public string _oldValue;
+        public string _newValue;
 
-        public LabelTag(Guid guid, String oldValue, String newValue = "")
+        public LabelTag(Guid guid, string oldValue, string newValue = "")
         {
             this._guid = guid;
             this._oldValue = oldValue;
@@ -48,11 +47,18 @@ namespace Document_Office.Net.Environment
         {
             form.AutoScroll = true;
 
+            Button GenerateButton = new Button();
+
+            GenerateButton.Text = "Przetwórz dokumenty";
+            GenerateButton.Location = new Point(0, 10);
+            GenerateButton.Size = new Size(190, 30);
+            GenerateButton.Font = new Font("Arial", 13);
+
             Panel EnvPanel = new Panel()
             {
                 Size = new Size(width, height),
                 BackColor = Color.Magenta,
-                Location = new Point(x, y),
+                Location = new Point(x, y + 50),
                 AutoScroll = true,
             };
 
@@ -67,6 +73,7 @@ namespace Document_Office.Net.Environment
 
             EnvPanel.Controls.Add(CreateNewspaper(width));
 
+            form.Controls.Add(GenerateButton);
             form.Controls.Add(EnvPanel);
         }
 
@@ -343,6 +350,11 @@ namespace Document_Office.Net.Environment
                     }
                 }
             }
+
+        }
+
+        private void GenerateUI()
+        {
 
         }
 
