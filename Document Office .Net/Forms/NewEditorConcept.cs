@@ -14,7 +14,7 @@ namespace Document_Office.Net.Forms
         {
             InitializeComponent();
             OpenDocx(file);
-            GenerateParagraph();
+            //GenerateParagraph();
         }
         void OpenDocx(string f)
         {
@@ -40,32 +40,32 @@ namespace Document_Office.Net.Forms
             }
         }
 
-        void GenerateParagraph()
-        {
-            //NewEditorConcept
-            foreach (IDOElement element in IDOElements)
-            {
-                if(element.Type == "Paragraph")
-                {
-                    DOParagraph dOParag = (DOParagraph)element;
+        //void GenerateParagraph()
+        //{
+        //    //NewEditorConcept
+        //    foreach (IDOElement element in IDOElements)
+        //    {
+        //        if(element.Type == "Paragraph")
+        //        {
+        //            DOParagraph dOParag = (DOParagraph)element;
 
-                    int v = dOParag.generateParagraphUI(this, Paragraph_Start_Point_X, Paragraph_Start_Point_Y);
-                    if (v > 0)
-                    {
-                        Paragraph_Start_Point_Y += v - 40;
-                    }
+        //            int v = dOParag.generateParagraphUI(this, Paragraph_Start_Point_X, Paragraph_Start_Point_Y);
+        //            if (v > 0)
+        //            {
+        //                Paragraph_Start_Point_Y += v - 40;
+        //            }
                     
-                    Paragraph_Start_Point_Y += 46;
-                }
+        //            Paragraph_Start_Point_Y += 46;
+        //        }
 
-                if (element.Type == "Table")
-                {
-                    DOTable dOTab = (DOTable)element;
+        //        if (element.Type == "Table")
+        //        {
+        //            DOTable dOTab = (DOTable)element;
 
-                    dOTab.generateTableUI(this, Paragraph_Start_Point_X, Paragraph_Start_Point_Y);
-                    Paragraph_Start_Point_Y += 131;
-                }
-            }
-        }
+        //            dOTab.generateTableUI(this, Paragraph_Start_Point_X, Paragraph_Start_Point_Y);
+        //            Paragraph_Start_Point_Y += 131;
+        //        }
+        //    }
+        //}
     }
 }

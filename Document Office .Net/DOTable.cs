@@ -238,6 +238,7 @@ namespace Document_Office.Net
                 GridColumns.Add(tGridColumn);
             }
         }
+        public DOGridColumn[] GetGridColumns() => GridColumns.ToArray();
     }
     public struct DOGridColumn
     {

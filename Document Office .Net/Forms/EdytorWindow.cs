@@ -74,7 +74,7 @@ namespace Document_Office.Net.Forms
                         else
                         {
                             string m = "Wiersz: ";
-                            foreach (DORun run in paragrapgh.ListRuns)
+                            foreach (DORun run in paragrapgh.listRuns)
                             {
                                 m += run.Text;
                             }
@@ -156,7 +156,7 @@ namespace Document_Office.Net.Forms
                 Target = targetLabel
             };
 
-            foreach (DORun doc in docParag.ListRuns)
+            foreach (DORun doc in docParag.listRuns)
             {
                 DORun oRun = new DORun
                 {
@@ -303,7 +303,7 @@ namespace Document_Office.Net.Forms
                             IDOElementGuid = pa.IDOElementGuid,
                             ParagraphProperties = pa.ParagraphProperties
                         };
-                        foreach (DORun doc in pa.ListRuns)
+                        foreach (DORun doc in pa.listRuns)
                         {
                             DORun oRun = new DORun
                             {
@@ -461,7 +461,7 @@ namespace Document_Office.Net.Forms
             foreach (var tableY in table.TableRows)
             {
                 int index = 0;
-                foreach (var tableX in table.TableGrid.GridColumns)
+                foreach (var tableX in table.TableGrid.GetGridColumns())
                 {
                     Panel panel = new Panel
                     {
@@ -479,7 +479,7 @@ namespace Document_Office.Net.Forms
                             Location = new Point(xParag + 30, yParag + 10),
                             Tag = tableParag.IDOElementGuid,
                         };
-                        foreach (var tableRun in tableParag.ListRuns)
+                        foreach (var tableRun in tableParag.listRuns)
                         {
                             if(tableRun.Properties._Color != null)
                             {
@@ -518,7 +518,7 @@ namespace Document_Office.Net.Forms
 
                     docParag = paragraph;
                     int x = 60;
-                    foreach (DORun FindedRun in paragraph.ListRuns)
+                    foreach (DORun FindedRun in paragraph.listRuns)
                         CreateLabel(FindedRun, ref x);
                 }
                 if (combo.SelectedItem.ToString().StartsWith("Tabela"))
@@ -530,7 +530,7 @@ namespace Document_Office.Net.Forms
                     DOTable tableElement = DocsTableElements.Find(el => el.IDOElementGuid == tableElementGuid.Item2);
 
                     docTable = tableElement;
-                    int tableWidth = tableElement.TableProperties.TableWidth.getCalculateWidth(DOElementContainer.Size.Width);
+                    //int tableWidth = tableElement.TableProperties.TableWidth.getCalculateWidth(DOElementContainer.Size.Width);
                     if(tableElement != null)
                         CreateTable(tableElement);
                 }

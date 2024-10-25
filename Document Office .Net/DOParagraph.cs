@@ -86,84 +86,84 @@ namespace Document_Office.Net
             }
         }
         public void AddRun(DORun dORun) => listRuns.Add(dORun);
-        public int generateParagraphUI(NewEditorConcept rootWindow, int startX, int startY)
-        {
-            Panel paragraph = new Panel()
-            {
-                Location = new Point(startX, startY),
-                Size = new Size(1175, 40),
-                BackColor = Color.FromArgb(230, 230, 230),
-                BorderStyle = BorderStyle.FixedSingle,
-                AutoSize = true,
-            };
-            int paragraphHeight = paragraph.Size.Height / 4 - 4;
-            if (IsEmpty)
-            {
-                Label empty_run = new Label()
-                {
-                    Location = new Point(46, paragraphHeight),
-                    Font = new System.Drawing.Font(new FontFamily("Microsoft Sans Serif"), 14.25F, FontStyle.Regular,
-                                GraphicsUnit.Point, ((byte)(238))),
-                    TextAlign = ContentAlignment.MiddleCenter,
-                    AutoSize = true,
-                    Text = "[Pusty Akapit]",
-                    ForeColor = Color.FromArgb(0, 0, 0)
-                };
-                paragraph.Controls.Add(empty_run);
-                rootWindow.Controls.Add(paragraph);
-                return 0;
-            }
-            int Empty_Run = 46;
-            int Run_X = 46;
-            if(listRuns.Count > 0)
-            {
-                for (int idx = 0; idx < _listRuns.Count; idx++)
-                {
-                    DORun oRun = _listRuns[idx];
-                    //Location = new Point(Run_X, paragraphHeight),
-                    Label run = new Label()
-                    {
-                        Font = oRun.Properties.Font,
-                        TextAlign = ContentAlignment.MiddleCenter,
-                        AutoSize = true,
-                        ForeColor = oRun.Properties._Color,
-                    };
-                    if(idx == 0)
-                    {
-                        run.Tag = new DBRun(true, oRun.Properties, false);
-                    }
-                    if(idx > 0 && idx < _listRuns.Count - 1)
-                    {
-                        run.Tag = new DBRun(oRun.Properties);
-                    }
-                    if (idx == _listRuns.Count - 1)
-                    {
-                        run.Tag = new DBRun(false, oRun.Properties, true);
-                    }
-                    run.Text = oRun.Text;
-                    if (run.Text == " ")
-                    {
-                        run.Text = "[Spacja]";
-                        run.Location = new Point(Empty_Run + (run.Size.Width - run.Size.Height), run.Size.Height);
-                        Run_X += Empty_Run + (run.Size.Width - run.Size.Height);
-                    }
-                    else
-                    {
-                        if(run.Font.Size >= 40)
-                        {
-                            run.BorderStyle = BorderStyle.FixedSingle;
-                            run.Location = new Point(Run_X, 3);
-                        }
-                        run.Location = new Point(Run_X, run.Size.Height);
-                        Run_X += (run.Size.Width - run.Size.Height - 10);
-                    }
-                    run.Click += Run_Click;
-                    paragraph.Controls.Add(run);
-                }
-            }
-            rootWindow.Controls.Add(paragraph);
-            return paragraph.Size.Height;
-        }
+        //public int generateParagraphUI(NewEditorConcept rootWindow, int startX, int startY)
+        //{
+        //    Panel paragraph = new Panel()
+        //    {
+        //        Location = new Point(startX, startY),
+        //        Size = new Size(1175, 40),
+        //        BackColor = Color.FromArgb(230, 230, 230),
+        //        BorderStyle = BorderStyle.FixedSingle,
+        //        AutoSize = true,
+        //    };
+        //    int paragraphHeight = paragraph.Size.Height / 4 - 4;
+        //    if (IsEmpty)
+        //    {
+        //        Label empty_run = new Label()
+        //        {
+        //            Location = new Point(46, paragraphHeight),
+        //            Font = new System.Drawing.Font(new FontFamily("Microsoft Sans Serif"), 14.25F, FontStyle.Regular,
+        //                        GraphicsUnit.Point, ((byte)(238))),
+        //            TextAlign = ContentAlignment.MiddleCenter,
+        //            AutoSize = true,
+        //            Text = "[Pusty Akapit]",
+        //            ForeColor = Color.FromArgb(0, 0, 0)
+        //        };
+        //        paragraph.Controls.Add(empty_run);
+        //        rootWindow.Controls.Add(paragraph);
+        //        return 0;
+        //    }
+        //    int Empty_Run = 46;
+        //    int Run_X = 46;
+        //    if(listRuns.Count > 0)
+        //    {
+        //        for (int idx = 0; idx < listRuns.Count; idx++)
+        //        {
+        //            DORun oRun = listRuns[idx];
+        //            //Location = new Point(Run_X, paragraphHeight),
+        //            Label run = new Label()
+        //            {
+        //                Font = oRun.Properties.Font,
+        //                TextAlign = ContentAlignment.MiddleCenter,
+        //                AutoSize = true,
+        //                ForeColor = oRun.Properties._Color,
+        //            };
+        //            if(idx == 0)
+        //            {
+        //                run.Tag = new DBRun(true, oRun.Properties, false);
+        //            }
+        //            if(idx > 0 && idx < listRuns.Count - 1)
+        //            {
+        //                run.Tag = new DBRun(oRun.Properties);
+        //            }
+        //            if (idx == listRuns.Count - 1)
+        //            {
+        //                run.Tag = new DBRun(false, oRun.Properties, true);
+        //            }
+        //            run.Text = oRun.Text;
+        //            if (run.Text == " ")
+        //            {
+        //                run.Text = "[Spacja]";
+        //                run.Location = new Point(Empty_Run + (run.Size.Width - run.Size.Height), run.Size.Height);
+        //                Run_X += Empty_Run + (run.Size.Width - run.Size.Height);
+        //            }
+        //            else
+        //            {
+        //                if(run.Font.Size >= 40)
+        //                {
+        //                    run.BorderStyle = BorderStyle.FixedSingle;
+        //                    run.Location = new Point(Run_X, 3);
+        //                }
+        //                run.Location = new Point(Run_X, run.Size.Height);
+        //                Run_X += (run.Size.Width - run.Size.Height - 10);
+        //            }
+        //            run.Click += Run_Click;
+        //            paragraph.Controls.Add(run);
+        //        }
+        //    }
+        //    rootWindow.Controls.Add(paragraph);
+        //    return paragraph.Size.Height;
+        //}
         private void Run_Click(object sender, EventArgs e)
         {
             Label k = (Label)sender;

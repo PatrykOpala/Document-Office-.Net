@@ -1,4 +1,6 @@
-﻿namespace Document_Office.Net.Forms
+﻿using System.Windows.Forms;
+
+namespace Document_Office.Net.Forms
 {
     partial class EdytorWindow2
     {
@@ -34,7 +36,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height);
             this.Name = "EdytorWindow2";
             this.Text = "EdytorWindow2";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;

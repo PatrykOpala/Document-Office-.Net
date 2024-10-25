@@ -12,7 +12,7 @@ namespace Document_Office.Net
 
         internal ProcessesDOParagraph(DOParagraph parag)
         {
-            foreach(DORun dr in parag.ListRuns)
+            foreach(DORun dr in parag.listRuns)
             {
                 DORunModel dORunModel = new DORunModel(dr);
                 ListRuns.Add(dORunModel);

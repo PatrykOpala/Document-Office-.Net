@@ -1,7 +1,6 @@
 ﻿using Document_Office.Net.Environment;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
-using System;
 using System.Windows.Forms;
 
 namespace Document_Office.Net.Forms
@@ -17,28 +16,24 @@ namespace Document_Office.Net.Forms
             Environment.AddEnvironmentFileName(file);
             Environment.AddCountCopies(countFile);
             Environment.AddRootWindowToEnvironment(this);
-            Environment.InitUI(Size.Width);
+            Environment.InitUI(Size.Width, Size.Height);
         }
 
         void OpenDocx(string f)
         {
             using (WordprocessingDocument word = WordprocessingDocument.Open(f, true))
             {
-                //int tIdx = 0;
                 foreach (var bd in word.MainDocumentPart.Document.Body.ChildElements)
                 {
                     if (bd.LocalName == "p")
                     {
                         DOParagraph paragrapgh = new DOParagraph((Paragraph)bd);
-
                         Environment.AddParagraph(paragrapgh, paragrapgh.IDOElementGuid);
-                        //tIdx++;
                     }
                     if (bd.LocalName == "tbl")
                     {
                         DOTable table = new DOTable((Table)bd);
                         Environment.AddTable(table, table.IDOElementGuid);
-                        //tIdx++;
                     }
                 }
             }

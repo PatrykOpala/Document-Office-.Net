@@ -21,7 +21,7 @@ namespace Document_Office.Net
 
                 // #[Pobieram ReplaceRunGuid, abym mógł się zorientować, który DORun podmienić]
                 var replaceGUID = element.Replaceable.ReplaceRunGuid;
-                foreach (DORun run in element.ListRuns)
+                foreach (DORun run in element.listRuns)
                 {
                     if (run.DORunGuid == replaceGUID)
                     {

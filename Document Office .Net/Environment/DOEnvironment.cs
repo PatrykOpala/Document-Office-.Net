@@ -56,10 +56,9 @@ namespace Document_Office.Net.Environment
 
             Panel EnvPanel = new Panel()
             {
-                Size = new Size(width, height),
+                Size = new Size(width - 33, height),
                 BackColor = Color.Magenta,
-                Location = new Point(x, y + 50),
-                AutoScroll = true,
+                Location = new Point(x, y),
             };
 
             Label textBox = new Label()
@@ -67,11 +66,11 @@ namespace Document_Office.Net.Environment
                 Text = TestText,
                 TextAlign = ContentAlignment.MiddleCenter,
                 Font = new Font("Arial", 30.0f),
-                Size = new Size(30, 50),
+                Size = new Size(width / 2 - 300, 50),
             };
             EnvPanel.Controls.Add(textBox);
 
-            EnvPanel.Controls.Add(CreateNewspaper(width));
+            EnvPanel.Controls.Add(CreateNewspaper(width / 2));
 
             form.Controls.Add(GenerateButton);
             form.Controls.Add(EnvPanel);
@@ -81,10 +80,9 @@ namespace Document_Office.Net.Environment
         {
             Panel newspaperPanel = new Panel()
             {
-                Size = new Size(containerWidth - 160, 500),
-                BackColor = Color.White,
-                Location = new Point(containerWidth / 2 - 460, 50),
                 AutoSize = true,
+                BackColor = Color.White,
+                Location = new Point(containerWidth / 2 - 160, 50),
             };
             _newspaperPanel = newspaperPanel;
             return newspaperPanel;
@@ -207,22 +205,19 @@ namespace Document_Office.Net.Environment
         public void CreateNewspaperParagraph(DOParagraph paragraph, ref int vertical)
         {
             string paragraphText = "";
-            foreach (DORun dORun in paragraph.ListRuns)
-            {
-                paragraphText += dORun.Text;
-            }
+            foreach (DORun dORun in paragraph.listRuns) { paragraphText += dORun.Text; } 
             Graphics gfx = Graphics.FromImage(new Bitmap(1, 1));
             SizeF stringSize;
             Font font;
-            if (paragraph.ListRuns.Length > 1)
+            if (paragraph.listRuns.Count > 1)
             {
-                font = paragraph.ListRuns[1].Properties.Font;
-                stringSize = gfx.MeasureString(paragraphText, paragraph.ListRuns[1].Properties.Font);
+                font = paragraph.listRuns[0].Properties.Font;
+                stringSize = gfx.MeasureString(paragraphText, paragraph.listRuns[1].Properties.Font);
             }
             else
             {
-                font = paragraph.ListRuns[0].Properties.Font;
-                stringSize = gfx.MeasureString("[Pusty Akapit]", paragraph.ListRuns[0].Properties.Font);
+                font = paragraph.listRuns[0].Properties.Font;
+                stringSize = gfx.MeasureString("[Pusty Akapit]", paragraph.listRuns[0].Properties.Font);
             }
 
             TextBox textBox = new TextBox()
@@ -281,7 +276,7 @@ namespace Document_Office.Net.Environment
 
         public void AddEnvironmentFileName(string fileName) => EnvironmentFileName = fileName;
 
-        public void InitUI(int width)
+        public void InitUI(int width, int height)
         {
             List<IDOElement> dOElements = new List<IDOElement>();
 
@@ -292,63 +287,59 @@ namespace Document_Office.Net.Environment
             {
                 DOEnvironmentUI envUI = new DOEnvironmentUI();
                 envUI.AddElementsToList(dOElements);
-                if (countCopies > 2)
-                    envUI.GenerateUI(width + 135, 600, xEnv, yEnv, EnvironmentFileName, RootWindow, iterator.ToString());
-                else
-                    envUI.GenerateUI(width + 150, 600, xEnv, yEnv, EnvironmentFileName, RootWindow, iterator.ToString());
+                envUI.GenerateUI(width, height, xEnv, yEnv, EnvironmentFileName, RootWindow, iterator.ToString());
+                /*if (countCopies > 2)
+                //    envUI.GenerateUI(width + 135, 600, xEnv, yEnv, EnvironmentFileName, RootWindow, iterator.ToString());
+                //else
+                    envUI.GenerateUI(width + 150, 600, xEnv, yEnv, EnvironmentFileName, RootWindow, iterator.ToString());*/
 
                 foreach (Guid elementGuid in ido)
                 {
                     int x = 0;
                     foreach (DOParagraph paragraph in DocsParagraphElements)
                     {
-                        if (paragraph != null)
+                        if (paragraph.IDOElementGuid == elementGuid)
                         {
-                            
-                            if (paragraph.IDOElementGuid == elementGuid)
-                            {
-                                envUI.CreateNewspaperParagraph(paragraph, ref x);
-                            }
+                            envUI.CreateNewspaperParagraph(paragraph, ref x);
                         }
                     }
 
                     foreach (DOTable table in DocsTableElements)
                     {
-                        if (table != null)
+                        if (table.IDOElementGuid == elementGuid)
                         {
-                            if (table.IDOElementGuid == elementGuid)
-                            {
-                                //dOElements.Add(table);
-                            }
+                            //dOElements.Add(table);
                         }
                     }
                 }
 
                 environmentUIs.Add(envUI);
 
-                if(iterator % 2 == 1)
-                {
-                    if (xEnv > 0)
-                    {
-                        xEnv = 0;
-                    }
-                    else
-                    {
-                        xEnv = width + 136;
-                    }
-                }
+                xEnv = width + 136;
 
-                if(iterator % 2 == 0)
-                {
-                    if (yEnv > 0)
-                    {
-                        yEnv = 0;
-                    }
-                    else
-                    {
-                        yEnv = 600 + 1;
-                    }
-                }
+                /*if(iterator % 2 == 1)
+                //{
+                //    if (xEnv > 0)
+                //    {
+                //        xEnv = 0;
+                //    }
+                //    else
+                //    {
+                //        xEnv = width + 136;
+                //    }
+                //}
+
+                //if(iterator % 2 == 0)
+                //{
+                //    if (yEnv > 0)
+                //    {
+                //        yEnv = 0;
+                //    }
+                //    else
+                //    {
+                //        yEnv = 600 + 1;
+                //    }
+                }*/
             }
 
         }
